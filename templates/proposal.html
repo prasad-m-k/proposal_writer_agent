@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Proposal Generator - 2025-2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto', sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; }
+        .header { background: linear-gradient(90deg, #0d47a1, #4a148c); padding: 15px 30px; color: white; font-size: 1.5em; font-weight: 500; }
+        .container { padding: 2em; max-width: 800px; margin: auto; }
+        .card { background-color: #1e1e1e; border-radius: 8px; padding: 2em; margin-top: 1.5em; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
+        h1, h2, h3 { color: #ffffff; font-weight: 500; }
+        h1 { font-size: 2em; text-align: center; }
+        h2 { border-bottom: 1px solid #444; padding-bottom: 10px; margin-top: 1.5em; }
+        p, li { line-height: 1.6; color: #d0d0d0; }
+        ul { list-style-type: none; padding-left: 0; }
+        li { background-color: #2a2a2a; margin-bottom: 10px; padding: 15px; border-radius: 6px; }
+        strong { color: #ffffff; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+    <header class="header">AI Proposal Generator for the Year 2025-2026</header>
+
+    <div class="container">
+        <div class="card">
+            <h1>After-School Program Funding Proposal</h1>
+            
+            <h2>Executive Summary</h2>
+            <p>This document outlines a funding proposal for the 2025-2026 school year to support the after-school program at <strong>{{ data.school_name }}</strong>. Based on an analysis of school enrollment data and available funding, this proposal seeks to deliver a high-impact, cost-effective program to students participating in the Free or Reduced-Price Meal (FRPM) program.</p>
+
+            <h2>1.0 School Profile</h2>
+            <ul>
+                <li><strong>To:</strong> {{ data.district_name }}</li>
+                <li><strong>School:</strong> {{ data.school_name }} ({{ data.school_type }})</li>
+                <li><strong>Total Student Enrollment:</strong> {{ data.total_enrollment }}</li>
+                <li><strong>Meal Program Participants:</strong> {{ data.meal_participants }}</li>
+                <li><strong>FRPM Percentage:</strong> {{ data.frpm_percent }}</li>
+                <li><strong>Existing After School Program:</strong> {{ data.after_school_program }}</li>
+            </ul>
+
+            <h2>2.0 Funding and Cost Analysis</h2>
+            <ul>
+                <li><strong>Total Estimated Funding Available:</strong> {{ data.estimated_funding }}</li>
+                <li><strong>Proposed Cost Per Student, Per Session:</strong> ${{ data.cost_proposal }}</li>
+            </ul>
+            
+            <h2>3.0 Proposal Statement</h2>
+            <p>We propose the allocation of <strong>{{ data.estimated_funding }}</strong> to facilitate the after-school education program at {{ data.school_name }}. The proposed budget, which includes a targeted cost of <strong>${{ data.cost_proposal }} per session per student</strong>, is designed to maximize student engagement and provide critical academic and enrichment support. This investment will directly benefit {{ data.meal_participants }} students, addressing educational equity and opportunity gaps within the {{ data.district_name }}. We are confident that this data-driven approach will yield significant positive outcomes for the student body.</p>
+        </div>
+    </div>
+
+</body>
+</html>
