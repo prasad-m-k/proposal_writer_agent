@@ -1,44 +1,71 @@
 District Name,School Name,School Type,Total Enrollment,Meal Program Participants,FRPM Percent (%),Expanded Learning Program,After School Education Program,Estimated Funding (USD)
-Sacramento City Unified School District,Abraham Lincoln Elementary,Elementary Schools (Public),511,442,0.8649706457925636,Yes,Yes,$521117
-Sacramento City Unified School District,Alice Birney Waldorf-Inspired,Elementary Schools (Public),481,163,0.3388773388773389,Yes,Yes,$192176
-Sacramento City Unified School District,Bret Harte Elementary,Elementary Schools (Public),189,150,0.7936507936507936,Yes,Yes,$176849
-Sacramento City Unified School District,Caleb Greenwood Elementary,Elementary Schools (Public),497,122,0.2454728370221328,Yes,Yes,$143837
-Sacramento City Unified School District,Camellia Elementary,Elementary Schools (Public),344,299,0.8691860465116279,Yes,Yes,$352520
-Sacramento City Unified School District,Caroline Wenzel Elementary,Elementary Schools (Public),203,159,0.7832512315270936,Yes,Yes,$187460
-Sacramento City Unified School District,Cesar Chavez Intermediate,Elementary Schools (Public),380,356,0.9368421052631579,Yes,Yes,$419723
-Sacramento City Unified School District,Crocker/Riverside Elementary,Elementary Schools (Public),636,116,0.18238993710691823,Yes,Yes,$136763
-Sacramento City Unified School District,David Lubin Elementary,Elementary Schools (Public),455,194,0.42637362637362636,Yes,Yes,$228725
-Sacramento City Unified School District,Earl Warren Elementary,Elementary Schools (Public),417,383,0.9184652278177458,Yes,Yes,$451556
-Sacramento City Unified School District,Edward Kemble Elementary,Elementary Schools (Public),464,430,0.9267241379310345,Yes,Yes,$506969
-Sacramento City Unified School District,Elder Creek Elementary,Elementary Schools (Public),755,644,0.8529801324503311,Yes,Yes,$759275
-Sacramento City Unified School District,Ethel I. Baker Elementary,Elementary Schools (Public),616,564,0.9155844155844156,Yes,Yes,$664955
-Sacramento City Unified School District,Father Keith B. Kenny,Elementary Schools (Public),235,224,0.9531914893617022,Yes,Yes,$264095
-Sacramento City Unified School District,Genevieve Didion,Elementary Schools (Public),615,210,0.34146341463414637,Yes,Yes,$247589
-Sacramento City Unified School District,Golden Empire Elementary,Elementary Schools (Public),449,305,0.6792873051224945,Yes,Yes,$359594
-Sacramento City Unified School District,Hollywood Park Elementary,Elementary Schools (Public),260,212,0.8153846153846154,Yes,Yes,$249947
-Sacramento City Unified School District,Isador Cohen Elementary,Elementary Schools (Public),324,289,0.8919753086419753,Yes,Yes,$340730
-Sacramento City Unified School District,James Marshall Elementary,Elementary Schools (Public),334,245,0.7335329341317365,Yes,Yes,$288854
-Sacramento City Unified School District,John Bidwell Elementary,Elementary Schools (Public),276,232,0.8405797101449275,Yes,Yes,$273527
-Sacramento City Unified School District,John Cabrillo Elementary,Elementary Schools (Public),357,283,0.7927170868347339,Yes,Yes,$333656
-Sacramento City Unified School District,John D. Sloat Elementary,Elementary Schools (Public),220,203,0.9227272727272727,Yes,Yes,$239336
-Sacramento City Unified School District,Leataata Floyd Elementary,Elementary Schools (Public),221,208,0.9411764705882353,Yes,Yes,$245231
-Sacramento City Unified School District,Leonardo Da Vinci,Elementary Schools (Public),829,260,0.31363088057901084,Yes,Yes,$306539
-Sacramento City Unified School District,Mark Twain Elementary,Elementary Schools (Public),247,217,0.8785425101214575,Yes,Yes,$255842
-Sacramento City Unified School District,"Martin Luther King, Jr.",Elementary Schools (Public),327,233,0.7125382262996942,Yes,Yes,$274706
-Sacramento City Unified School District,Matsuyama Elementary,Elementary Schools (Public),437,206,0.47139588100686497,Yes,Yes,$242873
-Sacramento City Unified School District,Nicholas Elementary,Elementary Schools (Public),474,424,0.8945147679324894,Yes,Yes,$499895
-Sacramento City Unified School District,Oak Ridge Elementary,Elementary Schools (Public),432,420,0.9722222222222222,Yes,Yes,$495179
-Sacramento City Unified School District,Pacific Elementary,Elementary Schools (Public),638,591,0.9263322884012539,Yes,Yes,$696788
-Sacramento City Unified School District,Parkway Elementary,Elementary Schools (Public),449,407,0.9064587973273942,Yes,Yes,$479852
-Sacramento City Unified School District,Phoebe A. Hearst Elementary,Elementary Schools (Public),657,124,0.1887366818873668,Yes,Yes,$146195
-Sacramento City Unified School District,Pony Express Elementary,Elementary Schools (Public),370,231,0.6243243243243243,Yes,Yes,$272348
-Sacramento City Unified School District,Rosa Parks Elementary,Elementary Schools (Public),744,644,0.8655913978494624,Yes,Yes,$759275
-Sacramento City Unified School District,Sequoia Elementary,Elementary Schools (Public),439,308,0.7015945330296127,Yes,Yes,$363131
-Sacramento City Unified School District,Susan B. Anthony Elementary,Elementary Schools (Public),314,242,0.7707006369426752,Yes,Yes,$285317
-Sacramento City Unified School District,Sutterville Elementary,Elementary Schools (Public),406,148,0.3645320197044335,Yes,Yes,$174491
-Sacramento City Unified School District,Suy:u Elementary,Elementary Schools (Public),389,320,0.8226221079691517,Yes,Yes,$377279
-Sacramento City Unified School District,Tahoe Elementary,Elementary Schools (Public),302,194,0.6423841059602649,Yes,Yes,$228725
-Sacramento City Unified School District,Theodore Judah Elementary,Elementary Schools (Public),447,157,0.3512304250559284,Yes,Yes,$185102
-Sacramento City Unified School District,Washington Elementary,Elementary Schools (Public),319,170,0.5329153605015674,Yes,Yes,$200429
-Sacramento City Unified School District,William Land Elementary,Elementary Schools (Public),331,181,0.5468277945619335,Yes,Yes,$213398
-Sacramento City Unified School District,Woodbine Elementary,Elementary Schools (Public),271,251,0.9261992619926199,Yes,Yes,$295928
+Sacramento City Unified School District,Abraham Lincoln Elementary,Elementary Schools (Public),511,442,0.8649706457925636,Yes,Yes,521117.99
+Sacramento City Unified School District,Alice Birney Waldorf-Inspired,Elementary Schools (Public),481,163,0.3388773388773389,Yes,Yes,192176.99
+Sacramento City Unified School District,Bret Harte Elementary,Elementary Schools (Public),189,150,0.7936507936507936,Yes,Yes,176849.99
+Sacramento City Unified School District,Caleb Greenwood Elementary,Elementary Schools (Public),497,122,0.2454728370221328,Yes,Yes,143837.99
+Sacramento City Unified School District,Camellia Elementary,Elementary Schools (Public),344,299,0.8691860465116279,Yes,Yes,352520.99
+Sacramento City Unified School District,Caroline Wenzel Elementary,Elementary Schools (Public),203,159,0.7832512315270936,Yes,Yes,187460.99
+Sacramento City Unified School District,Cesar Chavez Intermediate,Elementary Schools (Public),380,356,0.9368421052631579,Yes,Yes,419723.99
+Sacramento City Unified School District,Crocker/Riverside Elementary,Elementary Schools (Public),636,116,0.18238993710691823,Yes,Yes,136763.99
+Sacramento City Unified School District,David Lubin Elementary,Elementary Schools (Public),455,194,0.42637362637362636,Yes,Yes,228725.99
+Sacramento City Unified School District,Earl Warren Elementary,Elementary Schools (Public),417,383,0.9184652278177458,Yes,Yes,451556.99
+Sacramento City Unified School District,Edward Kemble Elementary,Elementary Schools (Public),464,430,0.9267241379310345,Yes,Yes,506969.99
+Sacramento City Unified School District,Elder Creek Elementary,Elementary Schools (Public),755,644,0.8529801324503311,Yes,Yes,759275.99
+Sacramento City Unified School District,Ethel I. Baker Elementary,Elementary Schools (Public),616,564,0.9155844155844156,Yes,Yes,664955.99
+Sacramento City Unified School District,Father Keith B. Kenny,Elementary Schools (Public),235,224,0.9531914893617022,Yes,Yes,264095.99
+Sacramento City Unified School District,Genevieve Didion,Elementary Schools (Public),615,210,0.34146341463414637,Yes,Yes,247589.99
+Sacramento City Unified School District,Golden Empire Elementary,Elementary Schools (Public),449,305,0.6792873051224945,Yes,Yes,359594.99
+Sacramento City Unified School District,Hollywood Park Elementary,Elementary Schools (Public),260,212,0.8153846153846154,Yes,Yes,249947.99
+Sacramento City Unified School District,Isador Cohen Elementary,Elementary Schools (Public),324,289,0.8919753086419753,Yes,Yes,340730.99
+Sacramento City Unified School District,James Marshall Elementary,Elementary Schools (Public),334,245,0.7335329341317365,Yes,Yes,288854.99
+Sacramento City Unified School District,John Bidwell Elementary,Elementary Schools (Public),276,232,0.8405797101449275,Yes,Yes,273527.99
+Sacramento City Unified School District,John Cabrillo Elementary,Elementary Schools (Public),357,283,0.7927170868347339,Yes,Yes,333656.99
+Sacramento City Unified School District,John D. Sloat Elementary,Elementary Schools (Public),220,203,0.9227272727272727,Yes,Yes,239336.99
+Sacramento City Unified School District,Leataata Floyd Elementary,Elementary Schools (Public),221,208,0.9411764705882353,Yes,Yes,245231.99
+Sacramento City Unified School District,Leonardo Da Vinci,Elementary Schools (Public),829,260,0.31363088057901084,Yes,Yes,306539.99
+Sacramento City Unified School District,Mark Twain Elementary,Elementary Schools (Public),247,217,0.8785425101214575,Yes,Yes,255842.99
+Sacramento City Unified School District,"Martin Luther King, Jr.",Elementary Schools (Public),327,233,0.7125382262996942,Yes,Yes,274706.99
+Sacramento City Unified School District,Matsuyama Elementary,Elementary Schools (Public),437,206,0.47139588100686497,Yes,Yes,242873.99
+Sacramento City Unified School District,Nicholas Elementary,Elementary Schools (Public),474,424,0.8945147679324894,Yes,Yes,499895.99
+Sacramento City Unified School District,Oak Ridge Elementary,Elementary Schools (Public),432,420,0.9722222222222222,Yes,Yes,495179.99
+Sacramento City Unified School District,Pacific Elementary,Elementary Schools (Public),638,591,0.9263322884012539,Yes,Yes,696788.99
+Sacramento City Unified School District,Parkway Elementary,Elementary Schools (Public),449,407,0.9064587973273942,Yes,Yes,479852.99
+Sacramento City Unified School District,Phoebe A. Hearst Elementary,Elementary Schools (Public),657,124,0.1887366818873668,Yes,Yes,146195.99
+Sacramento City Unified School District,Pony Express Elementary,Elementary Schools (Public),370,231,0.6243243243243243,Yes,Yes,272348.99
+Sacramento City Unified School District,Rosa Parks Elementary,Elementary Schools (Public),744,644,0.8655913978494624,Yes,Yes,759275.99
+Sacramento City Unified School District,Sequoia Elementary,Elementary Schools (Public),439,308,0.7015945330296127,Yes,Yes,363131.99
+Sacramento City Unified School District,Susan B. Anthony Elementary,Elementary Schools (Public),314,242,0.7707006369426752,Yes,Yes,285317.99
+Sacramento City Unified School District,Sutterville Elementary,Elementary Schools (Public),406,148,0.3645320197044335,Yes,Yes,174491.99
+Sacramento City Unified School District,Suy:u Elementary,Elementary Schools (Public),389,320,0.8226221079691517,Yes,Yes,377279.99
+Sacramento City Unified School District,Tahoe Elementary,Elementary Schools (Public),302,194,0.6423841059602649,Yes,Yes,228725.99
+Sacramento City Unified School District,Theodore Judah Elementary,Elementary Schools (Public),447,157,0.3512304250559284,Yes,Yes,185102.99
+Sacramento City Unified School District,Washington Elementary,Elementary Schools (Public),319,170,0.5329153605015674,Yes,Yes,200429.99
+Sacramento City Unified School District,William Land Elementary,Elementary Schools (Public),331,181,0.5468277945619335,Yes,Yes,213398.99
+Sacramento City Unified School District,Woodbine Elementary,Elementary Schools (Public),271,251,0.9261992619926199,Yes,Yes,295928.99
+Twin Rivers Unified School District,Regency Park Elementary,Elementary Schools (Public),771,533,69.13,Yes,Yes,628407.0
+Twin Rivers Unified School District,Del Paso Heights Elementary,Elementary Schools (Public),469,434,92.54,Yes,Yes,511686.0
+Twin Rivers Unified School District,Fairbanks Elementary,Elementary Schools (Public),369,342,92.68,Yes,Yes,403218.0
+Twin Rivers Unified School District,Garden Valley Elementary,Elementary Schools (Public),341,299,87.68,Yes,Yes,352521.0
+Twin Rivers Unified School District,D. W. Babcock Elementary,Elementary Schools (Public),367,332,90.46,Yes,Yes,391428.0
+Twin Rivers Unified School District,Hagginwood Elementary,Elementary Schools (Public),359,335,93.31,Yes,Yes,394965.0
+Twin Rivers Unified School District,Hazel Strauch Elementary,Elementary Schools (Public),590,501,84.92,Yes,Yes,590679.0
+Twin Rivers Unified School District,Michael J. Castori Elementary,Elementary Schools (Public),558,522,93.55,Yes,Yes,615438.0
+Twin Rivers Unified School District,Las Palmas Elementary,Elementary Schools (Public),1026,935,91.13,Yes,Yes,1102365.0
+Twin Rivers Unified School District,Northwood Elementary,Elementary Schools (Public),428,402,93.93,Yes,Yes,473958.0
+Twin Rivers Unified School District,Woodlake Elementary,Elementary Schools (Public),329,305,92.71,Yes,Yes,359595.0
+Twin Rivers Unified School District,Warren A. Allison Elementary,Elementary Schools (Public),389,353,90.75,Yes,Yes,416187.0
+Twin Rivers Unified School District,Dry Creek Elementary,Elementary Schools (Public),625,523,83.68,Yes,Yes,616617.0
+Twin Rivers Unified School District,Frontier Elementary,Elementary Schools (Public),374,314,83.96,Yes,Yes,370206.0
+Twin Rivers Unified School District,Hillsdale Elementary,Elementary Schools (Public),236,203,86.02,Yes,Yes,239337.0
+Twin Rivers Unified School District,Kohler Elementary,Elementary Schools (Public),374,328,87.7,Yes,Yes,386712.0
+Twin Rivers Unified School District,Madison Elementary,Elementary Schools (Public),745,691,92.75,Yes,Yes,814689.0
+Twin Rivers Unified School District,Orchard Elementary,Elementary Schools (Public),320,238,74.38,Yes,Yes,280602.0
+Twin Rivers Unified School District,Pioneer Elementary,Elementary Schools (Public),643,559,86.94,Yes,Yes,659061.0
+Twin Rivers Unified School District,Sierra View Elementary,Elementary Schools (Public),284,249,87.68,Yes,Yes,293571.0
+Twin Rivers Unified School District,Village Elementary,Elementary Schools (Public),456,409,89.69,Yes,Yes,482211.0
+Twin Rivers Unified School District,Westside Elementary,Elementary Schools (Public),376,280,74.47,Yes,Yes,330120.0
+Twin Rivers Unified School District,Woodridge Elementary,Elementary Schools (Public),801,765,95.51,Yes,Yes,901935.0
+Twin Rivers Unified School District,Ridgepoint Elementary,Elementary Schools (Public),667,572,85.76,Yes,Yes,674388.0
+Twin Rivers Unified School District,Foothill Oaks Elementary,Elementary Schools (Public),498,418,83.94,Yes,Yes,492822.0
+Rocklin Unified School District,Cobblestone Elementary,Elementary Schools (Public),999,333,0.9261992619926199,Yes,Yes,295928.99
+Rocklin Unified School District,Valley View Elementary,Middle Schools (Public),222,111,0.5000000000000001,Yes,Yes,500000.00

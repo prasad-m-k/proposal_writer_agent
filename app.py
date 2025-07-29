@@ -1,101 +1,49 @@
-from dotenv import load_dotenv
-import os
 import pandas as pd
-import google.generativeai as genai
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template
+import numpy as np # Import numpy to handle potential division by zero safely
 
-# Load environment variables from the .env file
-load_dotenv()
-# --- Basic Flask App Setup ---
 app = Flask(__name__)
-UPLOAD_FOLDER = 'uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Create the uploads directory if it doesn't exist
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+# --- DEFINE CONSTANTS ---
+SCHOOL_DAYS_PER_YEAR = 3
 
-# --- Gemini AI Configuration ---
-# Replace with your actual API key
-# Access environment variables
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-print(f"API Key: {GEMINI_API_KEY}")
-
-genai.configure(api_key=GEMINI_API_KEY)
-#model = genai.GenerativeModel('gemini-pro')
-model = genai.GenerativeModel('gemini-2.0-flash')
-
-def generate_proposal_from_row(row):
-    """Generates a proposal for a single row of data."""
-    # Create a detailed prompt for the Gemini model
-    prompt = f"""
-    **Generate a professional and comprehensive project proposal based on the following details:**
-
-    - **Client Name:** {row.get('client_name', 'N/A')}
-    - **Project Title:** {row.get('project_title', 'N/A')}
-    - **Project Description:** {row.get('project_description', 'N/A')}
-    - **Scope of Work:** {row.get('scope_of_work', 'N/A')}
-    - **Timeline:** {row.get('timeline', 'N/A')}
-    - **Budget:** {row.get('budget', 'N/A')}
-
-    **The proposal should be well-structured and include the following sections:**
-    1.  **Introduction:** A compelling opening that introduces our company and the project.
-    2.  **Understanding of Client Needs:** Show that we have a clear grasp of the client's goals.
-    3.  **Proposed Solution:** A detailed description of the solution we are offering.
-    4.  **Detailed Scope of Work:** A clear and itemized list of all deliverables.
-    5.  **Project Timeline:** A realistic timeline with key milestones.
-    6.  **Investment & Budget:** A breakdown of the costs.
-    7.  **Call to Action:** A clear next step for the client.
-
-    **Please write the proposal in a professional and persuasive tone.**
-    """
-    try:
-        response = model.generate_content(prompt)
-        return response.text
-    except Exception as e:
-        return f"An error occurred while generating the proposal: {e}"
-
-# --- Flask Routes ---
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    if request.method == 'POST':
-        # Check if a file was uploaded
-        if 'file' not in request.files:
-            return redirect(request.url)
-        file = request.files['file']
-        if file.filename == '':
-            return redirect(request.url)
+    # Read the CSV file fresh on each request to ensure data is current
+    df = pd.read_csv("data.csv")
 
-        if file and file.filename.endswith('.csv'):
-            # Save the uploaded file
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-            file.save(filepath)
+    # Clean up column names by stripping any leading/trailing whitespace
+    df.columns = df.columns.str.strip()
 
-            # Process the CSV and generate proposals
-            try:
-                df = pd.read_csv(filepath)
-                proposals = []
-                for index, row in df.iterrows():
-                    generated_text = generate_proposal_from_row(row)
-                    proposals.append({
-                        'client': row.get('client_name', f'Row {index + 1}'),
-                        'proposal': generated_text
-                    })
+    # --- CALCULATION LOGIC (PERFORM ON RAW NUMBERS FIRST) ---
+    # Calculate 'Cost Proposal' using our formula.
+    # We use np.where to avoid division by zero errors if a school has 0 participants.
+    df['Cost Proposal'] = np.where(
+        df['Meal Program Participants'] > 0,
+        df['Estimated Funding (USD)'] / df['Meal Program Participants'] / SCHOOL_DAYS_PER_YEAR,
+        0  # If no participants, the cost per session is $0
+    )
 
-                # Clean up the uploaded file
-                #os.remove(filepath)
+    # --- FORMATTING FOR DISPLAY (AFTER ALL CALCULATIONS ARE DONE) ---
+    # Format the new 'Cost Proposal' column as currency
+    df['Cost Proposal'] = df['Cost Proposal'].map('${:,.2f}'.format)
+    
+    # Format the other columns as before
+    if 'FRPM Percent (%)' in df.columns:
+        df['FRPM Percent (%)'] = (df['FRPM Percent (%)'] * 100).map('{:.2f}%'.format)
+    if 'Estimated Funding (USD)' in df.columns:
+        df['Estimated Funding (USD)'] = df['Estimated Funding (USD)'].map('${:,.2f}'.format)
 
-                # Render the results page with the generated proposals
-                return render_template('results.html', proposals=proposals)
 
-            except Exception as e:
-                # Clean up the file even if an error occurs
-                if os.path.exists(filepath):
-                    os.remove(filepath)
-                return f"An error occurred while processing the file: {e}"
+    # --- PREPARE DATA FOR THE TEMPLATE ---
+    # Get a list of unique district names for the first dropdown
+    districts = df['District Name'].unique().tolist()
 
-    # Render the main upload page
-    return render_template('index.html')
+    # Convert the entire DataFrame (with the new column) to a JSON string
+    all_data_json = df.to_json(orient='records')
 
+    return render_template('index.html', districts=districts, all_data=all_data_json)
+
+# Remember to use the port number that works for you
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=5001, debug=True)
