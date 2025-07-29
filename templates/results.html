@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Proposals</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .proposal { border: 1px solid #ccc; border-radius: 5px; padding: 1em; margin-bottom: 2em; }
+        h2 { color: #0056b3; }
+        pre { white-space: pre-wrap; background-color: #f4f4f4; padding: 1em; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Generated Proposals</h1>
+    <a href="/">Generate More</a>
+
+    {% for item in proposals %}
+    <div class="proposal">
+        <h2>Proposal for: {{ item.client }}</h2>
+        <pre>{{ item.proposal }}</pre>
+    </div>
+    {% endfor %}
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Proposal Writer</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .container { max-width: 600px; margin: auto; padding: 2em; border: 1px solid #ccc; border-radius: 5px; }
+        input[type="file"] { margin-bottom: 1em; }
+        input[type="submit"] { padding: 0.5em 1em; background-color: #007bff; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Proposal Writer</h1>
+        <p>Upload a CSV file with your proposal data to get started.</p>
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".csv" required>
+            <br>
+            <input type="submit" value="Generate Proposals">
+        </form>
+    </div>
+</body>
+</html>
