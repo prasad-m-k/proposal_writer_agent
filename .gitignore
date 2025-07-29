@@ -6,7 +6,7 @@
 .venv/
 
 #macOS specific Desktop Services Store. => used by Python, contains some metadata
-.DS_Store/
+.DS_Store
 
 # Ignore gitignore files
 # Below content is created using github template online
