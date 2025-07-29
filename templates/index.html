@@ -7,139 +7,74 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-            margin: 0;
-        }
-
-        .header {
-            background: linear-gradient(90deg, #FF5F5F, #FF9116);
-
-            padding: 15px 30px;
-            color: white;
-            font-size: 1.5em;
-            font-weight: 500;
-        }
-
-        .container {
-            padding: 2em;
-        }
-
-        h2 {
-            color: #ffffff;
-            font-weight: 500;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-        }
-
-        .card {
-            background-color: #1e1e1e;
-            border-radius: 8px;
-            padding: 1.5em;
-            margin-top: 1.5em;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        label {
-            font-weight: 500;
-            color: #bbbbbb;
-            font-size: 1.1em;
-        }
-
-        select {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            background-color: #333;
-            color: #e0e0e0;
-            border: 1px solid #555;
-            border-radius: 6px;
-            font-size: 1em;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 1em;
-        }
-
-        th, td {
-            border: 1px solid #444;
-            padding: 12px 15px;
-            text-align: left;
-        }
-
-        thead {
-            background-color: #2a2a2a;
-        }
-
-        th {
-            font-weight: 700;
-            color: #ffffff;
-        }
-
-        tbody tr {
-            background-color: #2c2c2c;
-            transition: background-color 0.3s ease;
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: #262626;
-        }
-
-        tbody tr:hover {
-            background-color: #383838;
-        }
-
+        /* CSS styles remain the same, but add styles for new elements */
+        body { font-family: 'Roboto', sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; }
+        .header { background: linear-gradient(90deg, #0d47a1, #4a148c); padding: 15px 30px; color: white; font-size: 1.5em; font-weight: 500; }
+        .container { padding: 2em; }
+        h2 { color: #ffffff; font-weight: 500; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .card { background-color: #1e1e1e; border-radius: 8px; padding: 1.5em; margin-top: 1.5em; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
+        label { font-weight: 500; color: #bbbbbb; font-size: 1.1em; }
+        select { width: 100%; padding: 12px; margin-top: 10px; background-color: #333; color: #e0e0e0; border: 1px solid #555; border-radius: 6px; font-size: 1em; }
+        table { border-collapse: collapse; width: 100%; margin-top: 1em; }
+        th, td { border: 1px solid #444; padding: 12px 15px; text-align: left; }
+        thead { background-color: #2a2a2a; }
+        th { font-weight: 700; color: #ffffff; }
+        tbody tr { background-color: #2c2c2c; }
+        /* Style for the new input field in the table */
+        .cost-input { width: 95%; background-color: #444; color: #e0e0e0; border: 1px solid #666; border-radius: 4px; padding: 8px; font-size: 1em; font-family: 'Roboto', sans-serif; }
+        /* Style for the submit button */
+        .submit-btn { display: block; width: 100%; padding: 15px; margin-top: 2em; background: linear-gradient(90deg, #0d47a1, #4a148c); color: white; border: none; border-radius: 6px; font-size: 1.2em; font-weight: 500; cursor: pointer; transition: opacity 0.3s ease; }
+        .submit-btn:hover { opacity: 0.9; }
     </style>
 </head>
 <body>
 
-    <header class="header">
-        School Data Explorer
-    </header>
+    <header class="header">School Data Explorer</header>
 
     <div class="container">
-        <div class="card">
-            <h2>Filter Options</h2>
-            <div>
-                <label for="district-select">District Name:</label>
-                <select id="district-select">
-                    {% for district in districts %}
-                        <option value="{{ district }}">{{ district }}</option>
-                    {% endfor %}
-                </select>
+        <!-- FORM tag wraps everything that needs to be submitted -->
+        <form id="proposal-form" action="/proposal" method="POST">
+            <div class="card">
+                <h2>Filter Options</h2>
+                <div>
+                    <label for="district-select">District Name:</label>
+                    <select id="district-select">
+                        {% for district in districts %}
+                            <option value="{{ district }}">{{ district }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div style="margin-top: 1em;">
+                    <label for="school-select">School Name:</label>
+                    <select id="school-select"></select>
+                </div>
             </div>
-            <div style="margin-top: 1em;">
-                <label for="school-select">School Name:</label>
-                <select id="school-select"></select>
-            </div>
-        </div>
 
-        <div class="card">
-            <h2>School Information</h2>
-            <div style="overflow-x:auto;">
-                <table id="school-data-table">
-                    <thead>
-                        <tr>
-                            <th>School Type</th>
-                            <th>Total Enrollment</th>
-                            <th>Meal Program Participants</th>
-                            <th>FRPM Percent (%)</th>
-                            <th>Expanded Learning Program</th>
-                            <th>After School Education Program</th>
-                            <th>Estimated Funding (USD)</th>
-                            <!-- NEW TABLE HEADER -->
-                            <th>Cost Proposal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+            <div class="card">
+                <h2>School Information</h2>
+                <div style="overflow-x:auto;">
+                    <table id="school-data-table">
+                        <thead>
+                            <tr>
+                                <th>School Type</th>
+                                <th>Total Enrollment</th>
+                                <th>Meal Program Participants</th>
+                                <th>FRPM Percent (%)</th>
+                                <th>After School Program</th>
+                                <th>Estimated Funding (USD)</th>
+                                <th>Cost Proposal (per session)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+            
+            <!-- This div will hold all the hidden data for the selected school -->
+            <div id="hidden-data-container"></div>
+
+            <button type="submit" class="submit-btn">Generate AI Proposal for 2025-2026</button>
+        </form>
     </div>
 
 <script>
@@ -147,12 +82,12 @@
     const districtSelect = document.getElementById('district-select');
     const schoolSelect = document.getElementById('school-select');
     const tableBody = document.querySelector("#school-data-table tbody");
+    const hiddenDataContainer = document.getElementById('hidden-data-container');
 
     function updateSchools() {
         const selectedDistrict = districtSelect.value;
         schoolSelect.innerHTML = "";
         const schoolsInDistrict = allData.filter(row => row['District Name'] === selectedDistrict);
-
         schoolsInDistrict.forEach(school => {
             const option = document.createElement('option');
             option.value = school['School Name'];
@@ -166,31 +101,49 @@
         const selectedSchool = schoolSelect.value;
         const schoolData = allData.find(row => row['School Name'] === selectedSchool);
         tableBody.innerHTML = "";
+        hiddenDataContainer.innerHTML = ""; // Clear previous hidden data
 
         if (schoolData) {
-            // UPDATED LIST OF FIELDS TO SHOW
             const fieldsToShow = [
                 'School Type', 'Total Enrollment', 'Meal Program Participants',
-                'FRPM Percent (%)', 'Expanded Learning Program', 'After School Education Program',
+                'FRPM Percent (%)', 'After School Education Program',
                 'Estimated Funding (USD)', 'Cost Proposal'
             ];
-
             const row = document.createElement('tr');
+
             fieldsToShow.forEach(field => {
                 const cell = document.createElement('td');
-                cell.innerHTML = schoolData[field];
+                if (field === 'Cost Proposal') {
+                    // Create an editable input for Cost Proposal
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.name = 'cost_proposal'; // Name for form submission
+                    input.className = 'cost-input';
+                    // Use the raw, unformatted value for the input
+                    input.value = schoolData['cost_proposal_raw'].toFixed(2);
+                    cell.appendChild(input);
+                } else {
+                    cell.textContent = schoolData[field];
+                }
                 row.appendChild(cell);
             });
             tableBody.appendChild(row);
+
+            // Populate hidden inputs for form submission
+            Object.keys(schoolData).forEach(key => {
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                // Sanitize key to be a valid name attribute
+                hiddenInput.name = key.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
+                hiddenInput.value = schoolData[key];
+                hiddenDataContainer.appendChild(hiddenInput);
+            });
         }
     }
 
     districtSelect.addEventListener('change', updateSchools);
     schoolSelect.addEventListener('change', updateTable);
-
-    document.addEventListener('DOMContentLoaded', () => {
-        updateSchools();
-    });
+    document.addEventListener('DOMContentLoaded', updateSchools);
 </script>
 
 </body>
