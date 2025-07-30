@@ -27,3 +27,5 @@ Successfully installed annotated-types-0.7.0 cachetools-5.5.2 certifi-2025.7.14 
 Successfully installed Flask-3.1.1 blinker-1.9.0 click-8.2.1 itsdangerous-2.2.0 jinja2-3.1.6 markupsafe-3.0.2 werkzeug-3.1.3
 (venv) bash-3.2$ pip install python-docx
 Successfully installed python-docx-1.2.0
+$ pandoc "TRUSD conv.docx"  -o proposal.txt
+$ pip install markdown pdfkit

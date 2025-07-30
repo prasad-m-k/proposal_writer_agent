@@ -7,9 +7,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS styles remain the same, but add styles for new elements */
         body { font-family: 'Roboto', sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; }
-        .header { background: linear-gradient(90deg, #0d47a1, #4a148c); padding: 15px 30px; color: white; font-size: 1.5em; font-weight: 500; }
+        .header { padding: 15px 30px; display: flex; align-items: center; }
+        .header-title { font-size: 1.5em; font-weight: 700; background: linear-gradient(90deg, #FF5F5F, #FF9116); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .header-logo { height: 90px; margin-right: 15px; }
         .container { padding: 2em; }
         h2 { color: #ffffff; font-weight: 500; border-bottom: 1px solid #333; padding-bottom: 10px; }
         .card { background-color: #1e1e1e; border-radius: 8px; padding: 1.5em; margin-top: 1.5em; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
@@ -20,25 +21,48 @@
         thead { background-color: #2a2a2a; }
         th { font-weight: 700; color: #ffffff; }
         tbody tr { background-color: #2c2c2c; }
-        /* Style for the new input field in the table */
         .cost-input { width: 95%; background-color: #444; color: #e0e0e0; border: 1px solid #666; border-radius: 4px; padding: 8px; font-size: 1em; font-family: 'Roboto', sans-serif; }
-        /* Style for the submit button */
-        .submit-btn { display: block; width: 100%; padding: 15px; margin-top: 2em; background: linear-gradient(90deg, #0d47a1, #4a148c); color: white; border: none; border-radius: 6px; font-size: 1.2em; font-weight: 500; cursor: pointer; transition: opacity 0.3s ease; }
+        .button-container { display: flex; justify-content: center; margin-top: 2em; position: relative; }
+        .submit-btn { padding: 15px 30px; background: linear-gradient(90deg, #FF5F5F, #FF9116); color: white; border: none; border-radius: 6px; font-size: 1.2em; font-weight: 500; cursor: pointer; transition: opacity 0.3s ease; }
         .submit-btn:hover { opacity: 0.9; }
+        .submit-btn:disabled { cursor: not-allowed; opacity: 0.5; }
+
+        /* ADDED: Styles for the loading spinner */
+        .loader {
+            border: 5px solid #333; /* Light grey */
+            border-top: 5px solid #FF5F5F; /* Main color */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -25px; /* Half of height */
+            margin-left: -25px; /* Half of width */
+            display: none; /* Hidden by default */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
 
-    <header class="header">School Data Explorer</header>
+    <header class="header">
+        <img src="{{ url_for('static', filename='assets/msg_logo.png') }}" alt="Logo" class="header-logo">
+        <span class="header-title">School District Data Explorer</span>
+    </header>
 
     <div class="container">
-        <!-- FORM tag wraps everything that needs to be submitted -->
         <form id="proposal-form" action="/proposal" method="POST">
             <div class="card">
                 <h2>Filter Options</h2>
                 <div>
-                    <label for="district-select">District Name:</label>
-                    <select id="district-select">
+                    <!-- UPDATED: Added name="district" to the select element -->
+                    <label for="district">District Name:</label>
+                    <select id="district" name="district">
                         {% for district in districts %}
                             <option value="{{ district }}">{{ district }}</option>
                         {% endfor %}
@@ -46,7 +70,7 @@
                 </div>
                 <div style="margin-top: 1em;">
                     <label for="school-select">School Name:</label>
-                    <select id="school-select"></select>
+                    <select id="school-select" name="schoolname"></select>
                 </div>
             </div>
 
@@ -70,19 +94,27 @@
                 </div>
             </div>
             
-            <!-- This div will hold all the hidden data for the selected school -->
             <div id="hidden-data-container"></div>
 
-            <button type="submit" class="submit-btn">Generate AI Proposal for 2025-2026</button>
+            <div class="button-container">
+                <button type="submit" class="submit-btn" id="generate-btn">Generate AI Proposal</button>
+                <!-- ADDED: The hidden loader element -->
+                <div class="loader" id="loader"></div>
+            </div>
         </form>
     </div>
 
 <script>
     const allData = JSON.parse('{{ all_data|safe }}');
-    const districtSelect = document.getElementById('district-select');
+    const districtSelect = document.getElementById('district');
     const schoolSelect = document.getElementById('school-select');
     const tableBody = document.querySelector("#school-data-table tbody");
     const hiddenDataContainer = document.getElementById('hidden-data-container');
+
+    // ADDED: References to the form, button, and loader
+    const proposalForm = document.getElementById('proposal-form');
+    const generateBtn = document.getElementById('generate-btn');
+    const loader = document.getElementById('loader');
 
     function updateSchools() {
         const selectedDistrict = districtSelect.value;
@@ -101,25 +133,17 @@
         const selectedSchool = schoolSelect.value;
         const schoolData = allData.find(row => row['School Name'] === selectedSchool);
         tableBody.innerHTML = "";
-        hiddenDataContainer.innerHTML = ""; // Clear previous hidden data
-
+        hiddenDataContainer.innerHTML = ""; 
         if (schoolData) {
-            const fieldsToShow = [
-                'School Type', 'Total Enrollment', 'Meal Program Participants',
-                'FRPM Percent (%)', 'After School Education Program',
-                'Estimated Funding (USD)', 'Cost Proposal'
-            ];
+            const fieldsToShow = ['School Type', 'Total Enrollment', 'Meal Program Participants', 'FRPM Percent (%)', 'After School Education Program', 'Estimated Funding (USD)', 'Cost Proposal'];
             const row = document.createElement('tr');
-
             fieldsToShow.forEach(field => {
                 const cell = document.createElement('td');
                 if (field === 'Cost Proposal') {
-                    // Create an editable input for Cost Proposal
                     const input = document.createElement('input');
                     input.type = 'text';
-                    input.name = 'cost_proposal'; // Name for form submission
+                    input.name = 'cost_proposal';
                     input.className = 'cost-input';
-                    // Use the raw, unformatted value for the input
                     input.value = schoolData['cost_proposal_raw'].toFixed(2);
                     cell.appendChild(input);
                 } else {
@@ -128,18 +152,21 @@
                 row.appendChild(cell);
             });
             tableBody.appendChild(row);
-
-            // Populate hidden inputs for form submission
             Object.keys(schoolData).forEach(key => {
                 const hiddenInput = document.createElement('input');
                 hiddenInput.type = 'hidden';
-                // Sanitize key to be a valid name attribute
                 hiddenInput.name = key.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
                 hiddenInput.value = schoolData[key];
                 hiddenDataContainer.appendChild(hiddenInput);
             });
         }
     }
+
+    // ADDED: Event listener for form submission to show loader
+    proposalForm.addEventListener('submit', function() {
+        generateBtn.style.display = 'none'; // Hide button
+        loader.style.display = 'block';     // Show loader
+    });
 
     districtSelect.addEventListener('change', updateSchools);
     schoolSelect.addEventListener('change', updateTable);
