@@ -1,16 +1,17 @@
+# app.py
+
 import os
 import pandas as pd
 import numpy as np
 import re
-import markdown
-import pdfkit
-import time # Added for unique filenames
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+import time
+from flask import Flask, render_template, request, url_for, send_from_directory
 from dotenv import load_dotenv
-from google.generativeai import GenerativeModel
 import google.generativeai as genai
 from docx import Document
-from convert import MarkdownToDocxConverter
+from docx.shared import Inches
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from convert import MarkdownToDocxConverter # Your updated converter
 
 app = Flask(__name__)
 
@@ -23,60 +24,95 @@ def _initialize():
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
     genai.configure(api_key=GEMINI_API_KEY)
 
+def create_document_header(document):
+    """Adds a pre-defined header to a document object."""
+    # --- Configuration ---
+    # Make sure the logo is in your static/assets folder
+    LOGO_PATH = 'static/assets/msg_logo.png' 
+    ADDRESS_LINES = [
+        ("Musical Instruments N Kids Hands", True), # (Text, Is_Bold)
+        ("Music Science Group", True),
+        ("2150 Capitol Avenue Sacramento, CA 95816", False),
+        ("Ph. (916) 670-9950", False)
+    ]
+    
+    section = document.sections[0]
+    header = section.header
+    header.paragraphs[0].text = "" # Clear default paragraph
+    header_table = header.add_table(rows=1, cols=2, width=Inches(6.5))
+
+    header_table.columns[0].width = Inches(1.5)
+    header_table.columns[1].width = Inches(5.0)
+
+    # Left Column: Logo
+    logo_cell = header_table.cell(0, 0)
+    logo_paragraph = logo_cell.paragraphs[0]
+    logo_run = logo_paragraph.add_run()
+    logo_run.add_picture(LOGO_PATH, height=Inches(0.8))
+
+    # Right Column: Address
+    address_cell = header_table.cell(0, 1)
+    address_paragraph = address_cell.paragraphs[0]
+    address_paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+
+    for text, is_bold in ADDRESS_LINES:
+        run = address_paragraph.add_run(text)
+        if is_bold:
+            run.bold = True
+        run.add_break()
+
 def generate_proposal_from_row(district="N/A", cost_proposal="N/A"):
     """
-    Generates a proposal, saves it as a .docx file with a unique name,
+    Generates a proposal with a custom header, saves it as a .docx file,
     and returns the AI text and the filename.
     """
-    model = genai.GenerativeModel('gemini-1.5-flash') # Updated model
-
+    model = genai.GenerativeModel('gemini-1.5-flash')
     prompt = f"""
     **Generate a professional Executive Summary:**
-
     - **Musical Instruments N Kids Hands (M.I.N.K.H.) / Music Science Group (MSG) :** is presenting to {district}
-
-    **The proposal summary should be well-structured and include the following sections:**
-    1.  **Close the Opportunity Gap:** 
-    2.  **Cultivate 21st-Century Skills:** 
-    3.  **Foster Social-Emotional Resilience:** 
-    4.  **Improve academic performance:** 
-  
-    **Please write the proposal executive summary in a professional and persuasive tone. Highlight (MSG) rather than (M.I.N.K.H.) in the summary.**
+    **The proposal summary should be well-structured... (rest of your prompt)**
     """
     
     try:
         print("Generating proposal using Gemini model...")
         response = model.generate_content(prompt)
-        content=""
+        
+        content = ""
+        # Make sure this template file exists in your 'uploads' folder or change path
         with open('uploads/proposal.txt', 'r') as file:
             content = file.read()
-            print(content)
 
         content = content.replace("district_name", district)
         content = content.replace("executive_summary", response.text)
         proposal_text = content
         
-        # Create a unique filename to prevent overwrites
+        # 1. Create a new document object
+        document = Document()
+        
+        # 2. Add the custom header to it
+        create_document_header(document)
+
+        # 3. Initialize the converter WITH the document that now has a header
+        converter = MarkdownToDocxConverter(document=document)
+        
+        # 4. Add the body content from the AI to the document
+        converter.convert(proposal_text)
+
+        # 5. Save the final document
         safe_district_name = re.sub(r'[^a-zA-Z0-9_]', '', district).replace(" ", "_")
         timestamp = int(time.time())
         filename = f"Proposal_{safe_district_name}_{timestamp}.docx"
         output_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        
+        document.save(output_path)
+        print(f"Successfully created '{filename}' with custom header.")
 
-        # Create an instance of the converter and generate the docx
-        converter = MarkdownToDocxConverter()
-        converter.convert(proposal_text, output_path)
-
-        #html_text = markdown.markdown(proposal_text)
-
-        # Step 3: Convert HTML to PDF
-        #pdfkit.from_string(html_text, "uploads/output.pdf")
-
-        # Return both the generated text and the filename
         return proposal_text, filename
     except Exception as e:
         error_text = f"An error occurred while generating the proposal: {e}"
         return error_text, None
 
+# ... (get_school_data, index, generate_proposal, and download_file routes remain unchanged) ...
 def get_school_data():
     SCHOOL_WEEKS_PER_YEAR = 365 / 180
     STUDENTS_PER_CLASS = 10
@@ -104,33 +140,25 @@ def index():
 
 @app.route('/proposal', methods=['POST'])
 def generate_proposal():
-    """
-    Generates the proposal and renders a page with the AI text and a download link.
-    """
-    # Use the correct key 'district' from the form submission in index.html
     district_name = request.form.get('district')
     cost_proposal = request.form.get('cost_proposal')
 
-    # Generate the proposal text and the .docx file
     proposal_text, filename = generate_proposal_from_row(district_name, cost_proposal)
 
-    # Prepare all data to be passed to the template
     proposal_data = {
         'district': district_name,
         'cost_proposal': cost_proposal,
-        'school_name': request.form.get('schoolname'), # Make sure school name is passed
+        'school_name': request.form.get('schoolname'),
         'proposal_text': proposal_text,
-        'filename': filename # Pass the filename for the download button
+        'filename': filename
     }
-
     return render_template('proposal.html', data=proposal_data)
 
-# ADDED: New route to handle file downloads securely
 @app.route('/download/<path:filename>')
 def download_file(filename):
-    """Serves files from the 'uploads' directory."""
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
 if __name__ == '__main__':
     _initialize()
     app.run(port=5001, debug=True)
+

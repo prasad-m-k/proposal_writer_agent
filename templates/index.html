@@ -26,26 +26,8 @@
         .submit-btn { padding: 15px 30px; background: linear-gradient(90deg, #FF5F5F, #FF9116); color: white; border: none; border-radius: 6px; font-size: 1.2em; font-weight: 500; cursor: pointer; transition: opacity 0.3s ease; }
         .submit-btn:hover { opacity: 0.9; }
         .submit-btn:disabled { cursor: not-allowed; opacity: 0.5; }
-
-        /* ADDED: Styles for the loading spinner */
-        .loader {
-            border: 5px solid #333; /* Light grey */
-            border-top: 5px solid #FF5F5F; /* Main color */
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            margin-top: -25px; /* Half of height */
-            margin-left: -25px; /* Half of width */
-            display: none; /* Hidden by default */
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        .loader { border: 5px solid #333; border-top: 5px solid #FF5F5F; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; position: absolute; top: 50%; left: 50%; margin-top: -25px; margin-left: -25px; display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -60,7 +42,6 @@
             <div class="card">
                 <h2>Filter Options</h2>
                 <div>
-                    <!-- UPDATED: Added name="district" to the select element -->
                     <label for="district">District Name:</label>
                     <select id="district" name="district">
                         {% for district in districts %}
@@ -98,7 +79,6 @@
 
             <div class="button-container">
                 <button type="submit" class="submit-btn" id="generate-btn">Generate AI Proposal</button>
-                <!-- ADDED: The hidden loader element -->
                 <div class="loader" id="loader"></div>
             </div>
         </form>
@@ -110,22 +90,47 @@
     const schoolSelect = document.getElementById('school-select');
     const tableBody = document.querySelector("#school-data-table tbody");
     const hiddenDataContainer = document.getElementById('hidden-data-container');
-
-    // ADDED: References to the form, button, and loader
     const proposalForm = document.getElementById('proposal-form');
     const generateBtn = document.getElementById('generate-btn');
     const loader = document.getElementById('loader');
 
+    // ADDED: New variable to hold the calculated district-wide cost
+    let currentDistrictCost = 0;
+    const SCHOOL_WEEKS_PER_YEAR = 365 / 180;
+
     function updateSchools() {
         const selectedDistrict = districtSelect.value;
-        schoolSelect.innerHTML = "";
+
+        // --- NEW LOGIC: Calculate district-wide cost proposal ---
         const schoolsInDistrict = allData.filter(row => row['District Name'] === selectedDistrict);
+        
+        let totalDistrictFunding = 0;
+        let totalDistrictParticipants = 0;
+
+        schoolsInDistrict.forEach(school => {
+            // Use the raw, unformatted funding value for accurate calculation
+            totalDistrictFunding += school['raw_funding']; 
+            totalDistrictParticipants += school['Meal Program Participants'];
+        });
+
+        // Calculate the average cost for the district and store it
+        if (totalDistrictParticipants > 0) {
+            currentDistrictCost = totalDistrictFunding / totalDistrictParticipants / SCHOOL_WEEKS_PER_YEAR;
+        } else {
+            currentDistrictCost = 0;
+        }
+        // --- END OF NEW LOGIC ---
+
+        // Populate the school dropdown
+        schoolSelect.innerHTML = "";
         schoolsInDistrict.forEach(school => {
             const option = document.createElement('option');
             option.value = school['School Name'];
             option.textContent = school['School Name'];
             schoolSelect.appendChild(option);
         });
+        
+        // Update the table with the first school selected by default
         updateTable();
     }
 
@@ -144,7 +149,8 @@
                     input.type = 'text';
                     input.name = 'cost_proposal';
                     input.className = 'cost-input';
-                    input.value = schoolData['cost_proposal_raw'].toFixed(2);
+                    // UPDATED: Use the stored district-wide cost instead of the school-specific cost
+                    input.value = currentDistrictCost.toFixed(2);
                     cell.appendChild(input);
                 } else {
                     cell.textContent = schoolData[field];
@@ -152,6 +158,8 @@
                 row.appendChild(cell);
             });
             tableBody.appendChild(row);
+
+            // Populate hidden fields as before
             Object.keys(schoolData).forEach(key => {
                 const hiddenInput = document.createElement('input');
                 hiddenInput.type = 'hidden';
@@ -162,10 +170,9 @@
         }
     }
 
-    // ADDED: Event listener for form submission to show loader
     proposalForm.addEventListener('submit', function() {
-        generateBtn.style.display = 'none'; // Hide button
-        loader.style.display = 'block';     // Show loader
+        generateBtn.style.display = 'none';
+        loader.style.display = 'block';
     });
 
     districtSelect.addEventListener('change', updateSchools);
