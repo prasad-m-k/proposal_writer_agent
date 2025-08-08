@@ -14,14 +14,17 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from convert import MarkdownToDocxConverter # Your updated converter
 
 app = Flask(__name__)
+env = {}
 
 def _initialize():
+    global env
     load_dotenv()
     UPLOAD_FOLDER = 'uploads'
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+    DEPL=os.getenv("DEPL")
     genai.configure(api_key=GEMINI_API_KEY)
 
 def create_document_header(document):
@@ -160,5 +163,10 @@ def download_file(filename):
 
 if __name__ == '__main__':
     _initialize()
-    app.run(port=5001, debug=True)
+    if os.getenv("DEPL") == "PROD":
+        #app.run(host='0.0.0.0', port=443, debug=True)
+        app.run(host='0.0.0.0', port=443, debug=True, ssl_context=('/etc/letsencrypt/live/qaproposalmusicsciencegroup.com/fullchain.pem',
+                                               '/etc/letsencrypt/live/qaproposalmusicsciencegroup.com/privkey.pem'))
+    else:
+        app.run(port=5001, debug=True)
 
