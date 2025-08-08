@@ -42,7 +42,7 @@ def create_document_header(document):
     LOGO_PATH = 'static/assets/msg_logo.png'
     ADDRESS_LINES = [
         ("Musical Instruments N Kids Hands", True, 8),  # (Text, Is_Bold, Font_Size)
-        ("Music Science Group", True, 10),
+        ("Music Science Group", True, 8),
         ("2150 Capitol Avenue Sacramento, CA 95816", False, 8),
         ("Ph. (916) 670-9950", False, 8)
     ]
