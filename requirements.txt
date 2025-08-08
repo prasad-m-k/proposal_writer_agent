@@ -30,7 +30,7 @@ proto-plus
 protobuf
 pyasn1
 pyasn1_modules
-pydantic=
+pydantic
 pydantic_core
 pyparsing
 PyPDF2
