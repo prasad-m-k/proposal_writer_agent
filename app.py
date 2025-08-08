@@ -9,7 +9,7 @@ from flask import Flask, render_template, request, url_for, send_from_directory
 from dotenv import load_dotenv
 import google.generativeai as genai
 from docx import Document
-from docx.shared import Inches
+from docx.shared import Inches, Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from convert import MarkdownToDocxConverter # Your updated converter
 
@@ -28,67 +28,98 @@ def _initialize():
     genai.configure(api_key=GEMINI_API_KEY)
 
 def create_document_header(document):
-    """Adds a pre-defined header to a document object."""
+    """
+    Adds a pre-defined, crisp header with a smaller font to a document object.
+
+    Args:
+        document: The python-docx document object.
+    """
     # --- Configuration ---
     # Make sure the logo is in your static/assets folder
-    LOGO_PATH = 'static/assets/msg_logo.png' 
+    LOGO_PATH = 'static/assets/msg_logo.png'
     ADDRESS_LINES = [
-        ("Musical Instruments N Kids Hands", True), # (Text, Is_Bold)
-        ("Music Science Group", True),
-        ("2150 Capitol Avenue Sacramento, CA 95816", False),
-        ("Ph. (916) 670-9950", False)
+        ("Musical Instruments N Kids Hands", True, 10),  # (Text, Is_Bold, Font_Size)
+        ("Music Science Group", True, 10),
+        ("2150 Capitol Avenue Sacramento, CA 95816", False, 8),
+        ("Ph. (916) 670-9950", False, 8)
     ]
-    
+
     section = document.sections[0]
     header = section.header
-    header.paragraphs[0].text = "" # Clear default paragraph
-    header_table = header.add_table(rows=1, cols=2, width=Inches(6.5))
+    # Clear any existing content in the header
+    header.is_linked_to_previous = False
+    header.paragraphs[0].text = ""
 
+    header_table = header.add_table(rows=1, cols=2, width=Inches(6.5))
+    header_table.autofit = False
     header_table.columns[0].width = Inches(1.5)
     header_table.columns[1].width = Inches(5.0)
 
-    # Left Column: Logo
+    # --- Left Column: Logo ---
     logo_cell = header_table.cell(0, 0)
     logo_paragraph = logo_cell.paragraphs[0]
     logo_run = logo_paragraph.add_run()
-    logo_run.add_picture(LOGO_PATH, height=Inches(0.8))
+    logo_run.add_picture(LOGO_PATH, height=Inches(0.75)) # Slightly adjusted for proportion
 
-    # Right Column: Address
+    # --- Right Column: Address ---
     address_cell = header_table.cell(0, 1)
+    # It's better to add a new paragraph to have full control over its properties
     address_paragraph = address_cell.paragraphs[0]
     address_paragraph.alignment = WD_ALIGN_PARAGRAPH.RIGHT
 
-    for text, is_bold in ADDRESS_LINES:
-        run = address_paragraph.add_run(text)
-        if is_bold:
-            run.bold = True
-        run.add_break()
+    for text, is_bold, font_size in ADDRESS_LINES:
+        run = address_paragraph.add_run(text + '\n') # Using '\n' for line break
+        run.bold = is_bold
+        font = run.font
+        font.size = Pt(font_size)
 
 def generate_proposal_from_row(district="N/A", cost_proposal="N/A"):
     """
     Generates a proposal with a custom header, saves it as a .docx file,
     and returns the AI text and the filename.
     """
-    model = genai.GenerativeModel('gemini-1.5-flash')
-    prompt = f"""
-    **Generate a professional Executive Summary:**
-    - **Musical Instruments N Kids Hands (M.I.N.K.H.) / Music Science Group (MSG) :** is presenting to {district}
-    **The proposal summary should be well-structured... (rest of your prompt)**
-    """
-    
     try:
+        all_districts_info=""
+        with open('uploads/district.csv', 'r') as f:
+            all_districts_info = f.read()
+            print(all_districts_info)
+
+        about=""
+        with open('uploads/about_msg.txt', 'r') as f:
+            about_msg = f.read()
+            print(about_msg)
+
+        proposal_context = ""
+        # Make sure this template file exists in your 'uploads' folder or change path
+        with open('uploads/proposal.txt', 'r') as file:
+            proposal_context = file.read()
+
+            #content = content.replace("district_name", district)
+            #content = content.replace("executive_summary", response.text)
+            proposal_text = proposal_context
+
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        prompt = f"""
+        **Generate a professional Proposal Document to school district selected with today's date:**
+        - **Musical Instruments N Kids Hands (M.I.N.K.H.) / Music Science Group (MSG) :** is sending proposal to {district}
+        - Use the following guidelines to create a compelling executive summary for the proposal to {district}.
+        - Use today's date as the proposal date.
+      
+        Use the {all_districts_info} to fetch the school district specific data for {district}, like address and contact person.
+        - **Incorporate the provided cost proposal:** {cost_proposal} based on number schools in the district.
+
+        The context about MSG is as follows: {about_msg}
+        - **Tone and Style:** Ensure the summary is formal, persuasive, and tailored to educational stakeholders.
+        - **some more context and outlines are here too: {proposal_text}
+
+        **The proposal should be well-structured... **
+        """
+    
+
         print("Generating proposal using Gemini model...")
         response = model.generate_content(prompt)
         
-        content = ""
-        # Make sure this template file exists in your 'uploads' folder or change path
-        with open('uploads/proposal.txt', 'r') as file:
-            content = file.read()
-
-        content = content.replace("district_name", district)
-        content = content.replace("executive_summary", response.text)
-        proposal_text = content
-        
+         
         # 1. Create a new document object
         document = Document()
         
