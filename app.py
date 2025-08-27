@@ -27,13 +27,7 @@ def _initialize():
     load_dotenv()
     
     # --- Security Configuration ---
-    # SECRET_KEY = os.getenv("SECRET_KEY") # REMOVED CSRF, so SECRET_KEY is not strictly needed for CSRF, but kept for other Flask session management if any
-    # if not SECRET_KEY:
-    #     raise ValueError("No SECRET_KEY set for Flask application. Please set it in your .env file.")
-    # app.config['SECRET_KEY'] = SECRET_KEY
-    # csrf.init_app(app) # REMOVED CSRF
-
-    # Set a dummy secret key if not in .env, just for Flask's internal operations that might expect it (e.g., session management)
+    # SECRET_KEY is not strictly needed for CSRF anymore, but kept for other Flask session management if any
     app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "a_super_secret_key_for_dev_if_not_set")
 
 
@@ -57,17 +51,19 @@ def apply_security_headers(response):
     """Applies security-enhancing HTTP headers to every response."""
     # --- CORRECTED CONTENT SECURITY POLICY ---
     # This policy now correctly allows styles and fonts from Google, restoring the UI.
+    # Added 'unsafe-inline' to style-src to allow inline <style> tags and style attributes.
+    # Added 'data:' to font-src for broader font support, though https://fonts.gstatic.com covers Google Fonts.
     csp = (
         "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline'; "
-        "style-src 'self' https://fonts.googleapis.com; "
-        "font-src 'self' https://fonts.gstatic.com; "
+        "script-src 'self' 'unsafe-inline'; " # 'unsafe-inline' is often needed for scripts in templates
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " # ADDED 'unsafe-inline'
+        "font-src 'self' https://fonts.gstatic.com data:; " # ADDED 'data:'
     )
     response.headers['Content-Security-Policy'] = csp
     response.headers['X-Frame-Options'] = 'SAMEORIGIN'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     if env.get('DEPL') == "PROD":
-        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        response.headers['Strict-TransportSecurity'] = 'max-age=31536000; includeSubDomains'
     return response
 
 def create_document_header(document):
@@ -136,7 +132,6 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
         benefits = "Enhanced Student Engagement, Improved Academic Performance, Increased Wellness, Community Involvement"
         cta = "We look forward to the opportunity to collaborate and make a meaningful impact together."
         today = date.today()
-        year = today.year
         
         school_locations = ", ".join(selected_schools) if selected_schools else "Selected school sites"
 
