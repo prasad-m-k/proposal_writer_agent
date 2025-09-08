@@ -132,6 +132,7 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
         benefits = "Enhanced Student Engagement, Improved Academic Performance, Increased Wellness, Community Involvement"
         cta = "We look forward to the opportunity to collaborate and make a meaningful impact together."
         today = date.today()
+        year = today.year
         
         school_locations = ", ".join(selected_schools) if selected_schools else "Selected school sites"
 
@@ -293,12 +294,17 @@ def download_file(filename):
 
     return send_from_directory(upload_dir, safe_filename, as_attachment=True)
 
+@app.route('/stopServer', methods=['GET'])
+def stopServer():
+    os.kill(os.getpid(), signal.SIGINT)
+    return jsonify({ "success": True, "message": "Server is shutting down..." })
+
 if __name__ == '__main__':
     # Initialize the application
     _initialize()
 
     if env.get("DEPL") == "PROD":
-        app.run(host='0.0.0.0', port=443, debug=False, ssl_context=(
+        app.run(host='0.0.0.0', port=443, debug=True, ssl_context=(
             '/etc/letsencrypt/live/qaproposalmusicsciencegroup.com/fullchain.pem',
             '/etc/letsencrypt/live/qaproposalmusicsciencegroup.com/privkey.pem'
         ))
