@@ -15,11 +15,17 @@ from convert import MarkdownToDocxConverter # Your updated converter
 from datetime import date
 # from flask_wtf.csrf import CSRFProtect # REMOVED CSRF
 from werkzeug.utils import secure_filename
+import signal # Added for stopServer
+from flask import jsonify # Added for stopServer
 
 
 app = Flask(__name__)
 env = {}
 # csrf = CSRFProtect() # REMOVED CSRF
+
+# Define global paths for clarity
+INPUT_FILES_FOLDER_NAME = 'input_data' # Renamed from 'uploads' for input files
+DOWNLOAD_FOLDER_NAME = 'generated_proposals' # New folder for output files
 
 def _initialize():
     """Loads environment variables and configures the Flask app."""
@@ -32,10 +38,15 @@ def _initialize():
 
 
     # --- App Configuration ---
-    UPLOAD_FOLDER = 'uploads'
-    app.config['UPLOAD_FOLDER'] = os.path.abspath(UPLOAD_FOLDER)
-    if not os.path.exists(app.config['UPLOAD_FOLDER']):
-        os.makedirs(app.config['UPLOAD_FOLDER'])
+    # Configure input files folder
+    app.config['INPUT_FILES_FOLDER'] = os.path.abspath(INPUT_FILES_FOLDER_NAME)
+    if not os.path.exists(app.config['INPUT_FILES_FOLDER']):
+        os.makedirs(app.config['INPUT_FILES_FOLDER'])
+        
+    # Configure download folder for generated documents
+    app.config['DOWNLOAD_FOLDER'] = os.path.abspath(DOWNLOAD_FOLDER_NAME)
+    if not os.path.exists(app.config['DOWNLOAD_FOLDER']):
+        os.makedirs(app.config['DOWNLOAD_FOLDER'])
         
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
     if not GEMINI_API_KEY:
@@ -70,10 +81,10 @@ def create_document_header(document):
     """
     Adds a pre-defined, crisp header with a smaller font to a document object.
     """
-    LOGO_PATH = 'static/assets/msg_logo.png'
+    LOGO_PATH = 'static/assets/msg_logo.png' # Assuming logo path remains the same
     ADDRESS_LINES = [
         ("Musical Instruments N Kids Hands", True, 8),
-        ("Music Science Group", True, 10),
+        ("Music Science & Technology Group", True, 10), # Updated here
         ("2150 Capitol Avenue Sacramento, CA 95816", False, 8),
         ("Ph. (916) 670-9950", False, 8)
     ]
@@ -109,23 +120,68 @@ def normalize_empty_lines(text):
     """
     return re.sub(r'\n{2,}', r'\n', text)
 
+def manage_file_rotation(district_name, download_folder, max_files=5):
+    """
+    Manages the rotation of generated proposal files for a given district,
+    keeping only the 'max_files' most recent ones.
+    """
+    safe_district_name = re.sub(r'[^a-zA-Z0-9_]', '', district_name).replace(" ", "_")
+    
+    # Pattern to match files for this specific district
+    file_pattern = rf"Proposal_{re.escape(safe_district_name)}_(\d+)\.docx"
+    
+    district_files = []
+    for filename in os.listdir(download_folder):
+        match = re.match(file_pattern, filename)
+        if match:
+            timestamp = int(match.group(1))
+            district_files.append((timestamp, os.path.join(download_folder, filename)))
+            
+    # Sort files by timestamp, oldest first
+    district_files.sort(key=lambda x: x[0])
+
+    # If there are more than max_files, delete the oldest ones
+    if len(district_files) > max_files:
+        files_to_delete = district_files[:len(district_files) - max_files]
+        for _, filepath in files_to_delete:
+            try:
+                os.remove(filepath)
+                print(f"Deleted old proposal file: {filepath}")
+            except OSError as e:
+                print(f"Error deleting file {filepath}: {e}")
+
 def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N/A", days_per_week="N/A", selected_schools=[]):
     """
     Generates a proposal with a custom header, saves it as a .docx file,
     and returns the AI text and the filename.
     """
     try:
-        with open('uploads/district.csv', 'r') as f:
+        # Load common contextual files from the INPUT_FILES_FOLDER
+        with open(os.path.join(app.config['INPUT_FILES_FOLDER'], 'district.csv'), 'r') as f:
             all_districts_info = f.read()
 
-        with open('uploads/about_msg.txt', 'r') as f:
+        with open(os.path.join(app.config['INPUT_FILES_FOLDER'], 'about_msg.txt'), 'r') as f:
             about_msg = f.read()
 
-        with open('uploads/proposal.txt', 'r') as file:
+        with open(os.path.join(app.config['INPUT_FILES_FOLDER'], 'proposal.txt'), 'r') as file:
             proposal_context = file.read()
 
+        # --- NEW: Load Natomas-specific RFP requirements if applicable ---
+        natomas_rfp_requirements_context = ""
+        natomas_rfp_instruction_formatted = ""
+        if district == "Natomas Unified School District":
+            try:
+                # Assuming this file is in the root or a 'data' folder
+                with open('natomas_school_district_rfp_requirements.txt', 'r') as f:
+                    natomas_rfp_requirements_context = f.read()
+                    natomas_rfp_instruction_formatted = (
+                        "\nWhen generating the proposal for Natomas Unified School District, it is crucial to explicitly address and demonstrate compliance with each of the listed RFP requirements, integrating them naturally into the relevant sections of the proposal."
+                    )
+            except FileNotFoundError:
+                print("Warning: natomas_school_district_rfp_requirements.txt not found. Proceeding without specific RFP context for Natomas.")
+
         model = genai.GenerativeModel('gemini-1.5-flash')
-        company = "Music Science Group"
+        company = "Music Science & Technology Group" # Updated here
         client = f"{district} School District"
         project = "Educational Learning Outreach Program (ELOP)"
         services = "Music Integration, S.T.E.A.M. Education, Wellness Programs, Student Engagement Activities"
@@ -136,93 +192,40 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
         
         school_locations = ", ".join(selected_schools) if selected_schools else "Selected school sites"
 
-        prompt = f"""
-        You are a professional proposal writer for Music Science Group (MSG) / Musical Instruments N Kids Hands (M.I.N.K.H.). Your goal is to generate a comprehensive, client-centric project proposal for the {district} School District.
+        # --- Format cost_proposal here before inserting into the prompt template ---
+        try:
+            numeric_cost_proposal = float(cost_proposal)
+            formatted_cost_proposal = f"${numeric_cost_proposal:,.2f}"
+        except (ValueError, TypeError):
+            formatted_cost_proposal = "$0.00" # Default or handle error appropriately
+            print(f"Warning: Invalid cost_proposal value received: {cost_proposal}. Defaulting to $0.00.")
 
-        **Here is the essential information you need for the proposal:**
-        *   **Company Name:** Musical Instruments N Kids Hands (M.I.N.K.H.) / Music Science Group (MSG)
-        *   **Client Name:** {district} School District
-        *   **Project Name:** Educational Learning Outreach Program (ELOP)
-        *   **Services Offered:** Music Integration, S.T.E.A.M. Education, Wellness Programs, Student Engagement Activities
-        *   **Key Benefits:** Enhanced Student Engagement, Improved Academic Performance, Increased Wellness, Community Involvement
-        *   **Call to Action Phrase:** "We look forward to the opportunity to collaborate and make a meaningful impact together."
-        *   **Today's Date:** {today}
-        *   **Program Schedule:** {days_per_week} day(s) per week
-        *   **Program Duration:** {num_weeks} weeks
-        *   **Program Locations:** {school_locations} (e.g., "Selected school sites" or a comma-separated list)
-        *   **Total Program Fee:** ${float(cost_proposal):,.2f}
-        *   **Contact Person:** A.P. Moore, Programs Coordinator
-        *   **Contact Email:** aphilanda@musicsciencegroup.com
-        *   **Grades Served:** TK-8th grade
-        *   **Participant Capacity:** Maximum 40 students per class, with a total enrollment capacity of 600 students.
 
-        **Contextual Information (use this to inform the content of each section):**
-        *   **About MSG/MINKH:** "{about_msg}"
-        *   **General Proposal Details/Program Overview:** "{proposal_context}"
-        *   **District-Specific Data:** (Assume `all_districts_info` is used internally by the model to tailor responses, if needed. No need to explicitly include its content in the prompt, just acknowledge its availability).
+        # --- Read prompt template from file ---
+        with open(os.path.join(app.config['INPUT_FILES_FOLDER'], 'proposal_prompt.txt'), 'r') as f:
+            prompt_template = f.read()
 
-        **Proposal Structure and Content Requirements:**
+        # Format the prompt using a dictionary for clarity with multiple variables
+        prompt = prompt_template.format(
+            district=district,
+            today=today,
+            days_per_week=days_per_week,
+            num_weeks=num_weeks,
+            school_locations=school_locations,
+            formatted_cost_proposal=formatted_cost_proposal, # Pass the pre-formatted cost here
+            year=year,
+            about_msg=about_msg,
+            proposal_context=proposal_context,
+            all_districts_info=all_districts_info, # Although commented out in prompt, good practice to pass if template changes
+            natomas_rfp_requirements_context_formatted=natomas_rfp_requirements_context,
+            natomas_rfp_instruction_formatted=natomas_rfp_instruction_formatted,
+            client=client,
+            project=project,
+            services=services,
+            benefits=benefits,
+            cta=cta
+        )
 
-        The proposal must be structured with clear, bold markdown headings (e.g., **1. Executive Summary**). Maintain appropriate spacing and alignment for a formal business document; avoid excessive empty lines between paragraphs or sections.
-
-        1.  **Header Information:**
-            *   **Date:** {today}
-            *   **Submitted to:** {district} School District
-            *   **Submitted by:** Musical Instruments N Kids Hands
-            *   **Contact:**
-                *   A.P. Moore, Programs Coordinator
-                *   Email: aphilanda@musicsciencegroup.com
-
-        2.  **Introduction:** Provide a welcoming overview, briefly stating the purpose of the proposal and the partnership with {client}.
-
-        3.  **Executive Summary:** A concise and compelling overview.
-            *   Highlight {client}'s potential challenges (derived from `problem_statement`).
-            *   Present MSG/MINKH's proposed solution ({project}).
-            *   Outline the key, measurable benefits for {client} ({benefits}), referencing the innovative program offerings.
-
-        4.  **Problem Statement:** Clearly and empathetically articulate the specific challenges and needs of {client} that MSG/MINKH aims to address, drawing from the `proposal_context` and `about_msg`.
-
-        5.  **Proposed Solution - {project}:** Detail the specific services and approach MSG/MINKH will deploy.
-            *   Explain how the comprehensive services ({services}) directly address the problems identified in the Problem Statement.
-            *   Emphasize the unique value of MSG/MINKH's approach.
-            *   **Program Offerings:** Describe how MSG's enriched curriculum transforms classrooms into dynamic centers where music and technology converge. Specifically highlight:
-                *   Digital music stations that turn creativity into sound
-                *   3D printing of instruments that bring design and innovation to life
-                *   Artificial Intelligence tools that make music creation interactive and exciting
-                *   Robotics, coding, and programming that build skills for tomorrow’s careers
-                *   Entry-level engineering projects that teach problem-solving and innovation
-                *   Digital arts and media creation to inspire self-expression and storytelling
-                *   Introductory music instrument instruction that sparks joy and confidence
-
-        6.  **Benefits and Value Proposition:** Elaborate on the tangible and intangible benefits {client} will gain. Specifically emphasize: {benefits}. Quantify or illustrate benefits where possible, linking them to the innovative program offerings.
-
-        7.  **Teamwork and Collaboration:** Describe how MSG/MINKH will partner with {client} staff, teachers, and the community to ensure program success and integration.
-
-        8.  **Music for Optimal Wellness:** Dedicate a section to how the program specifically promotes student wellness through music, drawing from `about_msg` and `proposal_context`, and how the interactive offerings contribute to this.
-
-        9.  **Program Details:**
-            *   **Schedule:** {days_per_week} day(s) per week.
-            *   **Duration:** {num_weeks} weeks.
-            *   **Dates:** Provide an example start date (e.g., "August 13, {year}") and calculate an estimated end date based on the duration.
-            *   **Locations:** {school_locations}
-            *   **Grades Served:** The program is designed for students in grades TK-8th.
-            *   **Participant Capacity:** Each class can accommodate a maximum of 40 students, with a total program enrollment capacity of 600 students across all sites. (Referencing a "lesson plan" should be handled as an external document, not something the AI generates in detail here.)
-
-        10. **Fee:** Clearly state: "The total fee for the program is ${float(cost_proposal):,.2f}."
-
-        11. **Payment Schedule:** Propose a standard payment schedule (e.g., "50% upfront, 50% upon completion," or "monthly installments"). *Self-correction: If no specific schedule is provided, create a reasonable placeholder.*
-
-        12. **Call to Action:** A clear and persuasive statement encouraging next steps. Include the exact phrase: "{cta}".
-
-        13. **Conclusion:** Summarize the proposal's core message, reiterate commitment to {client}'s success, and express enthusiasm for a partnership.
-
-        **Formatting Guidelines:**
-        *   Use professional, client-centric language throughout.
-        *   Utilize markdown for headings, bolding, and italics to enhance readability and emphasis.
-        *   Ensure clarity, conciseness, and a logical flow.
-        *   Avoid conversational filler; go straight to the proposal content after the initial header information.
-        """
-        
         print("Generating proposal using Gemini model...")
         response = model.generate_content(prompt)
         text = normalize_empty_lines(response.text)
@@ -235,10 +238,14 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
         safe_district_name = re.sub(r'[^a-zA-Z0-9_]', '', district).replace(" ", "_")
         timestamp = int(time.time())
         filename = f"Proposal_{safe_district_name}_{timestamp}.docx"
-        output_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         
+        # Save to the DOWNLOAD_FOLDER
+        output_path = os.path.join(app.config['DOWNLOAD_FOLDER'], filename)
         document.save(output_path)
-        print(f"Successfully created '{filename}' with custom header.")
+        print(f"Successfully created '{filename}' in '{app.config['DOWNLOAD_FOLDER']}' with custom header.")
+
+        # Manage file rotation for this district
+        manage_file_rotation(district, app.config['DOWNLOAD_FOLDER'])
 
         return text, filename
     except Exception as e:
@@ -247,7 +254,8 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
         return error_text, None
 
 def get_school_data():
-    df = pd.read_csv("data.csv")
+    # Assuming data.csv is in the root directory for now
+    df = pd.read_csv("data.csv") 
     df.columns = df.columns.str.strip()
     return df
 
@@ -286,13 +294,14 @@ def generate_proposal():
 @app.route('/download/<path:filename>')
 def download_file(filename):
     safe_filename = secure_filename(filename)
-    upload_dir = app.config['UPLOAD_FOLDER']
-    file_path = os.path.join(upload_dir, safe_filename)
+    # Serve from the DOWNLOAD_FOLDER
+    download_dir = app.config['DOWNLOAD_FOLDER']
+    file_path = os.path.join(download_dir, safe_filename)
     
-    if not os.path.normpath(file_path).startswith(upload_dir) or not os.path.isfile(file_path):
+    if not os.path.normpath(file_path).startswith(download_dir) or not os.path.isfile(file_path):
         abort(404)
 
-    return send_from_directory(upload_dir, safe_filename, as_attachment=True)
+    return send_from_directory(download_dir, safe_filename, as_attachment=True)
 
 @app.route('/stopServer', methods=['GET'])
 def stopServer():
@@ -309,4 +318,4 @@ if __name__ == '__main__':
             '/etc/letsencrypt/live/qaproposalmusicsciencegroup.com/privkey.pem'
         ))
     else:
-        app.run(port=5001, debug=True)
+        app.run(port=5000, debug=True)

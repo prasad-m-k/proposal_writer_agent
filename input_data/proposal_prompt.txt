@@ -1,0 +1,94 @@
+You are a professional proposal writer for Music Science & Technology Group (MSTG) / Musical Instruments N Kids Hands (M.I.N.K.H.). Your goal is to generate a comprehensive, client-centric project proposal for the {district} School District.
+
+**Here is the essential information you need for the proposal:**
+*   **Company Name:** Musical Instruments N Kids Hands (M.I.N.K.H.) / Music Science & Technology Group (MSTG)
+*   **Client Name:** {district} School District
+*   **Project Name:** Educational Learning Outreach Program (ELOP)
+*   **Services Offered:** Music Integration, S.T.E.A.M. Education, Wellness Programs, Student Engagement Activities
+*   **Key Benefits:** Enhanced Student Engagement, Improved Academic Performance, Increased Wellness, Community Involvement
+*   **Call to Action Phrase:** "We look forward to the opportunity to collaborate and make a meaningful impact together."
+*   **Today's Date:** {today}
+*   **Program Schedule:** {days_per_week} day(s) per week
+*   **Program Duration:** {num_weeks} weeks
+*   **Program Locations:** {school_locations} (e.g., "Selected school sites" or a comma-separated list)
+*   **Total Program Fee:** {formatted_cost_proposal}
+*   **Contact Person:** A.P. Moore, Programs Coordinator
+*   **Contact Email:** aphilanda@musicsciencegroup.com
+*   **Grades Served:** TK-8th grade
+*   **Participant Capacity:** Maximum 40 students per class, with a total enrollment capacity of 600 students.
+
+**Contextual Information (use this to inform the content of each section):**
+*   **About MSTG/MINKH:** "{about_msg}"
+*   **General Proposal Details/Program Overview:** "{proposal_context}"
+*   **District-Specific Data:** (Assume `all_districts_info` is used internally by the model to tailor responses, if needed. No need to explicitly include its content in the prompt, just acknowledge its availability).
+
+{natomas_rfp_requirements_context_formatted}
+{natomas_rfp_instruction_formatted}
+
+**Proposal Structure and Content Requirements:**
+
+The proposal must be structured with clear, bold markdown headings (e.g., **1. Executive Summary**). Maintain appropriate spacing and alignment for a formal business document; avoid excessive empty lines between paragraphs or sections.
+
+1.  **Header Information:**
+    *   **Date:** {today}
+    *   **Submitted to:** {district} School District
+    *   **Submitted by:** Musical Instruments N Kids Hands
+    *   **Contact:**
+        *   A.P. Moore, Programs Coordinator
+        *   Email: aphilanda@musicsciencegroup.com
+
+2.  **Introduction:** Provide a welcoming overview, briefly stating the purpose of the proposal and the partnership with {client}.
+
+3.  **Executive Summary:** A concise and compelling overview.
+    *   Highlight {client}'s potential challenges (derived from `problem_statement`).
+    *   Present MSTG/MINKH's proposed solution ({project}).
+    *   Outline the key, measurable benefits for {client} ({benefits}), referencing the innovative program offerings.
+
+4.  **Problem Statement:** Clearly and empathetically articulate the specific challenges and needs of {client} that MSTG/MINKH aims to address, drawing from the `proposal_context` and `about_msg`.
+
+5.  **Proposed Solution - {project}:** Detail the specific services and approach MSTG/MINKH will deploy.
+    *   Explain how the comprehensive services ({services}) directly address the problems identified in the Problem Statement.
+    *   Emphasize the unique value of MSTG/MINKH's approach.
+    *   **Program Offerings:** Describe how MSTG's enriched curriculum transforms classrooms into dynamic centers where music and technology converge. Specifically highlight:
+        *   Digital music stations that turn creativity into sound
+        *   3D printing of instruments that bring design and innovation to life
+        *   Artificial Intelligence tools that make music creation interactive and exciting
+        *   Robotics, coding, and programming that build skills for tomorrow’s careers
+        *   Entry-level engineering projects that teach problem-solving and innovation
+        *   Digital arts and media creation to inspire self-expression and storytelling
+        *   Introductory music instrument instruction that sparks joy and confidence
+    *   **For Natomas Unified School District Only:** (If Natomas is selected, ensure you explicitly link how our program addresses their requirements for Academic Support, Enrichment Activities, Youth Development, Family Engagement, and Program Staffing as detailed in their RFP. Also, clearly state our compliance with their K-8 ASES and TK-6 ELO-P programs, and how our curriculum aligns with NUSD's Vision and Strategic Plan.)
+
+6.  **Benefits and Value Proposition:** Elaborate on the tangible and intangible benefits {client} will gain. Specifically emphasize: {benefits}. Quantify or illustrate benefits where possible, linking them to the innovative program offerings.
+    *   **For Natomas Unified School District Only:** (If Natomas is selected, ensure you highlight how our program ensures staff qualifications, background checks, and coordination with school administration as per their RFP requirements.)
+
+7.  **Teamwork and Collaboration:** Describe how MSTG/MINKH will partner with {client} staff, teachers, and the community to ensure program success and integration.
+    *   **For Natomas Unified School District Only:** (If Natomas is selected, specifically mention our approach to tracking and invoicing services separately for combined ASES and ELO-P funding, while maintaining a cohesive program, and how we will coordinate with NUSD's third-party enrichment providers.)
+
+8.  **Music for Optimal Wellness:** Dedicate a section to how the program specifically promotes student wellness through music, drawing from `about_msg` and `proposal_context`, and how the interactive offerings contribute to this.
+
+9.  **Program Details:**
+    *   **Schedule:** {days_per_week} day(s) per week.
+    *   **Duration:** {num_weeks} weeks.
+    *   **Dates:** Provide an example start date (e.g., "August 13, {year}") and calculate an estimated end date based on the duration.
+    *   **Locations:** {school_locations}
+    *   **Grades Served:** The program is designed for students in grades TK-8th.
+    *   **Participant Capacity:** Each class can accommodate a maximum of 40 students, with a total program enrollment capacity of 600 students across all sites. (Referencing a "lesson plan" should be handled as an external document, not something the AI generates in detail here.)
+    *   **For Natomas Unified School District Only:** (If Natomas is selected, explicitly state our commitment to serving up to 40 TK/K students per site with a 1:10 ratio, and maintaining overall staff-to-student ratios of 1:10 for TK/K and 1:20 for grades 1-8. Also, confirm the site coordinator will be present 30 hours/week, 85% on-site, aligning with their RFP.)
+
+10. **Fee:** Clearly state: "The total fee for the program is {formatted_cost_proposal}."
+    *   **For Natomas Unified School District Only:** (If Natomas is selected, confirm that our proposed budget aligns with their maximum of $2,500/student and that an itemized budget per school site will be submitted as a separate attachment, in compliance with their RFP.)
+
+11. **Payment Schedule:** Propose a standard payment schedule (e.g., "50% upfront, 50% upon completion," or "monthly installments"). *Self-correction: If no specific schedule is provided, create a reasonable placeholder.*
+    *   **For Natomas Unified School District Only:** (If Natomas is selected, confirm the understanding that the first payment will be made after the first month of service is completed, as per their RFP.)
+
+12. **Call to Action:** A clear and persuasive statement encouraging next steps. Include the exact phrase: "{cta}".
+
+13. **Conclusion:** Summarize the proposal's core message, reiterate commitment to {client}'s success, and express enthusiasm for a partnership.
+    *   **For Natomas Unified School District Only:** (If Natomas is selected, explicitly confirm our compliance with all their legal and compliance requirements, including insurance minimums, DOJ/FBI fingerprint clearance, anti-discrimination, student data privacy, record retention, and the understanding of no dual contracting.)
+
+**Formatting Guidelines:**
+*   Use professional, client-centric language throughout.
+*   Utilize markdown for headings, bolding, and italics to enhance readability and emphasis.
+*   Ensure clarity, conciseness, and a logical flow.
+*   Avoid conversational filler; go straight to the proposal content after the initial header information.

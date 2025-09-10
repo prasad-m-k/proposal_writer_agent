@@ -1,4 +1,14 @@
 District Name,School Name,School Type,Total Enrollment,Meal Program Participants,FRPM Percent (%),Expanded Learning Program,After School Education Program,Estimated Funding (USD)
+Natomas Unified School District,American Lakes,Elementary Schools (Public),       649,569,87.67334360554699,Yes,Yes,670850.99
+Natomas Unified School District,Jefferson,Elementary Schools (Public),                   731,597,81.66894664842681,Yes,Yes,703862.99
+Natomas Unified School District,Bannon Creek,Elementary Schools (Public),                517,440,85.1063829787234,Yes,Yes,518759.99
+Natomas Unified School District,Witter Ranch Elementary,Elementary Schools (Public),618,449,72.65372168284789,529370.99,Yes,No
+Natomas Unified School District,Heron,Elementary Schools (Public),1045,302,28.89952153110048,Yes,No,356057.99
+Natomas Unified School District,H. Allen Hight Elementary,Elementary Schools (Public),804,593,73.75621890547264,Yes,No,699146.99
+Natomas Unified School District,Paso Verde,Elementary Schools (Public),911,466,51.15257958287596,Yes,No,549413.99
+Natomas Unified School District,Heredia-Arriaga,Elementary Schools (Public),166,47,28.313253012048197,Yes,No,55412.99
+Natomas Unified School District,Natomas Park Elementary,Elementary Schools (Public),742,543,73.18059299191376,Yes,No,640196.99
+Natomas Unified School District,Two Rivers Elementary,Elementary Schools (Public),620,364,58.70967741935483,429155.99
 Sacramento City Unified School District,Abraham Lincoln Elementary,Elementary Schools (Public),511,442,0.8649706457925636,Yes,Yes,521117.99
 Sacramento City Unified School District,Alice Birney Waldorf-Inspired,Elementary Schools (Public),481,163,0.3388773388773389,Yes,Yes,192176.99
 Sacramento City Unified School District,Bret Harte Elementary,Elementary Schools (Public),189,150,0.7936507936507936,Yes,Yes,176849.99
@@ -65,13 +75,9 @@ Twin Rivers Unified School District,Sierra View Elementary,Elementary Schools (P
 Twin Rivers Unified School District,Village Elementary,Elementary Schools (Public),456,409,.8969,Yes,Yes,482211.0
 Twin Rivers Unified School District,Westside Elementary,Elementary Schools (Public),376,280,.7447,Yes,Yes,330120.0
 Twin Rivers Unified School District,Woodridge Elementary,Elementary Schools (Public),801,765,.9551,Yes,Yes,901935.0
-Folsom Cordova Unified School District,Cordova Meadows Elementary,Elementary Schools (Public),341,301,88.26979472140762,Yes,Yes,354878.99999999994
-Folsom Cordova Unified School District,Cordova Villa Elementary,Elementary Schools (Public),440,404,91.81818181818183,Yes,Yes,476315.9999999999
-Folsom Cordova Unified School District,Peter J. Shields Elementary,Elementary Schools (Public),319,227,71.15987460815047,Yes,Yes,267632.99999999994
-Folsom Cordova Unified School District,Rancho Cordova Elementary,Elementary Schools (Public),402,330,82.08955223880598,Yes,Yes,389069.99999999994
-Folsom Cordova Unified School District,White Rock Elementary,Elementary Schools (Public),372,342,91.93548387096774,Yes,Yes,403217.99999999994
-Folsom Cordova Unified School District,Williamson Elementary,Elementary Schools (Public),460,379,82.3913043478261,Yes,Yes,446840.99999999994
-Natomas Unified School District,       American Lakes,Elementary Schools (Public),       649,569,87.67334360554699,Yes,Yes,670850.9999999999
-Natomas Unified School District,Jefferson,Elementary Schools (Public),                   731,597,81.66894664842681,Yes,Yes,703862.9999999999
-Natomas Unified School District,Bannon Creek,Elementary Schools (Public),                517,440,85.1063829787234,Yes,Yes,518759.9999999999
-
+Folsom Cordova Unified School District,Cordova Meadows Elementary,Elementary Schools (Public),341,301,88.26979472140762,Yes,Yes,354878.99
+Folsom Cordova Unified School District,Cordova Villa Elementary,Elementary Schools (Public),440,404,91.81818181818183,Yes,Yes,476315.99
+Folsom Cordova Unified School District,Peter J. Shields Elementary,Elementary Schools (Public),319,227,71.15987460815047,Yes,Yes,267632.99
+Folsom Cordova Unified School District,Rancho Cordova Elementary,Elementary Schools (Public),402,330,82.08955223880598,Yes,Yes,389069.99
+Folsom Cordova Unified School District,White Rock Elementary,Elementary Schools (Public),372,342,91.93548387096774,Yes,Yes,403217.99
+Folsom Cordova Unified School District,Williamson Elementary,Elementary Schools (Public),460,379,82.3913043478261,Yes,Yes,446840.99

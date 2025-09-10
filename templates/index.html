@@ -78,7 +78,7 @@
 
     <header class="header">
         <img src="{{ url_for('static', filename='assets/msg_logo.png') }}" alt="Logo" class="header-logo">
-        <span class="header-title">School District Data Explorer (v2)</span>
+        <span class="header-title">School District Data Explorer - Music Science & Technology Group</span>
     </header>
 
     <div class="container">
@@ -161,8 +161,86 @@
     // Cost per school per day based on user-provided formula
     // ($9450 / 7 weeks / 2 days / 2 schools) = $337.50
     const COST_PER_SCHOOL_DAY = 337.50;
+function updateSchools() {
+        const selectedDistrict = districtSelect.value;
+        const schoolsInDistrict = allData.filter( row => row['District Name'] === selectedDistrict);
 
-    function updateSchools() {
+        schoolCheckboxContainer.innerHTML = ""; // Clear existing checkboxes
+
+        schoolsInDistrict.forEach((school, index) => {
+            const schoolName = school['School Name'];
+            const checkboxId = `school-${index}`;
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'checkbox-item';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.name = 'schoolname';
+            checkbox.value = schoolName;
+            checkbox.id = checkboxId;
+            // Store all relevant school data on the checkbox itself
+            checkbox.dataset.schoolData = JSON.stringify(school);
+            // Add event listener to each checkbox to recalculate cost and update table on change
+            checkbox.addEventListener('change', () => {
+                calculateAndDisplayCosts();
+                updateSchoolDetailsTable();
+            });
+
+            const label = document.createElement('label');
+            label.htmlFor = checkboxId;
+            label.textContent = schoolName;
+
+            itemDiv.appendChild(checkbox);
+            itemDiv.appendChild(label);
+            schoolCheckboxContainer.appendChild(itemDiv);
+        });
+
+        calculateAndDisplayCosts(); // Recalculate and show costs for the updated schools
+        updateSchoolDetailsTable(); // Update the table
+    }
+
+    function calculateAndDisplayCosts() {
+        const numWeeks = parseInt(weeksInput.value, 10) || 0;
+        const daysPerWeek = parseInt(daysInput.value, 10) || 0;
+
+        const checkedCheckboxes = document.querySelectorAll('input[name="schoolname"]:checked');
+        const numSchools = checkedCheckboxes.length;
+
+        const totalCost = numWeeks * daysPerWeek * numSchools * COST_PER_SCHOOL_DAY;
+        const formattedTotalCost = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalCost);
+        costProposalInput.value = formattedTotalCost;
+    }
+
+    function updateSchoolDetailsTable() {
+        schoolFundingBody.innerHTML = ''; // Clear existing table data
+
+        const checkedCheckboxes = document.querySelectorAll('input[name="schoolname"]:checked');
+        const numSchools = checkedCheckboxes.length;
+        schoolFundingCard.style.display = numSchools > 0 ? 'block' : 'none';
+
+        checkedCheckboxes.forEach(checkbox => {
+            const schoolData = JSON.parse(checkbox.dataset.schoolData);
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${schoolData['School Name']}</td>
+                <td>${schoolData['Total Enrollment']}</td>
+                <td>${schoolData['FRPM Percent (%)']}</td>
+                <td>${calculateFunding(schoolData)}</td>
+            `;
+            schoolFundingBody.appendChild(row);
+        });
+    }
+
+    // Function to calculate estimated funding for a school
+    function calculateFunding(schoolData) {
+        const enrollment = parseInt(schoolData['Total Enrollment'], 10) || 0;
+        const frpmPercent = parseFloat(schoolData['FRPM Percent (%)']) / 100 || 0;
+        const perStudentFunding = 2500; // Updated per-student amount
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(enrollment * frpmPercent * perStudentFunding);
+    }
+
+    function updateSchoolsEx() {
         const selectedDistrict = districtSelect.value;
         const schoolsInDistrict = allData.filter(row => row['District Name'] === selectedDistrict);
 
