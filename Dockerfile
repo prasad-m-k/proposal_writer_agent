@@ -5,11 +5,6 @@ FROM python:3.13-slim-bookworm
 WORKDIR /app
 
 # Install system dependencies if any are needed for Flask/Gunicorn or your app
-# These packages are common requirements for many Python libraries with C extensions.
-# - build-essential: provides tools like gcc, make, etc.
-# - python3-dev: provides Python header files for compiling C extensions.
-# - libffi-dev, libssl-dev: often needed by cryptography-related packages.
-# - (Add more as needed based on specific errors, e.g., libpq-dev for PostgreSQL, zlib1g-dev for compression)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
