@@ -1,0 +1,32 @@
+version: '3.8' # Specify the Docker Compose file format version
+
+services:
+  web:
+    build: . # Build the Flask Gunicorn app using the Dockerfile in the current directory
+    container_name: mstg-proposal-app-container
+    restart: always # Always restart if it stops
+    # Expose port 5000 internally so other services (like Nginx) can access it.
+    # We are NOT mapping this port to the host machine, Nginx will handle external access.
+    expose:
+      - "5000"
+    environment:
+      # Example environment variable, useful for Flask debug or other settings
+      FLASK_ENV: production
+      # Any other environment variables your Flask app needs
+    depends_on:
+      - nginx # This makes Docker Compose start nginx first, but doesn't guarantee app readiness
+
+  nginx:
+    image: nginx:latest # Use the official Nginx Docker image
+    container_name: nginx-reverse-proxy
+    restart: always
+    ports:
+      # - "80:80"   # Map host port 80 to container port 80 (for HTTP)
+      - "443:443" # Uncomment and configure for HTTPS in production
+    volumes:
+      # Mount your custom Nginx configuration file into the container
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      # If you had static files managed by Nginx, you would mount them here too:
+      # - ./static:/var/www/html/static:ro
+    depends_on:
+      - web # Nginx depends on the web service to be available
