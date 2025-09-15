@@ -1,3 +1,69 @@
+# Flask + Gunicorn + Nginx (HTTPS 443) — Dockerized
+
+This project runs a Flask app behind Gunicorn and Nginx with TLS on port **443**.
+
+## Structure
+```text
+flask-nginx-docker/
+├─ app/
+│  ├─ app.py
+│  ├─ wsgi.py
+│  ├─ requirements.txt
+│  ├─ gunicorn.conf.py
+│  └─ Dockerfile
+├─ nginx/
+│  ├─ nginx.conf
+│  └─ Dockerfile
+├─ certs/            # put server.crt and server.key here
+├─ docker-compose.yml
+└─ generate_dev_cert.sh
+```
+
+## Quickstart (dev, self-signed TLS)
+```bash
+cd flask-nginx-docker
+./generate_dev_cert.sh
+docker compose build
+docker compose up -d
+# Test:
+curl -k https://localhost/       # -k to ignore self-signed cert
+```
+
+## Using real certificates
+- Place your `server.crt` and `server.key` into `./certs/` and restart the stack:
+  ```bash
+  docker compose up -d --build
+  ```
+- For Let's Encrypt, terminate TLS on a public reverse proxy or run Certbot to get certs
+  on the host, then mount them into `./certs`.
+
+## Notes
+- Gunicorn listens on `0.0.0.0:8000` inside the `app` container; Nginx proxies to it over the internal Docker network.
+- Nginx exposes **443** on the host, so your entire app is served at `https://<host>:443/`.
+- Health checks: `nginx` checks `/healthz`; `app` has `/healthz` too.
+- Adjust worker counts, timeouts, and `client_max_body_size` per your workload.
+```
+
+
+
+
+============
+Generating local certs
+
+#!/usr/bin/env bash
+set -euo pipefail
+CERT_DIR="${1:-./certs}"
+mkdir -p "$CERT_DIR"
+openssl req -x509 -newkey rsa:2048 -nodes -keyout "$CERT_DIR/server.key" -out "$CERT_DIR/server.crt" -days 365       -subj "/CN=localhost"
+echo "Dev cert created at $CERT_DIR/server.crt and $CERT_DIR/server.key"
+
+
+============
+
+
+
+
+
 
 # python3 --version
 Python 3.13.5

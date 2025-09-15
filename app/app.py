@@ -308,6 +308,10 @@ def stopServer():
     os.kill(os.getpid(), signal.SIGINT)
     return jsonify({ "success": True, "message": "Server is shutting down..." })
 
+@app.route("/healthz")
+def healthz():
+    return "ok", 200
+
 if __name__ == '__main__':
     # Initialize the application
     _initialize()
