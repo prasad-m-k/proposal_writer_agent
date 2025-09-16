@@ -17,18 +17,22 @@ from datetime import date
 from werkzeug.utils import secure_filename
 import signal # Added for stopServer
 from flask import jsonify # Added for stopServer
+from pathlib import Path
 
 
 app = Flask(__name__)
 env = {}
 # csrf = CSRFProtect() # REMOVED CSRF
 
-# Define global paths for clarity
-INPUT_FILES_FOLDER_NAME = 'input_data' # Renamed from 'uploads' for input files
-DOWNLOAD_FOLDER_NAME = 'generated_proposals' # New folder for output files
+## Define global paths for clarity
+INPUT_FILES_FOLDER_NAME= '/app/input_data' # Renamed from 'uploads' for input files
+DOWNLOAD_FOLDER_NAME = '/app/generated_proposals' # New folder for output files
+
+
 
 def _initialize():
     """Loads environment variables and configures the Flask app."""
+    print("Loads environment variables and configures the Flask app")
     global env
     load_dotenv()
     
@@ -37,7 +41,7 @@ def _initialize():
     app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "a_super_secret_key_for_dev_if_not_set")
 
 
-    # --- App Configuration ---
+    #--- App Configuration ---
     # Configure input files folder
     app.config['INPUT_FILES_FOLDER'] = os.path.abspath(INPUT_FILES_FOLDER_NAME)
     if not os.path.exists(app.config['INPUT_FILES_FOLDER']):
@@ -47,7 +51,35 @@ def _initialize():
     app.config['DOWNLOAD_FOLDER'] = os.path.abspath(DOWNLOAD_FOLDER_NAME)
     if not os.path.exists(app.config['DOWNLOAD_FOLDER']):
         os.makedirs(app.config['DOWNLOAD_FOLDER'])
-        
+
+        '''
+    APP_ROOT = Path(__file__).resolve().parent  # directory containing app.py
+
+    # Env can be absolute or relative; relative resolves against APP_ROOT
+    _input_env = os.getenv("INPUT_FILES_FOLDER", "input_data")
+    INPUT_FILES_FOLDER = Path(_input_env)
+    if not INPUT_FILES_FOLDER.is_absolute():
+        INPUT_FILES_FOLDER = (APP_ROOT / INPUT_FILES_FOLDER).resolve()
+
+    # Ensure it exists
+    INPUT_FILES_FOLDER.mkdir(parents=True, exist_ok=True)
+    app.config['INPUT_FILES_FOLDER'] = os.path.abspath(INPUT_FILES_FOLDER)
+    print("-------------------------------- inside init -------------------------------")
+    print(app.config['INPUT_FILES_FOLDER'], INPUT_FILES_FOLDER)
+    print("-------------------------------- inside init -------------------------------")   
+
+    _input_env = os.getenv("DOWNLOAD_FOLDER", "generated_proposals")
+    DOWNLOAD_FOLDER = Path(_input_env)
+    if not DOWNLOAD_FOLDER.is_absolute():
+        DOWNLOAD_FOLDER = (APP_ROOT / DOWNLOAD_FOLDER).resolve()
+
+    # Ensure it exists
+    DOWNLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
+    app.config['DOWNLOAD_FOLDER'] = os.path.abspath(DOWNLOAD_FOLDER)
+    print("-------------------------------- inside init -------------------------------")
+    print(app.config['DOWNLOAD_FOLDER'], DOWNLOAD_FOLDER)
+    print("-------------------------------- inside init -------------------------------")   
+    '''
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
     if not GEMINI_API_KEY:
         raise ValueError("GEMINI_API_KEY not set. Please set it in your .env file.")
@@ -251,6 +283,11 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
     except Exception as e:
         error_text = f"An error occurred while generating the proposal: {e}"
         print(error_text)
+        print("##################################")
+        print(INPUT_FILES_FOLDER)
+        print(DOWNLOAD_FOLDER)
+        print("##################################")
+
         return error_text, None
 
 def get_school_data():
@@ -312,10 +349,14 @@ def stopServer():
 def healthz():
     return "ok", 200
 
+# Initialize the application
+_initialize()
+
 if __name__ == '__main__':
     # Initialize the application
-    _initialize()
+    #_initialize()
 
+    """
     if env.get("DEPL") == "PROD":
         app.run(host='0.0.0.0', port=443, debug=True, ssl_context=(
             '/etc/letsencrypt/live/qaproposalmusicsciencegroup.com/fullchain.pem',
@@ -323,3 +364,5 @@ if __name__ == '__main__':
         ))
     else:
         app.run(port=5000, debug=True)
+    """
+    app.run(port=5000, debug=True)

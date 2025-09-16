@@ -15,6 +15,8 @@ COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .
+COPY input_data /app/input_data
+
 
 EXPOSE 5000
 HEALTHCHECK --interval=15s --timeout=3s --retries=5 \
