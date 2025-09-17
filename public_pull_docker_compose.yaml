@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   web:
-    image: mkprasad/proposal-app:latest
+    image: mkprasad/mstg-proposal-app:latest
     restart: unless-stopped
     environment:
       SECRET_KEY: ${SECRET_KEY:-change-me}

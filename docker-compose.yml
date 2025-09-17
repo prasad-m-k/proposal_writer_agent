@@ -4,7 +4,7 @@ services:
     build:
       context: ./app
     env_file: .env
-    image: mkprasad/proposal-app:latest
+    image: mkprasad/mstg-proposal-app:latest
     container_name: mstg-proposal-app-container
     restart: unless-stopped
     expose: ["5000"]
@@ -20,7 +20,7 @@ services:
   nginx:
     build:
       context: ./nginx
-    image: mkprasad/proposal-nginx:latest
+    image: mkprasad/mstg-proposal-nginx:latest
     container_name: nginx-reverse-proxy
     restart: unless-stopped
     depends_on:

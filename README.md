@@ -103,17 +103,89 @@ docker login
 docker compose build
 
 
-docker build -t mkprasad/proposal-app:1.0 -f app/Dockerfile app
-docker build -t mkprasad/proposal-nginx:1.0 -f nginx/Dockerfile nginx
+docker build -t mkprasad/mstg-proposal-app:1.0 -f app/Dockerfile app
+docker build -t mkprasad/mstg-proposal-nginx:1.0 -f nginx/Dockerfile nginx
 
-docker tag mkprasad/proposal-app:1.0 mkprasad/proposal-app:latest
-docker tag mkprasad/proposal-nginx:1.0 mkprasad/proposal-nginx:latest
+docker tag mkprasad/mstg-proposal-app:1.0 mkprasad/mstg-proposal-app:latest
+docker tag mkprasad/mstg-proposal-nginx:1.0 mkprasad/mstg-proposal-nginx:latest
 
-docker push mkprasad/proposal-app:1.0
-docker push mkprasad/proposal-app:latest
-docker push mkprasad/proposal-nginx:1.0
-docker push mkprasad/proposal-nginx:latest
+docker push mkprasad/mstg-proposal-app:1.0
+docker push mkprasad/mstg-proposal-app:latest
+docker push mkprasad/mstg-proposal-nginx:1.0
+docker push mkprasad/mstg-proposal-nginx:latest
 
 
 ```
 
+
+```
+ # Troubleshooting 
+```
+```
+1. Check the Dockerfile and Entrypoint Script
+First, examine what's happening at line 47 of the docker-entrypoint.sh script:
+bash# Pull the image and inspect it
+docker pull mkprasad/mstg-proposal-nginx:latest
+
+# Look at the entrypoint script
+docker run --rm mkprasad/mstg-proposal-nginx:latest cat /docker-entrypoint.sh
+
+2. Fix the Docker Run Command
+The issue might be with the --replace flag placement. Try these alternatives:
+bash# Option 1: Remove --replace (it's not a standard docker run flag)
+docker run -d --name mstg-proposal-nginx \
+  -e SECRET_KEY="${SECRET_KEY}" \
+  mkprasad/mstg-proposal-nginx:latest --verbose
+
+# Option 2: If you want to replace an existing container, remove it first
+docker rm -f mstg-proposal-nginx 2>/dev/null || true
+docker run -d --name mstg-proposal-nginx \
+  -e SECRET_KEY="${SECRET_KEY}" \
+  mkprasad/mstg-proposal-nginx:latest --verbose
+
+# Option 3: Use --rm instead of --replace for temporary containers
+docker run -d --rm --name mstg-proposal-nginx \
+  -e SECRET_KEY="${SECRET_KEY}" \
+  mkprasad/mstg-proposal-nginx:latest --verbose
+3. Debug the Entrypoint Script
+Run the container interactively to debug:
+bash# Override the entrypoint to get a shell
+docker run -it --rm \
+  -e SECRET_KEY="${SECRET_KEY}" \
+  --entrypoint /bin/bash \
+  mkprasad/mstg-proposal-nginx:latest
+
+# Then manually run the entrypoint script to see the error
+/docker-entrypoint.sh --verbose
+4. Common Fixes for Entrypoint Issues
+The error suggests that line 47 in the entrypoint script is trying to execute a command with -- as an option. Common issues include:
+Fix 1: Shell Script Issues
+bash# If the script has Windows line endings, fix them:
+docker run -it --rm --entrypoint /bin/bash mkprasad/mstg-proposal-nginx:latest
+# Inside container:
+sed -i 's/\r$//' /docker-entrypoint.sh
+Fix 2: Argument Parsing Issues
+The script might not be handling the --verbose argument correctly. Try without it:
+bashdocker run -d --name mstg-proposal-nginx \
+  -e SECRET_KEY="${SECRET_KEY}" \
+  mkprasad/mstg-proposal-nginx:latest
+5. Check Container Logs
+If the container starts but fails quickly:
+bashdocker logs mstg-proposal-nginx
+6. Alternative Debugging Approach
+Create a simple test without custom arguments:
+bash# Basic run without any custom arguments
+docker run -d --name mstg-proposal-nginx-test mkprasad/mstg-proposal-nginx:latest
+
+# Check if it works
+docker ps
+docker logs mstg-proposal-nginx-test
+
+7. Port Mapping (if needed)
+Since this appears to be an nginx container, you might also need port mapping:
+bashdocker run -d --name mstg-proposal-nginx \
+  -p 80:80 -p 443:443 \
+  -e SECRET_KEY="${SECRET_KEY}" \
+  mkprasad/mstg-proposal-nginx:latest
+The most likely solution is removing the --replace flag and ensuring the --verbose argument is supported by the entrypoint script. If you need to replace an existing container, explicitly remove it first with docker rm -f mstg-proposal-nginx.RetryClaude does not have the ability to run the code it generates yet.
+```
