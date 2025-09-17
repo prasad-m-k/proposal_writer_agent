@@ -72,6 +72,13 @@
         .school-details-table tbody tr:nth-child(even) {
             background-color: #1e1e1e;
         }
+        .school-details-table tfoot {
+            font-weight: bold;
+            background-color: #333;
+        }
+        .school-details-table tfoot td {
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -94,7 +101,11 @@
                     </select>
                 </div>
                 <div style="margin-top: 1em;">
-                    <label for="school-checkbox-container">School Names (Select one or more):</label>
+                    <label>School Names (Select one or more):</label>
+                    <div class="checkbox-item" style="border-bottom: 1px solid #555; padding-bottom: 10px; margin-bottom: 10px;">
+                        <input type="checkbox" id="select-all-schools">
+                        <label for="select-all-schools" style="font-weight: 500; color: #fff;">Select All Schools</label>
+                    </div>
                     <div id="school-checkbox-container">
                         <!-- Checkboxes will be dynamically inserted here -->
                     </div>
@@ -113,12 +124,20 @@
                         <input type="number" id="days-input" name="days_per_week" class="config-input" value="2">
                     </div>
                 </div>
+                <div style="margin-top: 1em;">
+                    <label for="total-students-input">Total Students in Selected Schools:</label>
+                    <input type="text" id="total-students-input" class="config-input" readonly>
+                </div>
             </div>
 
             <div class="card">
                 <h2>3. Cost Summary</h2>
                 <label for="cost-proposal-input">Total Estimated Cost:</label>
                 <input type="text" id="cost-proposal-input" name="cost_proposal" class="config-input" readonly>
+                <div style="margin-top: 1em;">
+                    <label for="cost-per-student-input">Estimated Cost per Student:</label>
+                    <input type="text" id="cost-per-student-input" class="config-input" readonly>
+                </div>
             </div>
 
             <div class="card" id="school-funding-card" style="display: none;">
@@ -135,6 +154,12 @@
                     <tbody id="school-funding-body">
                         <!-- School funding details will be dynamically inserted here -->
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="1">Total Students:</td>
+                            <td id="total-enrollment-footer" colspan="3">0</td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
             
@@ -142,6 +167,10 @@
                 <button type="submit" class="submit-btn" id="generate-btn">Generate AI Proposal</button>
                 <div class="loader" id="loader"></div>
             </div>
+
+            <!-- Hidden inputs to pass calculated values to the backend -->
+            <input type="hidden" name="total_students_for_ai" id="total-students-for-ai-hidden">
+            <input type="hidden" name="cost_per_student_for_ai" id="cost-per-student-for-ai-hidden">
         </form>
     </div>
 
@@ -149,23 +178,35 @@
     const allData = JSON.parse('{{ all_data|safe }}');
     const districtSelect = document.getElementById('district');
     const schoolCheckboxContainer = document.getElementById('school-checkbox-container');
+    const selectAllSchoolsCheckbox = document.getElementById('select-all-schools'); // New
     const weeksInput = document.getElementById('weeks-input');
     const daysInput = document.getElementById('days-input');
+    const totalStudentsInput = document.getElementById('total-students-input'); // New
     const costProposalInput = document.getElementById('cost-proposal-input');
+    const costPerStudentInput = document.getElementById('cost-per-student-input'); // New
     const proposalForm = document.getElementById('proposal-form');
     const generateBtn = document.getElementById('generate-btn');
     const loader = document.getElementById('loader');
     const schoolFundingCard = document.getElementById('school-funding-card');
     const schoolFundingBody = document.getElementById('school-funding-body');
+    const totalEnrollmentFooter = document.getElementById('total-enrollment-footer'); // New
+    const totalStudentsForAiHidden = document.getElementById('total-students-for-ai-hidden'); // New hidden input
+    const costPerStudentForAiHidden = document.getElementById('cost-per-student-for-ai-hidden'); // New hidden input
+
 
     // Cost per school per day based on user-provided formula
     // ($9450 / 7 weeks / 2 days / 2 schools) = $337.50
     const COST_PER_SCHOOL_DAY = 337.50;
-function updateSchools() {
+    const PER_STUDENT_FUNDING = 2500; // Updated per-student amount
+
+    function updateSchools() {
         const selectedDistrict = districtSelect.value;
         const schoolsInDistrict = allData.filter( row => row['District Name'] === selectedDistrict);
 
         schoolCheckboxContainer.innerHTML = ""; // Clear existing checkboxes
+        
+        // Reset "Select All" checkbox state
+        selectAllSchoolsCheckbox.checked = false;
 
         schoolsInDistrict.forEach((school, index) => {
             const schoolName = school['School Name'];
@@ -181,11 +222,8 @@ function updateSchools() {
             checkbox.id = checkboxId;
             // Store all relevant school data on the checkbox itself
             checkbox.dataset.schoolData = JSON.stringify(school);
-            // Add event listener to each checkbox to recalculate cost and update table on change
-            checkbox.addEventListener('change', () => {
-                calculateAndDisplayCosts();
-                updateSchoolDetailsTable();
-            });
+            // Add event listener to each checkbox to recalculate costs and update table on change
+            checkbox.addEventListener('change', updateAllCostsAndDetails);
 
             const label = document.createElement('label');
             label.htmlFor = checkboxId;
@@ -196,132 +234,91 @@ function updateSchools() {
             schoolCheckboxContainer.appendChild(itemDiv);
         });
 
-        calculateAndDisplayCosts(); // Recalculate and show costs for the updated schools
-        updateSchoolDetailsTable(); // Update the table
+        updateAllCostsAndDetails(); // Recalculate and show costs for the updated schools and table
     }
 
-    function calculateAndDisplayCosts() {
-        const numWeeks = parseInt(weeksInput.value, 10) || 0;
-        const daysPerWeek = parseInt(daysInput.value, 10) || 0;
-
-        const checkedCheckboxes = document.querySelectorAll('input[name="schoolname"]:checked');
-        const numSchools = checkedCheckboxes.length;
-
-        const totalCost = numWeeks * daysPerWeek * numSchools * COST_PER_SCHOOL_DAY;
-        const formattedTotalCost = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalCost);
-        costProposalInput.value = formattedTotalCost;
-    }
-
-    function updateSchoolDetailsTable() {
-        schoolFundingBody.innerHTML = ''; // Clear existing table data
-
-        const checkedCheckboxes = document.querySelectorAll('input[name="schoolname"]:checked');
-        const numSchools = checkedCheckboxes.length;
-        schoolFundingCard.style.display = numSchools > 0 ? 'block' : 'none';
-
-        checkedCheckboxes.forEach(checkbox => {
-            const schoolData = JSON.parse(checkbox.dataset.schoolData);
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${schoolData['School Name']}</td>
-                <td>${schoolData['Total Enrollment']}</td>
-                <td>${schoolData['FRPM Percent (%)']}</td>
-                <td>${calculateFunding(schoolData)}</td>
-            `;
-            schoolFundingBody.appendChild(row);
-        });
-    }
-
-    // Function to calculate estimated funding for a school
     function calculateFunding(schoolData) {
         const enrollment = parseInt(schoolData['Total Enrollment'], 10) || 0;
         const frpmPercent = parseFloat(schoolData['FRPM Percent (%)']) / 100 || 0;
-        const perStudentFunding = 2500; // Updated per-student amount
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(enrollment * frpmPercent * perStudentFunding);
+        return (enrollment * frpmPercent * PER_STUDENT_FUNDING);
     }
 
-    function updateSchoolsEx() {
-        const selectedDistrict = districtSelect.value;
-        const schoolsInDistrict = allData.filter(row => row['District Name'] === selectedDistrict);
+    function updateAllCostsAndDetails() {
+        const numWeeks = parseInt(weeksInput.value, 10) || 0;
+        const daysPerWeek = parseInt(daysInput.value, 10) || 0;
+        const checkedCheckboxes = document.querySelectorAll('input[name="schoolname"]:checked');
+        const numSchools = checkedCheckboxes.length;
 
-        schoolCheckboxContainer.innerHTML = ""; // Clear existing checkboxes
-        
-        schoolsInDistrict.forEach((school, index) => {
-            const schoolName = school['School Name'];
-            const checkboxId = `school-${index}`;
+        let totalEnrollment = 0;
+        let totalEstimatedFunding = 0;
 
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'checkbox-item';
+        schoolFundingBody.innerHTML = ''; // Clear existing table data
 
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.name = 'schoolname';
-            checkbox.value = schoolName;
-            checkbox.id = checkboxId;
-            // Store all relevant school data on the checkbox itself
-            checkbox.dataset.schoolData = JSON.stringify(school);
-            // Add event listener to each checkbox to recalculate cost and update table on change
-            checkbox.addEventListener('change', () => {
-                updateCost();
-                updateSchoolFundingTable();
-            });
-
-            const label = document.createElement('label');
-            label.htmlFor = checkboxId;
-            label.textContent = schoolName;
-
-            itemDiv.appendChild(checkbox);
-            itemDiv.appendChild(label);
-            schoolCheckboxContainer.appendChild(itemDiv);
-        });
-        
-        // Update cost and funding table after populating checkboxes (initially zero/empty)
-        updateCost();
-        updateSchoolFundingTable();
-    }
-
-    function updateCost() {
-        const selectedCheckboxes = document.querySelectorAll('input[name="schoolname"]:checked');
-        const numSchools = selectedCheckboxes.length;
-
-        const numWeeks = parseInt(weeksInput.value) || 0;
-        const daysPerWeek = parseInt(daysInput.value) || 0;
-
-        const totalCost = numSchools * numWeeks * daysPerWeek * COST_PER_SCHOOL_DAY;
-
-        // Display as currency
-        costProposalInput.value = '$' + totalCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-
-    function updateSchoolFundingTable() {
-        const selectedCheckboxes = document.querySelectorAll('input[name="schoolname"]:checked');
-        schoolFundingBody.innerHTML = ''; // Clear existing table rows
-
-        if (selectedCheckboxes.length > 0) {
+        if (numSchools > 0) {
             schoolFundingCard.style.display = 'block'; // Show the card if schools are selected
-            selectedCheckboxes.forEach(checkbox => {
-                const school = JSON.parse(checkbox.dataset.schoolData);
-                const row = schoolFundingBody.insertRow();
-                row.insertCell().textContent = school['School Name'];
-                row.insertCell().textContent = school['Total Enrollment'];
-                // Format FRPM Percent as a percentage
-                const frpmPercent = parseFloat(school['FRPM Percent (%)']);
-                row.insertCell().textContent = isNaN(frpmPercent) ? 'N/A' : (frpmPercent * 100).toFixed(2) + '%';
-                // Format Estimated Funding as currency
-                const estimatedFunding = parseFloat(school['Estimated Funding (USD)']);
-                row.insertCell().textContent = isNaN(estimatedFunding) ? 'N/A' : '$' + estimatedFunding.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            checkedCheckboxes.forEach(checkbox => {
+                const schoolData = JSON.parse(checkbox.dataset.schoolData);
+                const enrollment = parseInt(schoolData['Total Enrollment'], 10) || 0;
+                const schoolFunding = calculateFunding(schoolData);
+
+                totalEnrollment += enrollment;
+                totalEstimatedFunding += schoolFunding;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${schoolData['School Name']}</td>
+                    <td>${enrollment.toLocaleString()}</td>
+                    <td>${(parseFloat(schoolData['FRPM Percent (%)'])).toFixed(2)}%</td>
+                    <td>${schoolFunding.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
+                `;
+                schoolFundingBody.appendChild(row);
             });
         } else {
             schoolFundingCard.style.display = 'none'; // Hide the card if no schools are selected
         }
+
+        // Update Total Students in "Configure Program"
+        totalStudentsInput.value = totalEnrollment.toLocaleString();
+        totalEnrollmentFooter.textContent = totalEnrollment.toLocaleString();
+
+
+        // Calculate Total Estimated Cost
+        const totalProgramCost = numWeeks * daysPerWeek * numSchools * COST_PER_SCHOOL_DAY;
+        costProposalInput.value = totalProgramCost.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+
+        // Calculate Cost per Student
+        let costPerStudent = 0;
+        if (totalEnrollment > 0) {
+            costPerStudent = totalProgramCost / totalEnrollment;
+        }
+        costPerStudentInput.value = costPerStudent.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+
+        // Update hidden inputs for backend submission
+        totalStudentsForAiHidden.value = totalEnrollment;
+        costPerStudentForAiHidden.value = costPerStudent.toFixed(2); // Send as number string
     }
+
+    // Event listener for "Select All Schools" checkbox
+    selectAllSchoolsCheckbox.addEventListener('change', function() {
+        const isChecked = this.checked;
+        const schoolCheckboxes = schoolCheckboxContainer.querySelectorAll('input[name="schoolname"]');
+        schoolCheckboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+        });
+        updateAllCostsAndDetails(); // Update everything after toggling all schools
+    });
 
 
     proposalForm.addEventListener('submit', function(event) {
         // Before submitting, remove currency formatting to send a clean number to the backend
         if (costProposalInput) {
-            costProposalInput.value = costProposalInput.value.replace(/[^0-9.]/g, '');
+            // Remove all non-digit and non-decimal characters, then parse as float
+            const rawCost = costProposalInput.value.replace(/[^0-9.-]+/g,"");
+            costProposalInput.value = parseFloat(rawCost).toFixed(2);
         }
+
+        // Ensure total_students_for_ai-hidden and cost_per_student_for_ai-hidden are updated right before submit
+        updateAllCostsAndDetails();
 
         // Check if at least one school is selected
         const selectedCheckboxes = document.querySelectorAll('input[name="schoolname"]:checked');
@@ -337,8 +334,8 @@ function updateSchools() {
 
     // Event Listeners
     districtSelect.addEventListener('change', updateSchools);
-    weeksInput.addEventListener('input', updateCost);
-    daysInput.addEventListener('input', updateCost);
+    weeksInput.addEventListener('input', updateAllCostsAndDetails);
+    daysInput.addEventListener('input', updateAllCostsAndDetails);
 
     // Initial Load
     document.addEventListener('DOMContentLoaded', updateSchools);

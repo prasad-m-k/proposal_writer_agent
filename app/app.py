@@ -182,7 +182,7 @@ def manage_file_rotation(district_name, download_folder, max_files=5):
             except OSError as e:
                 print(f"Error deleting file {filepath}: {e}")
 
-def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N/A", days_per_week="N/A", selected_schools=[]):
+def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N/A", days_per_week="N/A", selected_schools=[], total_students="N/A", cost_per_student="N/A"): # Added total_students, cost_per_student
     """
     Generates a proposal with a custom header, saves it as a .docx file,
     and returns the AI text and the filename.
@@ -232,6 +232,14 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
             formatted_cost_proposal = "$0.00" # Default or handle error appropriately
             print(f"Warning: Invalid cost_proposal value received: {cost_proposal}. Defaulting to $0.00.")
 
+        # Format cost_per_student if it's a valid number
+        try:
+            numeric_cost_per_student = float(cost_per_student)
+            formatted_cost_per_student = f"${numeric_cost_per_student:,.2f}"
+        except (ValueError, TypeError):
+            formatted_cost_per_student = "N/A"
+            print(f"Warning: Invalid cost_per_student value received: {cost_per_student}. Defaulting to N/A.")
+
 
         # --- Read prompt template from file ---
         with open(os.path.join(app.config['INPUT_FILES_FOLDER'], 'proposal_prompt.txt'), 'r') as f:
@@ -245,6 +253,8 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
             num_weeks=num_weeks,
             school_locations=school_locations,
             formatted_cost_proposal=formatted_cost_proposal, # Pass the pre-formatted cost here
+            total_students=total_students, # Pass total students
+            formatted_cost_per_student=formatted_cost_per_student, # Pass formatted cost per student
             year=year,
             about_msg=about_msg,
             proposal_context=proposal_context,
@@ -285,8 +295,9 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
         error_text = f"An error occurred while generating the proposal: {e}"
         print(error_text)
         print("##################################")
-        print(INPUT_FILES_FOLDER)
-        print(DOWNLOAD_FOLDER)
+        # Ensure INPUT_FILES_FOLDER and DOWNLOAD_FOLDER are defined or accessible if printing here
+        # print(INPUT_FILES_FOLDER) # These were commented out in the original error block, re-adding cautiously
+        # print(DOWNLOAD_FOLDER)     # if they are truly global or class attributes.
         print("##################################")
 
         return error_text, None
@@ -311,13 +322,17 @@ def generate_proposal():
     num_weeks = request.form.get('num_weeks')
     days_per_week = request.form.get('days_per_week')
     selected_schools = request.form.getlist('schoolname')
+    total_students = request.form.get('total_students_for_ai') # Get from hidden input
+    cost_per_student = request.form.get('cost_per_student_for_ai') # Get from hidden input
 
     proposal_text, filename = generate_proposal_from_row(
         district=district_name, 
         cost_proposal=cost_proposal, 
         num_weeks=num_weeks, 
         days_per_week=days_per_week, 
-        selected_schools=selected_schools
+        selected_schools=selected_schools,
+        total_students=total_students, # Pass to generation function
+        cost_per_student=cost_per_student # Pass to generation function
     )
 
     proposal_data = {
@@ -325,7 +340,10 @@ def generate_proposal():
         'cost_proposal': cost_proposal,
         'school_name': ", ".join(selected_schools),
         'proposal_text': proposal_text,
-        'filename': filename
+        'filename': filename,
+        'num_weeks': num_weeks, # Added for prompt context
+        'total_students': total_students, # Added for prompt context
+        'cost_per_student': cost_per_student # Added for prompt context
     }
     return render_template('proposal.html', data=proposal_data)
 
