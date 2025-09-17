@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  web:
+    image: mkprasad/proposal-app:latest
+    restart: unless-stopped
+    environment:
+      SECRET_KEY: ${SECRET_KEY:-change-me}
+    expose: ["5000"]
+
+  nginx:
+    image: mkprasad/proposal-nginx:latest
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_started
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./certs:/etc/nginx/certs:ro
+
+
