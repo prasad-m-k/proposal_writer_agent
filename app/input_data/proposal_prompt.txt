@@ -9,7 +9,7 @@ You are an expert grant writer and proposal generator, tasked with crafting a co
 *   **Operational Days Per Week:** {days_per_week}
 *   **Target School Locations:** {school_locations}
 *   **Total Estimated Program Cost:** {formatted_cost_proposal}
-*   **Total Number of Students to be Served:** {total_students}
+*   **Total Number of Students to be Served (Planned):** {total_students}
 *   **Estimated Cost per Student:** {formatted_cost_per_student} (This will be crucial for the Cost Proposal section, ensuring it aligns with any per-student maximums mentioned in the RFP.)
 
 **Company Information (Music Science & Technology Group - MSG):**
@@ -32,7 +32,7 @@ Generate an exceptionally detailed, persuasive, and perfectly structured proposa
 
 **1. Executive Summary: A Vision for Excellence**
 *   Craft a powerful opening that immediately conveys MSG's proven expertise and commitment to partnering with {client} to deliver a high-impact {project} program.
-*   Clearly state the program's scope: {num_weeks} weeks, {days_per_week} days per week, serving {total_students} students across {school_locations}.
+*   Clearly state the program's scope: {num_weeks} weeks, {days_per_week} days per week, serving a planned {total_students} students across {school_locations}.
 *   Emphasize how MSG's program directly aligns with {client}'s vision and the critical need for robust, compliant after-school enrichment.
 
 **2. Introduction to Music Science & Technology Group: Our Legacy of Impact**
@@ -42,7 +42,7 @@ Generate an exceptionally detailed, persuasive, and perfectly structured proposa
 **3. Program Overview: The Educational Learning Outreach Program (ELOP) - Tailored for {district}**
 *   Describe the ELOP program, meticulously detailing its design to meet and exceed {client}'s ASES and ELO-P objectives.
 *   **Explicitly reference target populations:** K-8th for ASES, TK-6th for ELO-P, and the required 180 school days of service, from dismissal until 6:00 PM.
-*   Showcase our unique blend of music integration, S.T.E.A.M. education, wellness, and student engagement activities, directly connecting them to {total_students} benefiting at the specified school sites.
+*   Showcase our unique blend of music integration, S.T.E.A.M. education, wellness, and student engagement activities, directly connecting them to the planned {total_students} students benefiting at the specified school sites.
 *   **For Natomas ELO-P focus:** If applicable based on the "Special Instructions" above, emphasize our dedicated approach for the ELO-P schools and their specific student populations (TK-6th grade).
 
 **4. Comprehensive Program Components and Enriching Activities: Beyond Expectation**
@@ -59,7 +59,7 @@ Generate an exceptionally detailed, persuasive, and perfectly structured proposa
 **5. Measurable Program Impact and Transformative Benefits: Driving Student Success**
 *   Articulate the profound benefits for students, schools, and the wider community.
 *   Focus on tangible outcomes: enhanced student engagement, improved academic performance, increased wellness, and strengthened community involvement.
-*   Reinforce the value proposition by connecting MSG's program design to the projected {num_weeks} weeks of transformative learning, {days_per_week} days per week, for {total_students} students.
+*   Reinforce the value proposition by connecting MSG's program design to the projected {num_weeks} weeks of transformative learning, {days_per_week} days per week, for the planned {total_students} students.
 
 **6. Implementation Plan: Precision and Partnership**
 *   Outline a robust plan ensuring smooth program launch and sustained excellence.
@@ -83,23 +83,25 @@ Generate an exceptionally detailed, persuasive, and perfectly structured proposa
     *   Maintaining an 85% average daily attendance.
     *   All specified insurance requirements (Commercial General Liability: $2M/$4M; Sexual Abuse-Molestation: $2M/$4M; Professional Liability: $1M; Workers' Compensation: Statutory with $1M Employer's Liability; Business Auto Liability: $2M (if applicable); Cyber Liability: $1M (if handling student data)).
     *   Student Data Privacy Agreements, anti-discrimination policies, tobacco-free environment mandates, and no solicitation policies.
-*   **Required Submission Documents (Attachments):** MSG understands and confirms its readiness to provide all mandatory attachments, which include, but are not limited to, the following critical documents:
-    *   Cover Page (Appendix A)
-    *   Proposal Checklist (Appendix B)
-    *   References (Appendix C) - minimum 3 from last 5 years
-    *   School Site Selection Sheet (Appendix D)
-    *   Itemized Budget per School Site (separate for each site, demonstrating alignment with **{formatted_cost_proposal}** and **{formatted_cost_per_student}**)
-    *   This Comprehensive Proposal Narrative (addressing all 8 sections)
-    *   Application Questions (e.g., 20 questions)
-    *   Assurance to Meet Certification (Appendix E)
-    *   Non-Collusion Affidavit (Appendix F)
-    *   Non-Disclosure Agreement (Appendix G)
-    *   Fingerprinting/Background Check Certification (Appendix H)
-    *   Workers Compensation Certification (Appendix I)
-    *   Latest External Audit Report and Financial Statements (as required by Natomas)
-    *   Detailed Cost Breakdown by Category (staffing, materials, professional development, transportation, administrative/overhead - as required by Natomas)
 
-**9. Conclusion and Call to Action: Forging a Brighter Future Together**
+**9. Appendices and Required Submission Checklist:**
+**MSG confirms its understanding of and readiness to provide ALL mandatory attachments and supporting documentation, ensuring a complete and compliant submission. This comprehensive checklist includes, but is not limited to, the following critical documents (the following list *MUST* be output verbatim as bullet points):**
+*   [ ] Cover Page (Appendix A)
+*   [ ] Proposal Checklist (Appendix B)
+*   [ ] References (Appendix C) - minimum 3 from last 5 years
+*   [ ] School Site Selection Sheet (Appendix D)
+*   [ ] Itemized Budget per School Site (separate for each site, demonstrating alignment with **{formatted_cost_proposal}** and **{formatted_cost_per_student}**)
+*   [ ] This Comprehensive Proposal Narrative (addressing all sections)
+*   [ ] Application Questions (e.g., 20 questions, fully addressed)
+*   [ ] Assurance to Meet Certification (Appendix E)
+*   [ ] Non-Collusion Affidavit (Appendix F)
+*   [ ] Non-Disclosure Agreement (Appendix G)
+*   [ ] Fingerprinting/Background Check Certification (Appendix H)
+*   [ ] Workers Compensation Certification (Appendix I)
+*   [ ] Most Recent External Audit Report and Financial Statements (as required)
+*   [ ] Detailed Cost Breakdown by Category (staffing, materials, professional development, transportation, administrative/overhead - as required)
+
+**10. Conclusion and Call to Action: Forging a Brighter Future Together**
 *   Articulate a powerful summary of MSG's strengths and reiterate our profound enthusiasm for forging an impactful partnership with {client}.
 *   End with a clear, confident call to action, inviting immediate discussion to finalize this collaboration and begin making a meaningful, measurable difference in students' lives.
 

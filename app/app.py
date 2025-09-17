@@ -42,44 +42,14 @@ def _initialize():
 
 
     #--- App Configuration ---
-    # Configure input files folder
     app.config['INPUT_FILES_FOLDER'] = os.path.abspath(INPUT_FILES_FOLDER_NAME)
     if not os.path.exists(app.config['INPUT_FILES_FOLDER']):
         os.makedirs(app.config['INPUT_FILES_FOLDER'])
         
-    # Configure download folder for generated documents
     app.config['DOWNLOAD_FOLDER'] = os.path.abspath(DOWNLOAD_FOLDER_NAME)
     if not os.path.exists(app.config['DOWNLOAD_FOLDER']):
         os.makedirs(app.config['DOWNLOAD_FOLDER'])
 
-        '''
-    APP_ROOT = Path(__file__).resolve().parent  # directory containing app.py
-
-    # Env can be absolute or relative; relative resolves against APP_ROOT
-    _input_env = os.getenv("INPUT_FILES_FOLDER", "input_data")
-    INPUT_FILES_FOLDER = Path(_input_env)
-    if not INPUT_FILES_FOLDER.is_absolute():
-        INPUT_FILES_FOLDER = (APP_ROOT / INPUT_FILES_FOLDER).resolve()
-
-    # Ensure it exists
-    INPUT_FILES_FOLDER.mkdir(parents=True, exist_ok=True)
-    app.config['INPUT_FILES_FOLDER'] = os.path.abspath(INPUT_FILES_FOLDER)
-    print("-------------------------------- inside init -------------------------------")
-    print(app.config['INPUT_FILES_FOLDER'], INPUT_FILES_FOLDER)
-    print("-------------------------------- inside init -------------------------------")   
-
-    _input_env = os.getenv("DOWNLOAD_FOLDER", "generated_proposals")
-    DOWNLOAD_FOLDER = Path(_input_env)
-    if not DOWNLOAD_FOLDER.is_absolute():
-        DOWNLOAD_FOLDER = (APP_ROOT / DOWNLOAD_FOLDER).resolve()
-
-    # Ensure it exists
-    DOWNLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
-    app.config['DOWNLOAD_FOLDER'] = os.path.abspath(DOWNLOAD_FOLDER)
-    print("-------------------------------- inside init -------------------------------")
-    print(app.config['DOWNLOAD_FOLDER'], DOWNLOAD_FOLDER)
-    print("-------------------------------- inside init -------------------------------")   
-    '''
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
     if not GEMINI_API_KEY:
         raise ValueError("GEMINI_API_KEY not set. Please set it in your .env file.")
@@ -92,15 +62,11 @@ def _initialize():
 @app.after_request
 def apply_security_headers(response):
     """Applies security-enhancing HTTP headers to every response."""
-    # --- CORRECTED CONTENT SECURITY POLICY ---
-    # This policy now correctly allows styles and fonts from Google, restoring the UI.
-    # Added 'unsafe-inline' to style-src to allow inline <style> tags and style attributes.
-    # Added 'data:' to font-src for broader font support, though https://fonts.gstatic.com covers Google Fonts.
     csp = (
         "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline'; " # 'unsafe-inline' is often needed for scripts in templates
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " # ADDED 'unsafe-inline'
-        "font-src 'self' https://fonts.gstatic.com data:; " # ADDED 'data:'
+        "script-src 'self' 'unsafe-inline'; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+        "font-src 'self' https://fonts.gstatic.com data:; "
     )
     response.headers['Content-Security-Policy'] = csp
     response.headers['X-Frame-Options'] = 'SAMEORIGIN'
@@ -113,10 +79,10 @@ def create_document_header(document):
     """
     Adds a pre-defined, crisp header with a smaller font to a document object.
     """
-    LOGO_PATH = 'static/assets/msg_logo.png' # Assuming logo path remains the same
+    LOGO_PATH = 'static/assets/msg_logo.png'
     ADDRESS_LINES = [
         ("Musical Instruments N Kids Hands", True, 8),
-        ("Music Science & Technology Group", True, 10), # Updated here
+        ("Music Science & Technology Group", True, 10),
         ("2150 Capitol Avenue Sacramento, CA 95816", False, 8),
         ("Ph. (916) 670-9950", False, 8)
     ]
@@ -182,7 +148,7 @@ def manage_file_rotation(district_name, download_folder, max_files=5):
             except OSError as e:
                 print(f"Error deleting file {filepath}: {e}")
 
-def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N/A", days_per_week="N/A", selected_schools=[], total_students="N/A", cost_per_student="N/A"): # Added total_students, cost_per_student
+def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N/A", days_per_week="N/A", selected_schools=[], total_students="N/A", cost_per_student="N/A"):
     """
     Generates a proposal with a custom header, saves it as a .docx file,
     and returns the AI text and the filename.
@@ -198,12 +164,10 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
         with open(os.path.join(app.config['INPUT_FILES_FOLDER'], 'proposal.txt'), 'r') as file:
             proposal_context = file.read()
 
-        # --- NEW: Load Natomas-specific RFP requirements if applicable ---
         natomas_rfp_requirements_context = ""
         natomas_rfp_instruction_formatted = ""
         if district == "Natomas Unified School District":
             try:
-                # Assuming this file is in the root or a 'data' folder
                 with open('natomas_school_district_rfp_requirements.txt', 'r') as f:
                     natomas_rfp_requirements_context = f.read()
                     natomas_rfp_instruction_formatted = (
@@ -213,7 +177,7 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
                 print("Warning: natomas_school_district_rfp_requirements.txt not found. Proceeding without specific RFP context for Natomas.")
 
         model = genai.GenerativeModel('gemini-1.5-flash')
-        company = "Music Science & Technology Group" # Updated here
+        company = "Music Science & Technology Group"
         client = f"{district} School District"
         project = "Educational Learning Outreach Program (ELOP)"
         services = "Music Integration, S.T.E.A.M. Education, Wellness Programs, Student Engagement Activities"
@@ -224,15 +188,13 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
         
         school_locations = ", ".join(selected_schools) if selected_schools else "Selected school sites"
 
-        # --- Format cost_proposal here before inserting into the prompt template ---
         try:
             numeric_cost_proposal = float(cost_proposal)
             formatted_cost_proposal = f"${numeric_cost_proposal:,.2f}"
         except (ValueError, TypeError):
-            formatted_cost_proposal = "$0.00" # Default or handle error appropriately
+            formatted_cost_proposal = "$0.00"
             print(f"Warning: Invalid cost_proposal value received: {cost_proposal}. Defaulting to $0.00.")
 
-        # Format cost_per_student if it's a valid number
         try:
             numeric_cost_per_student = float(cost_per_student)
             formatted_cost_per_student = f"${numeric_cost_per_student:,.2f}"
@@ -241,24 +203,22 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
             print(f"Warning: Invalid cost_per_student value received: {cost_per_student}. Defaulting to N/A.")
 
 
-        # --- Read prompt template from file ---
         with open(os.path.join(app.config['INPUT_FILES_FOLDER'], 'proposal_prompt.txt'), 'r') as f:
             prompt_template = f.read()
 
-        # Format the prompt using a dictionary for clarity with multiple variables
         prompt = prompt_template.format(
             district=district,
             today=today,
             days_per_week=days_per_week,
             num_weeks=num_weeks,
             school_locations=school_locations,
-            formatted_cost_proposal=formatted_cost_proposal, # Pass the pre-formatted cost here
-            total_students=total_students, # Pass total students
-            formatted_cost_per_student=formatted_cost_per_student, # Pass formatted cost per student
+            formatted_cost_proposal=formatted_cost_proposal,
+            total_students=total_students,
+            formatted_cost_per_student=formatted_cost_per_student,
             year=year,
             about_msg=about_msg,
             proposal_context=proposal_context,
-            all_districts_info=all_districts_info, # Although commented out in prompt, good practice to pass if template changes
+            all_districts_info=all_districts_info,
             natomas_rfp_requirements_context_formatted=natomas_rfp_requirements_context,
             natomas_rfp_instruction_formatted=natomas_rfp_instruction_formatted,
             client=client,
@@ -275,19 +235,17 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
         document = Document()
         create_document_header(document)
         converter = MarkdownToDocxConverter(document=document)
-        text = text.replace('** ', '**').replace(' **', '**')  # Remove spaces around **
+        text = text.replace('** ', '**').replace(' **', '**')
         converter.convert(text)
 
         safe_district_name = re.sub(r'[^a-zA-Z0-9_]', '', district).replace(" ", "_")
         timestamp = int(time.time())
         filename = f"Proposal_{safe_district_name}_{timestamp}.docx"
         
-        # Save to the DOWNLOAD_FOLDER
         output_path = os.path.join(app.config['DOWNLOAD_FOLDER'], filename)
         document.save(output_path)
         print(f"Successfully created '{filename}' in '{app.config['DOWNLOAD_FOLDER']}' with custom header.")
 
-        # Manage file rotation for this district
         manage_file_rotation(district, app.config['DOWNLOAD_FOLDER'])
 
         return text, filename
@@ -295,15 +253,11 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
         error_text = f"An error occurred while generating the proposal: {e}"
         print(error_text)
         print("##################################")
-        # Ensure INPUT_FILES_FOLDER and DOWNLOAD_FOLDER are defined or accessible if printing here
-        # print(INPUT_FILES_FOLDER) # These were commented out in the original error block, re-adding cautiously
-        # print(DOWNLOAD_FOLDER)     # if they are truly global or class attributes.
         print("##################################")
 
         return error_text, None
 
 def get_school_data():
-    # Assuming data.csv is in the root directory for now
     df = pd.read_csv("data.csv") 
     df.columns = df.columns.str.strip()
     return df
@@ -322,8 +276,8 @@ def generate_proposal():
     num_weeks = request.form.get('num_weeks')
     days_per_week = request.form.get('days_per_week')
     selected_schools = request.form.getlist('schoolname')
-    total_students = request.form.get('total_students_for_ai') # Get from hidden input
-    cost_per_student = request.form.get('cost_per_student_for_ai') # Get from hidden input
+    total_students = request.form.get('total_students_for_ai')
+    cost_per_student = request.form.get('cost_per_student_for_ai')
 
     proposal_text, filename = generate_proposal_from_row(
         district=district_name, 
@@ -331,8 +285,8 @@ def generate_proposal():
         num_weeks=num_weeks, 
         days_per_week=days_per_week, 
         selected_schools=selected_schools,
-        total_students=total_students, # Pass to generation function
-        cost_per_student=cost_per_student # Pass to generation function
+        total_students=total_students,
+        cost_per_student=cost_per_student
     )
 
     proposal_data = {
@@ -341,16 +295,15 @@ def generate_proposal():
         'school_name': ", ".join(selected_schools),
         'proposal_text': proposal_text,
         'filename': filename,
-        'num_weeks': num_weeks, # Added for prompt context
-        'total_students': total_students, # Added for prompt context
-        'cost_per_student': cost_per_student # Added for prompt context
+        'num_weeks': num_weeks,
+        'total_students': total_students,
+        'cost_per_student': cost_per_student
     }
     return render_template('proposal.html', data=proposal_data)
 
 @app.route('/download/<path:filename>')
 def download_file(filename):
     safe_filename = secure_filename(filename)
-    # Serve from the DOWNLOAD_FOLDER
     download_dir = app.config['DOWNLOAD_FOLDER']
     file_path = os.path.join(download_dir, safe_filename)
     
@@ -368,20 +321,7 @@ def stopServer():
 def healthz():
     return "ok", 200
 
-# Initialize the application
 _initialize()
 
 if __name__ == '__main__':
-    # Initialize the application
-    #_initialize()
-
-    """
-    if env.get("DEPL") == "PROD":
-        app.run(host='0.0.0.0', port=443, debug=True, ssl_context=(
-            '/etc/letsencrypt/live/qaproposalmusicsciencegroup.com/fullchain.pem',
-            '/etc/letsencrypt/live/qaproposalmusicsciencegroup.com/privkey.pem'
-        ))
-    else:
-        app.run(port=5000, debug=True)
-    """
     app.run(port=5000, debug=True)
