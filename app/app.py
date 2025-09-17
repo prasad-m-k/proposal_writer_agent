@@ -19,14 +19,110 @@ import signal # Added for stopServer
 from flask import jsonify # Added for stopServer
 from pathlib import Path
 
+#### enhancing the markdown #####
+import markdown
+from docx import Document
+from docx.shared import Inches
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from bs4 import BeautifulSoup
+import re
+
+
+def advanced_markdown_to_word(markdown_file, output_file):
+    # Read markdown file
+    with open(markdown_file, 'r', encoding='utf-8') as file:
+        markdown_text = file.read()
+    
+    # Convert markdown to HTML with extensions
+    html = markdown.markdown(
+        markdown_text, 
+        extensions=['tables', 'fenced_code', 'toc']
+    )
+    
+    soup = BeautifulSoup(html, 'html.parser')
+    doc = Document()
+    
+    # Set document margins
+    sections = doc.sections
+    for section in sections:
+        section.top_margin = Inches(1)
+        section.bottom_margin = Inches(1)
+        section.left_margin = Inches(1)
+        section.right_margin = Inches(1)
+    
+    # Process elements
+    for element in soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'ul', 'ol', 'pre', 'table']):
+        if element.name.startswith('h'):
+            level = int(element.name[1])
+            heading = doc.add_heading(element.get_text().strip(), level)
+            
+        elif element.name == 'p':
+            if element.get_text().strip():  # Skip empty paragraphs
+                paragraph = doc.add_paragraph()
+                add_formatted_text(paragraph, element)
+                
+        elif element.name in ['ul', 'ol']:
+            for li in element.find_all('li', recursive=False):
+                style = 'List Number' if element.name == 'ol' else 'List Bullet'
+                p = doc.add_paragraph(style=style)
+                add_formatted_text(p, li)
+                
+        elif element.name == 'pre':
+            # Code blocks
+            code = element.get_text()
+            paragraph = doc.add_paragraph(code)
+            paragraph.style = 'No Spacing'
+            for run in paragraph.runs:
+                run.font.name = 'Courier New'
+                run.font.size = Pt(9)
+                
+        elif element.name == 'table':
+            # Tables (requires markdown tables extension)
+            rows = element.find_all('tr')
+            if rows:
+                table = doc.add_table(rows=len(rows), cols=len(rows[0].find_all(['th', 'td'])))
+                table.style = 'Table Grid'
+                
+                for i, row in enumerate(rows):
+                    cells = row.find_all(['th', 'td'])
+                    for j, cell in enumerate(cells):
+                        table.cell(i, j).text = cell.get_text().strip()
+    
+    doc.save(output_file)
+
+def add_formatted_text(paragraph, element):
+    """Enhanced text formatting"""
+    for content in element.contents:
+        if hasattr(content, 'name'):
+            text = content.get_text()
+            if content.name in ['strong', 'b']:
+                run = paragraph.add_run(text)
+                run.bold = True
+            elif content.name in ['em', 'i']:
+                run = paragraph.add_run(text)
+                run.italic = True
+            elif content.name == 'code':
+                run = paragraph.add_run(text)
+                run.font.name = 'Courier New'
+            elif content.name == 'a':
+                # Hyperlinks
+                run = paragraph.add_run(text)
+                run.font.color.rgb = RGBColor(0, 0, 255)  # Blue color
+                run.underline = True
+            else:
+                paragraph.add_run(text)
+        else:
+            paragraph.add_run(str(content))
+
+#### enhancing the markdown #####
 
 app = Flask(__name__)
 env = {}
 # csrf = CSRFProtect() # REMOVED CSRF
 
 ## Define global paths for clarity
-INPUT_FILES_FOLDER_NAME= '/app/input_data' # Renamed from 'uploads' for input files
-DOWNLOAD_FOLDER_NAME = '/app/generated_proposals' # New folder for output files
+INPUT_FILES_FOLDER_NAME= 'input_data' # Renamed from 'uploads' for input files
+DOWNLOAD_FOLDER_NAME = 'generated_proposals' # New folder for output files
 
 
 
@@ -44,6 +140,7 @@ def _initialize():
     #--- App Configuration ---
     # Configure input files folder
     app.config['INPUT_FILES_FOLDER'] = os.path.abspath(INPUT_FILES_FOLDER_NAME)
+    print(app.config['INPUT_FILES_FOLDER'])
     if not os.path.exists(app.config['INPUT_FILES_FOLDER']):
         os.makedirs(app.config['INPUT_FILES_FOLDER'])
         
@@ -262,6 +359,11 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
         response = model.generate_content(prompt)
         text = normalize_empty_lines(response.text)
         
+        with open("file.md", "w") as f:
+            f.write(text)
+        print("Saved latest proposal text to file.md")
+        advanced_markdown_to_word("file.md", "file.docx")
+        
         document = Document()
         create_document_header(document)
         converter = MarkdownToDocxConverter(document=document)
@@ -365,4 +467,4 @@ if __name__ == '__main__':
     else:
         app.run(host='0.0.0.0', port=5000, debug=True)
     """
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)

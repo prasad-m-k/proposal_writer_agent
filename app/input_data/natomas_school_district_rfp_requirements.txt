@@ -1,155 +1,176 @@
-Here’s a structured extraction of the requirements from the Natomas Unified School District RFP for After School Core Program Providers (Cycle B: 2026–27 and 2027–28):
+# Natomas Unified School District
+## After School Core Program Provider RFP Requirements
+### Cycle B: 2026-27 and 2027-28
 
-1. Program Scope & Services
+---
 
-Serve K–8 students under ASES and TK–6 under ELO-P.
+## **Critical Deadlines & Submission Requirements**
 
-Operate for 180 school days, from dismissal until 6:00 PM.
+- **RFP Questions Deadline:** September 12, 2025 at 4pm
+- **District Response to Questions:** September 19, 2025 by 4pm  
+- **RFP Submission Deadline:** September 26, 2025 at 4pm
+- **Submission Platform:** SecureBids only (no email or mail accepted)
+- **Board Approval:** November 19, 2025
+- **Contract Approval:** January 14, 2026
+
+---
+
+## **Program Overview & Scope**
+
+### **Target Population:**
+- **ASES Program:** K-8th grade students
+- **ELO-P Program:** TK-6th grade students
+- **Service Duration:** 180 school days, from dismissal until 6:00 PM
 
-Focus on:
-
-Academic Support (tutoring, homework help, literacy, math enrichment).
-
-Enrichment Activities (STEAM, PE, arts, SEL, leadership).
-
-Youth Development (teamwork, problem-solving, growth).
-
-Family Engagement (parent participation, community connection).
-
-Qualified staffing & supervision.
-
-2. Provider Eligibility
-
-Prior experience in high-quality after-school/expanded learning for TK–8.
-
-Staff must meet qualification, training, and background check standards.
-
-Ability to coordinate with schools and community partners.
-
-Comply with Education Code for ASES/ELO-P and all district/state/federal rules.
-
-3. Capacity & Ratios
-
-Must serve up to 40 TK/K students per site at 1:10 ratio.
-
-Maintain staff-to-student ratios: 1:10 for TK/K, 1:20 for grades 1–8.
-
-Provide site coordinator 30 hrs/week, on-site 85% of time.
-
-4. Budget & Funding
-
-Max budget: $2,500/student.
-
-Must submit itemized budget per school site (staffing, materials, PD, admin, etc.).
-
-Separate budgets for combined ASES/ELO-P sites.
-
-First payment after first month of service.
-
-5. Program Alignment
-
-Align with NUSD Vision, Strategic Plan, LEAP Academy, and State/Federal laws.
-
-Serve multiple site types (TK–5, TK–6, TK–8, 7–8).
-
-Spanish dual-immersion support at Heredia-Arriaga School.
-
-Collaborate with third-party enrichment providers.
-
-6. Proposal Requirements
-
-Applicants must submit (via SecureBids):
-
-Cover Page (Appendix A)
-
-Proposal Checklist (Appendix B)
-
-References (Appendix C)
-
-School Site Selection Sheet (Appendix D)
-
-Itemized Budget per site
-
-Proposal Narrative (organization, need, program design, staffing, etc.)
-
-Application Questions (20 required)
-
-Assurances (Appendix E)
-
-Non-Collusion Affidavit (Appendix F)
-
-Non-Disclosure Affidavit (Appendix G)
-
-Fingerprinting/Background Check Certification (Appendix H)
-
-Workers’ Compensation Certification (Appendix I)
-
-7. Evaluation Criteria (180 points)
-
-Completeness (30 pts)
-
-Need for Program (10 pts)
-
-Program Design (30 pts)
-
-High-Quality Programming Elements (20 pts)
-
-Organizational Focus (10 pts)
-
-Professional Development (10 pts)
-
-Project Evaluation (20 pts)
-
-Success & Sustainability (20 pts)
-
-Budget (20 pts)
-
-Innovation / Other Points (10 pts)
-
-8. Compliance & Legal Requirements
-
-Independent contractor status (not NUSD employees).
-
-Licenses, insurance, and professional standards required.
-
-Insurance minimums:
-
-General liability $2M/$4M
-
-Sexual abuse/molestation $2M/$4M
-
-Auto $2M, Professional liability $1M, Workers’ Comp $1M, Cyber $1M.
-
-DOJ/FBI fingerprint clearance for all staff/volunteers.
-
-Anti-discrimination compliance.
-
-Student data privacy agreement (if handling digital records).
-
-Record retention (3+ years, audit rights).
-
-Quarterly financial reports & annual audits.
-
-No dual contracting: can’t be both Core Provider and Enrichment RFQ provider.
-
-Tobacco-free policy, no solicitation.
-
-Formal protest process for disputes.
-
-9. Key Deadlines
-
-RFP Publish: Aug 25, 2025
-
-Questions due: Sept 12, 2025 (4pm)
-
-District responses: Sept 19, 2025 (4pm)
-
-RFP Submission: Sept 26, 2025 (4pm, via SecureBids only)
-
-Review: Sept 29 – Oct 17, 2025
-
-Selection: Week of Oct 20, 2025
-
-Board Approval: Nov 19, 2025
-
-Contract Approval: Jan 14, 2026
+### **Available School Sites:**
+
+**ASES Only:**
+- Natomas Middle (7-8): 40 students minimum
+
+**ASES/ELO-P Combined:**
+- American Lakes (TK-8): 235 students minimum
+- Bannon Creek (TK-8): 230 students minimum
+- Jefferson (TK-8): 210 students minimum
+
+**ELO-P Only:**
+- H. Allen Hight (TK-6): 120 students minimum
+- Heredia Arriaga (TK-4): 150 students minimum
+- Heron (TK-6): 100 students minimum
+- Natomas Park (TK-6): 120 students minimum
+- Paso Verde (TK-6): 100 students minimum
+- Two Rivers (TK-5): 100 students minimum
+- Witter Ranch (TK-6): 130 students minimum
+
+---
+
+## **Financial Requirements**
+
+### **Budget Constraints:**
+- **Maximum:** $2,500 per student
+- **Separate itemized budgets required for each school site**
+- **First payment:** After first month of service completion
+- **Financial reporting:** Quarterly basis starting 3 months after school year begins
+
+### **Financial Documentation Required:**
+- Most recent external audit report
+- Financial statements demonstrating capacity
+- Detailed cost breakdown by category (staffing, materials, professional development, transportation, administrative/overhead)
+
+---
+
+## **Staffing Requirements**
+
+### **Mandatory Ratios:**
+- **TK/Kindergarten:** 1:10 ratio (must serve up to 40 TK/K students per site)
+- **Grades 1-8:** 1:20 ratio
+
+### **Site Coordinator Requirements:**
+- **Minimum:** 30 hours per week
+- **On-site presence:** 85% of funded time
+- Must integrate as part of school site team
+
+### **Staff Qualifications:**
+- All staff must pass DOJ/FBI fingerprint clearance before student contact
+- Background checks required for all employees, volunteers, and subcontractors
+- Contractor responsible for all fingerprinting costs
+
+---
+
+## **Program Service Requirements**
+
+### **Core Components:**
+- **Academic Support:** Tutoring, homework help, literacy and math enrichment
+- **Educational Enrichment:** Fine arts, career technical education, recreation, physical fitness, prevention activities
+- **Youth Development:** Teamwork, problem-solving, personal growth activities
+- **Family Engagement:** Opportunities for family participation
+- **Safe Environment:** Physical and emotional safety measures
+- **Nutrition:** Conforming snacks during program hours
+- **Physical Activity:** Regular opportunities required
+
+### **Special Requirements:**
+- Spanish dual-immersion capability for Heredia-Arriaga School
+- Coordination with NUSD contracted third-party enrichment providers
+- Separate tracking and invoicing for ASES vs. ELO-P funding when combined
+
+---
+
+## **Compliance & Legal Requirements**
+
+### **Program Compliance:**
+- Align with NUSD Vision, Strategic Plan, and Quality Standards for Expanded Learning
+- Comply with California Education Code requirements for ASES and ELO-P
+- Meet all federal, state, and local regulations
+- Maintain 85% average daily attendance
+- Begin immediately upon school dismissal
+
+### **Insurance Requirements:**
+- **Commercial General Liability:** $2M per occurrence, $4M aggregate
+- **Sexual Abuse-Molestation Coverage:** $2M per occurrence, $4M aggregate
+- **Professional Liability:** $1M per claim and aggregate
+- **Workers' Compensation:** Statutory limits with $1M Employer's Liability
+- **Business Auto Liability:** $2M per accident (if applicable)
+- **Cyber Liability:** $1M per claim (if handling student data)
+
+### **Additional Compliance:**
+- Student Data Privacy Agreement (if handling digital student records)
+- Anti-discrimination policies
+- Tobacco-free environment
+- No solicitation without approval
+
+---
+
+## **Required Submission Documents**
+
+### **Mandatory Attachments (12 items):**
+1. **Cover Page** (Appendix A)
+2. **Proposal Checklist** (Appendix B)
+3. **References** (Appendix C) - minimum 3 from last 5 years
+4. **School Site Selection Sheet** (Appendix D)
+5. **Itemized Budget per School Site** (separate for each site)
+6. **Proposal Narrative** addressing all 8 sections
+7. **Application Questions** (20 questions)
+8. **Assurance to Meet Certification** (Appendix E)
+9. **Non-Collusion Affidavit** (Appendix F)
+10. **Non-Disclosure Agreement** (Appendix G)
+11. **Fingerprinting/Background Check Certification** (Appendix H)
+12. **Workers Compensation Certification** (Appendix I)
+
+---
+
+## **Evaluation Criteria (180 Total Points)**
+
+1. **Completeness of Proposal** (30 points)
+2. **Need for Program** (10 points)
+3. **Program Design** (30 points)
+4. **Elements of High-Quality Programming** (20 points)
+5. **Organizational Focus** (10 points)
+6. **Professional Development** (10 points)
+7. **Project Evaluation** (20 points)
+8. **Success and Sustainability** (20 points)
+9. **Budget** (20 points)
+10. **Other Points/Innovation** (10 points)
+
+---
+
+## **Key Restrictions & Exclusions**
+
+### **Contractor Limitations:**
+- **Cannot serve as both:** Core After School Program Provider AND Enrichment Service Provider
+- Must choose one role only for contract duration
+- Independent contractor status (not district employee)
+- Subject to removal of unacceptable personnel
+
+### **Disqualification Risks:**
+- Late or incomplete submissions
+- Missing itemized budgets for each school site
+- Failure to follow specified format
+- Non-compliance with SecureBids platform
+- Budget exceeding $2,500 per student
+
+---
+
+## **Contact Information**
+- **Questions:** bidsubmission@natomasunified.org
+- **Subject Line:** "Questions: NUSD RFP 2025 for After School Core Program Providers"
+- **District Website:** www.natomasunified.org
+- **RFP Documents:** https://www.natomasunified.org/departments/business-services/purchasing/request-for-proposals-page
