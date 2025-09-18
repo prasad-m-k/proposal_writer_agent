@@ -18,7 +18,7 @@ from werkzeug.utils import secure_filename
 import signal # Added for stopServer
 from flask import jsonify # Added for stopServer
 from pathlib import Path
-
+from docx.shared import RGBColor
 
 app = Flask(__name__)
 env = {}
@@ -54,7 +54,11 @@ def _initialize():
     if not GEMINI_API_KEY:
         raise ValueError("GEMINI_API_KEY not set. Please set it in your .env file.")
     genai.configure(api_key=GEMINI_API_KEY)
-    
+
+    GEMINI_API_KEY_ALTERNATE = os.getenv("GEMINI_API_KEY_ALTERNATE")
+    if not GEMINI_API_KEY_ALTERNATE:
+        raise ValueError("GEMINI_API_KEY_ALTERNATE not set. Please set it in your .env file.")
+
     env['DEPL'] = os.getenv("DEPL")
 
 
@@ -148,6 +152,38 @@ def manage_file_rotation(district_name, download_folder, max_files=5):
             except OSError as e:
                 print(f"Error deleting file {filepath}: {e}")
 
+def color_headings(docx_path):
+    """Opens a DOCX file and changes the font color of all heading styles to blue."""
+    return
+    try:
+        document = Document(docx_path)
+        styles = document.styles
+
+        # Find the built-in heading styles and set their font color
+        heading_styles = {
+            'Heading 1': styles['Heading 1'],
+            'Heading 2': styles['Heading 2'],
+            'Heading 3': styles['Heading 3'],
+            # Add more as needed
+        }
+
+        blue = RGBColor(0x00, 0x00, 0xFF) # RGB for blue
+
+        for style in heading_styles.values():
+            if style:
+                style.font.color.rgb = blue
+            
+        # Iterate through the document paragraphs and apply the style to any headings
+        for paragraph in document.paragraphs:
+            if paragraph.style.name in heading_styles:
+                paragraph.style.font.color.rgb = blue
+
+        document.save("blue_headings_output.docx")
+        print("Successfully updated heading colors and saved to 'blue_headings_output.docx'.")
+
+    except Exception as e:
+        print(f"An error occurred while modifying the document: {e}")
+
 def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N/A", days_per_week="N/A", selected_schools=[], total_students="N/A", cost_per_student="N/A"):
     """
     Generates a proposal with a custom header, saves it as a .docx file,
@@ -158,23 +194,24 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
         with open(os.path.join(app.config['INPUT_FILES_FOLDER'], 'district.csv'), 'r') as f:
             all_districts_info = f.read()
 
-        with open(os.path.join(app.config['INPUT_FILES_FOLDER'], 'about_msg.txt'), 'r') as f:
-            about_msg = f.read()
+        with open(os.path.join(app.config['INPUT_FILES_FOLDER'], 'about_mstg.txt'), 'r') as f:
+            about_mstg = f.read()
 
-        with open(os.path.join(app.config['INPUT_FILES_FOLDER'], 'proposal.txt'), 'r') as file:
-            proposal_context = file.read()
+        with open(os.path.join(app.config['INPUT_FILES_FOLDER'], 'about_minkh.txt'), 'r') as file:
+            about_minkh = file.read()
 
         natomas_rfp_requirements_context = ""
         natomas_rfp_instruction_formatted = ""
         if district == "Natomas Unified School District":
             try:
-                with open('natomas_school_district_rfp_requirements.txt', 'r') as f:
+                # Read from INPUT_FILES_FOLDER
+                with open(os.path.join(app.config['INPUT_FILES_FOLDER'], 'natomas_school_district_rfp_requirements.txt'), 'r') as f:
                     natomas_rfp_requirements_context = f.read()
                     natomas_rfp_instruction_formatted = (
                         "\nWhen generating the proposal for Natomas Unified School District, it is crucial to explicitly address and demonstrate compliance with each of the listed RFP requirements, integrating them naturally into the relevant sections of the proposal."
                     )
             except FileNotFoundError:
-                print("Warning: natomas_school_district_rfp_requirements.txt not found. Proceeding without specific RFP context for Natomas.")
+                print("Warning: natomas_school_district_rfp_requirements.txt not found in INPUT_FILES_FOLDER. Proceeding without specific RFP context for Natomas.")
 
         model = genai.GenerativeModel('gemini-1.5-flash')
         company = "Music Science & Technology Group"
@@ -188,19 +225,25 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
         
         school_locations = ", ".join(selected_schools) if selected_schools else "Selected school sites"
 
+        # --- Clean and format cost_proposal before inserting into the prompt template ---
         try:
-            numeric_cost_proposal = float(cost_proposal)
+            # Remove non-numeric characters except for the decimal point
+            clean_cost_proposal = re.sub(r'[^\d.]', '', cost_proposal)
+            numeric_cost_proposal = float(clean_cost_proposal)
             formatted_cost_proposal = f"${numeric_cost_proposal:,.2f}"
         except (ValueError, TypeError):
             formatted_cost_proposal = "$0.00"
-            print(f"Warning: Invalid cost_proposal value received: {cost_proposal}. Defaulting to $0.00.")
+            print(f"Warning: Invalid cost_proposal value received: {cost_proposal}. Defaulting to {formatted_cost_proposal}.")
 
+        # --- Clean and format cost_per_student if it's a valid number ---
         try:
-            numeric_cost_per_student = float(cost_per_student)
+            # Remove non-numeric characters except for the decimal point
+            clean_cost_per_student = re.sub(r'[^\d.]', '', cost_per_student)
+            numeric_cost_per_student = float(clean_cost_per_student)
             formatted_cost_per_student = f"${numeric_cost_per_student:,.2f}"
         except (ValueError, TypeError):
             formatted_cost_per_student = "N/A"
-            print(f"Warning: Invalid cost_per_student value received: {cost_per_student}. Defaulting to N/A.")
+            print(f"Warning: Invalid cost_per_student value received: {cost_per_student}. Defaulting to {formatted_cost_per_student}.")
 
 
         with open(os.path.join(app.config['INPUT_FILES_FOLDER'], 'proposal_prompt.txt'), 'r') as f:
@@ -216,8 +259,8 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
             total_students=total_students,
             formatted_cost_per_student=formatted_cost_per_student,
             year=year,
-            about_msg=about_msg,
-            proposal_context=proposal_context,
+            about_mstg=about_mstg,
+            about_minkh=about_minkh,
             all_districts_info=all_districts_info,
             natomas_rfp_requirements_context_formatted=natomas_rfp_requirements_context,
             natomas_rfp_instruction_formatted=natomas_rfp_instruction_formatted,
@@ -245,6 +288,7 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
         output_path = os.path.join(app.config['DOWNLOAD_FOLDER'], filename)
         document.save(output_path)
         print(f"Successfully created '{filename}' in '{app.config['DOWNLOAD_FOLDER']}' with custom header.")
+        color_headings(output_path)
 
         manage_file_rotation(district, app.config['DOWNLOAD_FOLDER'])
 
@@ -258,7 +302,8 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
         return error_text, None
 
 def get_school_data():
-    df = pd.read_csv("data.csv") 
+    # Read data.csv from INPUT_FILES_FOLDER
+    df = pd.read_csv(os.path.join(app.config['INPUT_FILES_FOLDER'], "data.csv"))
     df.columns = df.columns.str.strip()
     return df
 
@@ -272,12 +317,14 @@ def index():
 @app.route('/proposal', methods=['POST'])
 def generate_proposal():
     district_name = request.form.get('district')
-    cost_proposal = request.form.get('cost_proposal')
+    # cost_proposal comes from the calculated total in JS
+    cost_proposal = request.form.get('cost_proposal') 
     num_weeks = request.form.get('num_weeks')
     days_per_week = request.form.get('days_per_week')
     selected_schools = request.form.getlist('schoolname')
-    total_students = request.form.get('total_students_for_ai')
-    cost_per_student = request.form.get('cost_per_student_for_ai')
+    # total_students and cost_per_student now come from editable fields
+    total_students = request.form.get('total_students_display') # Changed to display name
+    cost_per_student = request.form.get('cost_per_student_display') # Changed to display name
 
     proposal_text, filename = generate_proposal_from_row(
         district=district_name, 

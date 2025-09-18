@@ -130,7 +130,7 @@
                 </div>
                  <div style="margin-top: 1em;">
                     <label for="cost-per-student-input-editable">Cost per Student for Program (Editable):</label>
-                    <input type="number" id="cost-per-student-input-editable" name="cost_per_student_display" class="config-input" value="0.00" step="0.01">
+                    <input type="number" id="cost-per-student-input-editable" name="cost_per_student_display" class="config-input" value="2500.00" step="0.01">
                 </div>
             </div>
 
@@ -138,7 +138,6 @@
                 <h2>3. Cost Summary</h2>
                 <label for="cost-proposal-input">Total Estimated Program Cost:</label>
                 <input type="text" id="cost-proposal-input" name="cost_proposal" class="config-input" readonly>
-               
             </div>
 
             <div class="card" id="school-funding-card" style="display: none;">
@@ -169,7 +168,7 @@
                 <div class="loader" id="loader"></div>
             </div>
 
-            <!-- Hidden inputs to pass calculated values to the backend -->
+            <!-- Hidden inputs to pass calculated values to the backend. These values will reflect the final editable states. -->
             <input type="hidden" name="total_students_for_ai" id="total-students-for-ai-hidden">
             <input type="hidden" name="cost_per_student_for_ai" id="cost-per-student-for-ai-hidden">
         </form>
@@ -195,8 +194,14 @@
     const costPerStudentForAiHidden = document.getElementById('cost-per-student-for-ai-hidden');
 
     const PER_STUDENT_FUNDING = 2500; // Per-student funding for table calculation
+    const DEFAULT_STUDENTS_PER_SCHOOL = 40; // Default students if nothing selected
+    const DEFAULT_COST_PER_STUDENT_PROGRAM = 2500.00; // Default for editable cost per student
+
 
     function formatCurrency(value) {
+        if (isNaN(value) || value === null) {
+            return "$0.00";
+        }
         return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
     }
 
@@ -281,21 +286,25 @@
         // If no schools selected, or if value is zero and schools were selected, default to 40*numSchools
         if (numSchoolsSelected === 0) {
             totalStudentsInput.value = '0';
-            costPerStudentInputEditable.value = '0.00'; // Reset editable cost per student
-        } else if (parseInt(totalStudentsInput.value, 10) === 0) {
-            totalStudentsInput.value = (numSchoolsSelected * 40).toString(); // Default 40 students per selected school
+        } else if (parseInt(totalStudentsInput.value, 10) === 0) { // If it's 0, apply default based on selected schools
+            totalStudentsInput.value = (numSchoolsSelected * DEFAULT_STUDENTS_PER_SCHOOL).toString(); 
+        }
+
+        // Handle editable 'Cost per Student for Program' (costPerStudentInputEditable)
+        if (parseFloat(costPerStudentInputEditable.value) === 0 || costPerStudentInputEditable.value === '') {
+            costPerStudentInputEditable.value = DEFAULT_COST_PER_STUDENT_PROGRAM.toFixed(2);
         }
 
         const studentsToServe = parseInt(totalStudentsInput.value, 10) || 0;
-        let costPerStudentValue = parseFloat(costPerStudentInputEditable.value) || 0;
+        const costPerStudentProgram = parseFloat(costPerStudentInputEditable.value) || 0;
 
         // Calculate Total Estimated Program Cost based on editable students and editable cost per student
-        const totalProgramCost = studentsToServe * costPerStudentValue;
+        const totalProgramCost = studentsToServe * costPerStudentProgram;
         costProposalInput.value = formatCurrency(totalProgramCost);
 
         // Update hidden inputs for backend submission
         totalStudentsForAiHidden.value = studentsToServe;
-        costPerStudentForAiHidden.value = costPerStudentValue.toFixed(2);
+        costPerStudentForAiHidden.value = costPerStudentProgram.toFixed(2);
     }
 
     // Event listener for "Select All Schools" checkbox
@@ -311,8 +320,10 @@
     // Event listeners for manual input changes that affect costs
     totalStudentsInput.addEventListener('input', updateAllCostsAndDetails);
     costPerStudentInputEditable.addEventListener('input', updateAllCostsAndDetails);
-    weeksInput.addEventListener('input', updateAllCostsAndDetails);
-    daysInput.addEventListener('input', updateAllCostsAndDetails); // Even though weeks/days don't drive total cost directly anymore, they are context for AI
+    
+    // Weeks and Days per Week are for AI context, not direct cost calculation in this model
+    weeksInput.addEventListener('input', updateAllCostsAndDetails); 
+    daysInput.addEventListener('input', updateAllCostsAndDetails);
 
 
     proposalForm.addEventListener('submit', function(event) {
