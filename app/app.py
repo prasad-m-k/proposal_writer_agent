@@ -19,6 +19,7 @@ import signal # Added for stopServer
 from flask import jsonify # Added for stopServer
 from pathlib import Path
 from docx.shared import RGBColor
+import word_formatter
 
 app = Flask(__name__)
 env = {}
@@ -152,37 +153,6 @@ def manage_file_rotation(district_name, download_folder, max_files=5):
             except OSError as e:
                 print(f"Error deleting file {filepath}: {e}")
 
-def color_headings(docx_path):
-    """Opens a DOCX file and changes the font color of all heading styles to blue."""
-    return
-    try:
-        document = Document(docx_path)
-        styles = document.styles
-
-        # Find the built-in heading styles and set their font color
-        heading_styles = {
-            'Heading 1': styles['Heading 1'],
-            'Heading 2': styles['Heading 2'],
-            'Heading 3': styles['Heading 3'],
-            # Add more as needed
-        }
-
-        blue = RGBColor(0x00, 0x00, 0xFF) # RGB for blue
-
-        for style in heading_styles.values():
-            if style:
-                style.font.color.rgb = blue
-            
-        # Iterate through the document paragraphs and apply the style to any headings
-        for paragraph in document.paragraphs:
-            if paragraph.style.name in heading_styles:
-                paragraph.style.font.color.rgb = blue
-
-        document.save("blue_headings_output.docx")
-        print("Successfully updated heading colors and saved to 'blue_headings_output.docx'.")
-
-    except Exception as e:
-        print(f"An error occurred while modifying the document: {e}")
 
 def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N/A", days_per_week="N/A", selected_schools=[], total_students="N/A", cost_per_student="N/A"):
     """
@@ -288,7 +258,9 @@ def generate_proposal_from_row(district="N/A", cost_proposal="N/A", num_weeks="N
         output_path = os.path.join(app.config['DOWNLOAD_FOLDER'], filename)
         document.save(output_path)
         print(f"Successfully created '{filename}' in '{app.config['DOWNLOAD_FOLDER']}' with custom header.")
-        color_headings(output_path)
+        #color_headings(output_path)
+       
+        word_formatter.format_word_document(output_path, output_path)
 
         manage_file_rotation(district, app.config['DOWNLOAD_FOLDER'])
 
