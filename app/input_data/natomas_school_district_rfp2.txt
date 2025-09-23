@@ -1,0 +1,84 @@
+Here are the requirements and proposal format for the Natomas Unified School District's Summer School Core Program Providers RFP, presented in markdown text:
+
+## RFP Requirements and Proposal Format
+
+### I. Proposal Submission Requirements
+
+*   **Deadline:** Proposals must be received by September 26, 2025, at 4:00 PM (Pacific).
+*   **Submission Method:** All proposals must be submitted electronically through the Secure Bids platform.
+*   **Account Creation:** Applicants must create a free account with Secure Bids in advance of the deadline.
+*   **Format:** Proposals must be submitted in PDF format.
+*   **Completeness:** Proposals must be complete and meet all requirements outlined in the RFP.
+*   **Rejection Criteria:** Proposals not received by the specified time, submitted outside of Secure Bids, incomplete, or late will be rejected.
+
+### II. Proposal Format and Content
+
+Proposals should be well-organized, clearly labeled by section, and include all supporting attachments. The following is the required order and content:
+
+**A. Required Documents for RFP Submission (See Appendix B for Checklist)**
+
+1.  **Cover Page (Appendix A):** Signed by the authorized representative.
+2.  **Proposal Checklist (Appendix B):** To be used by the proposer.
+3.  **References (Appendix C):** Minimum of three (3) references from organizations served within the last five (5) years.
+4.  **Budget Selection Sheet (Appendix D & Attachment):**
+    *   Select one funding option (Option 1 or Option 2).
+    *   Submit a detailed, itemized budget as a separate attachment, clearly labeled (e.g., "Itemized Budget – Site 1, Option 1").
+    *   Budget must be based on a program serving a minimum of 200 TK-6th grade students per school site.
+    *   Break down costs by category (staffing, instructional materials, program supplies, professional development, transportation, administrative/overhead, subcontracted enrichment/intervention).
+    *   Budgets must align with the selected funding option and per-student allocation.
+    *   **Option 1:** Max $1,000 per student; demonstrate integration with district intervention staff.
+    *   **Option 2:** Max $1,500 per student; include a detailed intervention plan.
+5.  **Proposal Narrative (Attachment):** This is a required attachment and must address the following areas in detail:
+    *   **Need for Program:** Introduction to the organization, mission, history, values, and experience. Explanation of how the program meets NUSD students' needs (academic support, enrichment, youth development).
+    *   **Program Design:** Alignment with NUSD goals, quality standards, and legal requirements. Recruitment/retention strategies, attendance plans, organizational structure (include chart), parent/youth feedback, and attendance tracking.
+    *   **Elements of High-Quality Programming:** How the program links to the school day, staff quality, safe/supportive environment, developmentally appropriate activities, and student progress measurement.
+    *   **Organizational Focus:** Site coordinator qualifications, staffing capacity, onboarding/training plans, and integration with the school site.
+    *   **Professional Development:** Staff training, professional development, volunteer use, and communication with parents/school staff. Include a sample training calendar.
+    *   **Success and Sustainability:** Past program success, financial statements/audits, disclosure of litigation/terminated agreements, compliance with laws, and plans for ongoing partnerships.
+    *   **Other Points:** Highlight innovative aspects of the program and how their success will be measured.
+6.  **Application Questionnaire (Attachment):** Answer all questions provided.
+7.  **Assurances to Meet Requirements (Appendix E):** Acknowledge understanding and agreement with all certified assurances.
+8.  **Non-Collusion Affidavit (Appendix F):** Signed by the authorized representative.
+9.  **Non-Disclosure Agreement (Appendix G):** Signed by the authorized representative.
+10. **Workers' Compensation Certification (Appendix H):** Signed by the authorized representative.
+11. **Fingerprinting/Criminal Background Investigation Certification (Appendix H):** To be completed by the District Representative and Vendor/Contractor.
+
+### III. RFP Evaluation Criteria
+
+Proposals will be evaluated based on the following criteria, with a total possible score of 160 points:
+
+*   **Completeness of Proposal:** (30 points) - Submission of all required documents, forms, and attachments.
+*   **Need for Program:** (10 points) - Demonstrated understanding of NUSD student needs and alignment of the organization's approach.
+*   **Program Design:** (30 points) - Alignment with NUSD Vision, Goals, Core Values, quality standards, legal requirements, and effective organizational structure.
+*   **Elements of High-Quality Programming:** (20 points) - Integration of high-quality staff, safe and appropriate environment, high-interest programming, and effective measurement of student achievement.
+*   **Organizational Focus:** (10 points) - Qualifications and experience of site coordinators/program managers, and the organization's capacity to hire, train, and retain staff.
+*   **Professional Development:** (10 points) - Types and frequency of professional development offered, communication strategies, and volunteer utilization.
+*   **Success and Sustainability:** (20 points) - Demonstrated success in implementing similar programs, financial stability, and plans for ongoing partnerships.
+*   **Budget:** (20 points) - Completeness, accuracy, and alignment of the proposed budget with the selected funding option.
+*   **Other Points:** (10 points) - Innovation in program aspects and how success will be measured.
+
+### IV. General Terms and Conditions
+
+*   **Independent Contractor:** Awarded providers will act as independent contractors.
+*   **Qualifications:** Providers and their personnel must hold all legally required licenses, credentials, permits, and qualifications.
+*   **Insurance Requirements:** Specific insurance coverage (Commercial General Liability, Sexual Abuse-Molestation, Business Automobile Liability, Professional Liability, Workers' Compensation, Cyber Liability) is required with specified limits.
+*   **Indemnification:** Providers must indemnify and hold harmless NUSD.
+*   **Assignment and Subcontracting:** Not allowed without written approval from NUSD.
+*   **Fingerprinting and DOJ Clearance:** All personnel with contact with NUSD students must obtain fingerprint clearance.
+*   **Anti-Discrimination:** Compliance with all applicable anti-discrimination laws is required.
+*   **Safety, Security, and Controlled Substances:** Compliance with district safety and security procedures; prohibition of drugs, alcohol, and tobacco on NUSD property.
+*   **No Solicitation:** No solicitation or sales on NUSD property without prior written approval.
+*   **Student Data Privacy:** Compliance with California Student Data Privacy Agreement requirements if technology services are involved.
+*   **Record Retention and Audit:** Providers must maintain records and be subject to audit by the District.
+*   **Limitation of District Liability:** NUSD's liability is limited to fees agreed upon.
+*   **Confidentiality:** All received information must be kept confidential.
+*   **Public Health Mandates:** Compliance with all public health requirements.
+*   **Taxpayer Identification:** Submission of IRS Form W-9 is required.
+*   **Agreement Contingent Upon Board Approval:** Any agreement is contingent upon formal approval by the District's Board of Trustees.
+*   **Financial Requirements:** Providers must have an accounting system capable of generating required financial reports.
+*   **Payment Terms:** Payment will be made for satisfactorily rendered services, with invoices submitted to the District Accounts Payable Department.
+*   **Withdrawal of Proposals:** Proposals may be withdrawn prior to opening.
+*   **Restricted Proposal:** Only fully licensed, equipped, and experienced companies will be considered qualified.
+*   **Provider Designation:** Applicants selected as a Core Summer School Program Provider are prohibited from simultaneously contracting as an Enrichment Service Provider.
+*   **Tobacco-Free District:** Tobacco use is prohibited on all district property and in district vehicles.
+*   **Protest Procedures:** Formal written protests must be submitted to the Director of Purchasing & Warehouse within five (5) business days of notification of awardee selection.

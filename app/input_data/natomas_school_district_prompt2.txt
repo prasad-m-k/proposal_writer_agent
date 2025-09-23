@@ -1,0 +1,178 @@
+Generate a Microsoft Word document (.docx) based on the following information, using placeholders where specific details are needed. The document should be structured to mimic a formal proposal submission.
+
+**Document Title:** Proposal for Summer School Core Program Providers
+
+**Recipient Information:**
+*   **To:** Director of Purchasing
+*   **From:** [Organization Name Placeholder]
+*   **Date:** [Submission Date Placeholder]
+
+**RFP Details:**
+*   **RFP Title:** Request for Proposal (RFP) - Summer School Core Program Providers - Expanded Learning Opportunities Program (ELO-P) - Cycle B: Summer 2026, Summer 2027
+*   **District:** Natomas Unified School District (NUSD)
+
+**I. Cover Page (Appendix A)**
+*   **Company Name:** [Company Name Placeholder]
+*   **Authorized Representative Name:** [Rep Name Placeholder]
+*   **Title:** [Rep Title Placeholder]
+*   **Email:** [Rep Email Placeholder]
+*   **Phone:** [Rep Phone Placeholder]
+*   **Address:** [Rep Address Placeholder]
+*   **Authorized Signature:** [Signature Placeholder]
+*   **Date:** [Signature Date Placeholder]
+
+**II. Proposal Checklist (Appendix B)**
+*   [Checkbox Placeholder: Cover Page] Signed Cover Page (Appendix A)
+*   [Checkbox Placeholder: Proposal Checklist] Proposal Checklist (Appendix B)
+*   [Checkbox Placeholder: References] References (Appendix C)
+*   [Checkbox Placeholder: Budget Selection Sheet] Budget Selection Sheet (Appendix D & Attachment)
+*   **Proposal Narrative (Attachment):**
+    *   [Checkbox Placeholder: Narrative Need] Need for Program
+    *   [Checkbox Placeholder: Narrative Design] Program Design
+    *   [Checkbox Placeholder: Narrative Org Focus] Organizational Focus
+    *   [Checkbox Placeholder: Narrative Project Eval] Project Evaluation
+    *   [Checkbox Placeholder: Narrative Success] Success and Sustainability
+    *   [Checkbox Placeholder: Narrative Other] Other Relevant Information to be considered
+*   [Checkbox Placeholder: Application Questionnaire] Application Questionnaire (Attachment)
+*   [Checkbox Placeholder: Assurances] Assurances to Meet Requirements (Appendix E)
+*   [Checkbox Placeholder: Non-Collusion Affidavit] Non-Collusion Affidavit (Appendix F)
+*   [Checkbox Placeholder: Non-Disclosure Agreement] Non-Disclosure Agreement (Appendix G)
+*   [Checkbox Placeholder: Workers Comp Cert] Workers' Compensation Certification (Appendix H)
+*   [Checkbox Placeholder: Fingerprint Cert] Fingerprinting/Criminal Background Investigation Certification (Appendix H)
+
+**III. References (Appendix C)**
+*   **Reference 1:**
+    *   Name of Organization: [Ref 1 Org Placeholder]
+    *   Contact Name: [Ref 1 Contact Placeholder]
+    *   Phone Number: [Ref 1 Phone Placeholder]
+    *   Email: [Ref 1 Email Placeholder]
+    *   Dates of Service: [Ref 1 Dates Placeholder]
+    *   Description of Program/Service: [Ref 1 Description Placeholder]
+*   **Reference 2:**
+    *   Name of Organization: [Ref 2 Org Placeholder]
+    *   Contact Name: [Ref 2 Contact Placeholder]
+    *   Phone Number: [Ref 2 Phone Placeholder]
+    *   Email: [Ref 2 Email Placeholder]
+    *   Dates of Service: [Ref 2 Dates Placeholder]
+    *   Description of Program/Service: [Ref 2 Description Placeholder]
+*   **Reference 3:**
+    *   Name of Organization: [Ref 3 Org Placeholder]
+    *   Contact Name: [Ref 3 Contact Placeholder]
+    *   Phone Number: [Ref 3 Phone Placeholder]
+    *   Email: [Ref 3 Email Placeholder]
+    *   Dates of Service: [Ref 3 Dates Placeholder]
+    *   Description of Program/Service: [Ref 3 Description Placeholder]
+
+**IV. Budget Selection Sheet (Appendix D & Attachment)**
+*   **Funding Options (Select One):**
+    *   [Radio Button Placeholder: Option 1] Option 1 – Core Program with District Intervention Staff
+        *   Total cost must not exceed $1,000 per student per site.
+        *   Provider delivers all core program services, including enrichment, youth development, family engagement, and staffing/supervision.
+        *   Academic interventions will be provided by district-assigned staff (credentialed teachers or district-selected interventionists).
+        *   Provider must demonstrate a schedule that allows for integration and coordination with district intervention staff.
+    *   [Radio Button Placeholder: Option 2] Option 2 – Core Program with Provider-Delivered Academic Interventions
+        *   Total cost must not exceed $1,500 per student per site.
+        *   Provider delivers all core program services, including structured academic intervention blocks.
+        *   Interventions must be delivered by credentialed teachers or trained interventionists, use evidence-based instructional strategies and materials, and align with NUSD academic goals and LEAP Academy priorities.
+        *   Vendors selecting this option must include a detailed intervention plan outlining staffing qualifications, instructional methods, and the frequency and duration of intervention sessions.
+*   **Required Vendor Information:**
+    *   Maximum number of summer school sites your organization can serve at 200 students per site: [Max Sites Placeholder]
+*   **Certification:**
+    *   Signature: [Budget Cert Signature Placeholder]
+    *   Authorized Vendor Representative Name: [Budget Cert Rep Name Placeholder]
+
+**V. Itemized Budget Attachment**
+*   **Placeholder:** [Instruction: Attach a separate, detailed, itemized budget document. Label it clearly, e.g., "Itemized Budget – [Organization Name] – Option [1 or 2]". The budget must break down costs by category (staffing, instructional materials, program supplies, professional development, transportation, administrative/overhead, subcontracted enrichment/intervention services) and align with the selected funding option and per-student allocation.]
+
+**VI. Proposal Narrative (Attachment)**
+*   **Placeholder:** [Instruction: Attach a separate document containing the Proposal Narrative. Ensure it is clearly labeled, e.g., "Proposal Narrative – [Organization Name]". The narrative must address the following sections:]
+    *   A. Need for Program: [Narrative Section Placeholder: Need for Program]
+    *   B. Program Design: [Narrative Section Placeholder: Program Design]
+    *   C. Elements of High-Quality Programming: [Narrative Section Placeholder: Elements of High-Quality Programming]
+    *   D. Organizational Focus: [Narrative Section Placeholder: Organizational Focus]
+    *   E. Professional Development: [Narrative Section Placeholder: Professional Development]
+    *   F. Success and Sustainability: [Narrative Section Placeholder: Success and Sustainability]
+    *   G. Other Points: [Narrative Section Placeholder: Other Points]
+
+**VII. Application Questionnaire (Attachment)**
+*   **Placeholder:** [Instruction: Attach a separate document containing the answers to the Application Questionnaire. Ensure it is clearly labeled, e.g., "Application Questionnaire – [Organization Name]". Answers should be numbered corresponding to the questions in the RFP.]
+
+**VIII. Assurances to Meet Requirements (Appendix E)**
+*   **Placeholder:** [Instruction: Attach a separate document for Assurances. Ensure it is clearly labeled, e.g., "Assurances – [Organization Name]". This section requires initials for each point to indicate understanding and agreement.]
+    *   **Program Elements:**
+        *   [Checkbox Placeholder: Assurance PE1] Educational element (language arts, math, etc.)
+        *   [Checkbox Placeholder: Assurance PE2] Enrichment element (arts, CTE, recreation, etc.)
+        *   [Checkbox Placeholder: Assurance PE3] Safe and supportive environment
+        *   [Checkbox Placeholder: Assurance PE4] Collaboration with school day program
+        *   [Checkbox Placeholder: Assurance PE5] Snack conforms to nutrition standards
+        *   [Checkbox Placeholder: Assurance PE6] Opportunities for physical activity
+    *   **Program Plan:**
+        *   [Checkbox Placeholder: Assurance PP1] Commitment from partners and staff
+        *   [Checkbox Placeholder: Assurance PP2] Collaborative planning process
+    *   **Program Operations:**
+        *   [Checkbox Placeholder: Assurance PO1] Student-staff ratio (1:20 grades 1-6, 1:10 TK/K)
+        *   [Checkbox Placeholder: Assurance PO2] Operating hours (7:30 AM - 4:30 PM, min 30 days)
+        *   [Checkbox Placeholder: Assurance PO3] Reasonable early release policy
+        *   [Checkbox Placeholder: Assurance PO4] Daily student participation
+        *   [Checkbox Placeholder: Assurance PO5] Eligibility criteria (spring term enrollment)
+        *   [Checkbox Placeholder: Assurance PO6] No family fees or income-based eligibility
+        *   [Checkbox Placeholder: Assurance PO7] Notices in English and primary language
+    *   **Authorized Representative:**
+        *   Name: [Assurance Rep Name Placeholder]
+        *   Date: [Assurance Rep Date Placeholder]
+        *   Authorized Signature: [Assurance Rep Signature Placeholder]
+
+**IX. Non-Collusion Affidavit (Appendix F)**
+*   **Placeholder:** [Instruction: Attach a separate document for the Non-Collusion Affidavit. Ensure it is clearly labeled, e.g., "Non-Collusion Affidavit – [Organization Name]". This needs to be signed.]
+    *   **Affiant Name:** [Affiant Name Placeholder]
+    *   **Affiant Company Name:** [Affiant Company Name Placeholder]
+    *   **Affiant Title:** [Affiant Title Placeholder]
+    *   **Signature:** [Affidavit Signature Placeholder]
+    *   **Date:** [Affidavit Date Placeholder]
+
+**X. Non-Disclosure Agreement (Appendix G)**
+*   **Placeholder:** [Instruction: Attach a separate document for the Non-Disclosure Agreement. Ensure it is clearly labeled, e.g., "Non-Disclosure Agreement – [Organization Name]". This needs to be signed by the DISCLOSEE.]
+    *   **DISCLOSEE Name:** [NDA Disclosee Name Placeholder]
+    *   **Authorized Signature:** [NDA Signature Placeholder]
+    *   **Name:** [NDA Signer Name Placeholder]
+    *   **Date:** [NDA Signer Date Placeholder]
+    *(Note: The full text of the NDA will be inserted here by the Python script or manually.)*
+
+**XI. Workers' Compensation Certification (Appendix H)**
+*   **Placeholder:** [Instruction: Attach a separate document for Workers' Compensation Certification. Ensure it is clearly labeled, e.g., "Workers' Compensation Certification – [Organization Name]". This needs to be signed.]
+    *   **Company Name:** [WC Company Name Placeholder]
+    *   **Authorized Representative Name:** [WC Rep Name Placeholder]
+    *   **Title:** [WC Rep Title Placeholder]
+    *   **Email:** [WC Rep Email Placeholder]
+    *   **Phone:** [WC Rep Phone Placeholder]
+    *   **Address:** [WC Rep Address Placeholder]
+    *   **Authorized Signature:** [WC Signature Placeholder]
+    *   **Date:** [WC Signature Date Placeholder]
+
+**XII. Fingerprinting/Criminal Background Investigation Certification (Appendix H)**
+*   **Placeholder:** [Instruction: Attach a separate document for Fingerprinting Certification. Ensure it is clearly labeled, e.g., "Fingerprinting Certification – [Organization Name]". This involves selecting an option and having both District and Vendor sign.]
+    *   **District Representative Selection:**
+        *   [Radio Button Placeholder: Fingerprint Option 1] Option 1 Selected
+        *   [Radio Button Placeholder: Fingerprint Option 2] Option 2 Selected
+    *   **If Option 2 Selected, choose safety measures:**
+        *   [Checkbox Placeholder: Safety Measure 1] No contact with students
+        *   [Checkbox Placeholder: Safety Measure 2] Physical barrier
+        *   [Checkbox Placeholder: Safety Measure 3] Continual supervision by employee
+        *   [Checkbox Placeholder: Safety Measure 4] Surveillance of Employees
+    *   **Vendor/Contractor Confirmation:**
+        *   Name of Contractor: [Fingerprint Vendor Name Placeholder]
+        *   Name and Title: [Fingerprint Vendor Rep Name Placeholder], [Fingerprint Vendor Rep Title Placeholder]
+        *   Signature: [Fingerprint Vendor Signature Placeholder]
+        *   Date: [Fingerprint Vendor Signature Date Placeholder]
+
+---
+
+**Instructions for Python Program:**
+
+1.  **Template Structure:** The Word document will be generated using a template. This prompt defines the structure and placeholders.
+2.  **Placeholder Replacement:** The Python script will need to identify and replace each `[Placeholder Name]` with the actual data provided.
+3.  **Attachment Handling:** For sections marked with `[Instruction: Attach...]`, the Python script would typically need to:
+    *   Save the content for that section into a separate file (e.g., a PDF or DOCX).
+    *   Potentially link to or embed these files if the Word library supports it (e.g., embedding files as objects, though this can increase file size and complexity). For simpler generation, it might just be a note to attach them manually.
+4.  **Checkboxes/Radio Buttons:** These will need to be implemented using Word's form controls or equivalent functionality if the library supports it. If not, they can be represented as "[X]" or "[ ]" text.
+5.  **Text Areas:** For sections like "Proposal Narrative," the placeholder `[Narrative Section Placeholder: ...]` indicates where the actual text content for that section of the narrative should be inserted.
