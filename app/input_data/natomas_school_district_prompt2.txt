@@ -1,4 +1,4 @@
-Generate a Microsoft Word document (.docx) based on the following information, using placeholders where specific details are needed. The document should be structured to mimic a formal proposal submission.
+Generate a comprehensive proposal for Summer School Core Program Providers with the following structure. Focus on creating clean, professional proposal content without any technical implementation details.
 
 **Document Title:** Proposal for Summer School Core Program Providers
 
@@ -167,12 +167,6 @@ Generate a Microsoft Word document (.docx) based on the following information, u
 
 ---
 
-**Instructions for Python Program:**
+**Final Notes:**
 
-1.  **Template Structure:** The Word document will be generated using a template. This prompt defines the structure and placeholders.
-2.  **Placeholder Replacement:** The Python script will need to identify and replace each `[Placeholder Name]` with the actual data provided.
-3.  **Attachment Handling:** For sections marked with `[Instruction: Attach...]`, the Python script would typically need to:
-    *   Save the content for that section into a separate file (e.g., a PDF or DOCX).
-    *   Potentially link to or embed these files if the Word library supports it (e.g., embedding files as objects, though this can increase file size and complexity). For simpler generation, it might just be a note to attach them manually.
-4.  **Checkboxes/Radio Buttons:** These will need to be implemented using Word's form controls or equivalent functionality if the library supports it. If not, they can be represented as "[X]" or "[ ]" text.
-5.  **Text Areas:** For sections like "Proposal Narrative," the placeholder `[Narrative Section Placeholder: ...]` indicates where the actual text content for that section of the narrative should be inserted.
+This proposal demonstrates our organization's commitment to delivering high-quality summer school programming that meets all RFP requirements. We are prepared to provide all necessary documentation and look forward to partnering with Natomas Unified School District to support student success during the summer months.

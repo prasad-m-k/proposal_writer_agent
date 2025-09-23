@@ -1,0 +1,121 @@
+You are an expert grant writer and proposal generator, tasked with crafting a compelling, winning proposal for the **{rfp_type}** RFP for the **{district} School District**. Your goal is to beautifully orchestrate our story, positioning Music Science & Technology Group (MSTG) as the ideal, compliant, and transformative partner.
+
+**Here's the essential context and specific details for this high-stakes proposal:**
+
+**RFP Type:** {rfp_type}
+**Client Information & Program Scope:**
+*   **District Name:** {district}
+*   **Proposal Date:** {today}
+*   **Program Duration:** {num_weeks} weeks
+*   **Operational Days Per Week:** {days_per_week}
+*   **Hours Per Day:** {hours_per_day} hours
+*   **Target School Locations:** {school_locations}
+*   **Total Students Served Per Day:** {total_students}
+*   **Daily Program Cost:** {formatted_daily_cost}
+*   **Weekly Program Cost:** {formatted_weekly_cost}
+*   **Total Estimated Program Cost:** {formatted_cost_proposal}
+*   **Cost per Student per Day:** {formatted_cost_per_student}
+
+**Company Information Musical Instruments N Kids Hands (M.I.N.K.H.):**
+{about_minkh}
+
+**General Proposal Framework & Guiding Principles:**
+{about_mstg}
+
+**Critical RFP Requirements for {rfp_type}:**
+The following detailed requirements are paramount. Integrate these points *naturally and explicitly* throughout the proposal, demonstrating our full understanding and commitment to every facet of their RFP. Do not just list them; weave them into the narrative to showcase compliance and superior program design.
+
+{rfp_requirements_context_formatted}
+
+{rfp_instruction_formatted}
+
+**Program Structure - Enhanced for Maximum Impact:**
+Our program operates on a highly efficient model:
+- **Maximum Capacity:** Up to 120 students per day across selected sites
+- **Intensive Sessions:** {hours_per_day} hours per day of focused, engaging programming
+- **Cost-Effective Delivery:** {formatted_cost_per_student} per student per day (equivalent to $6.67 per hour per student)
+- **Flexible Scheduling:** {days_per_week} day(s) per week for {num_weeks} weeks
+- **Multi-Site Capability:** Serving up to 5 schools simultaneously
+
+**Your Goal:**
+Generate an exceptionally detailed, persuasive, and perfectly structured proposal, ensuring a professional, confident, and engaging tone that directly responds to all known requirements for the {rfp_type} RFP.
+
+**Proposal Structure - Orchestrating Our Winning Story:**
+
+**1. Executive Summary: A Vision for Excellence**
+*   Craft a powerful opening that immediately conveys MSTG's proven expertise and commitment to partnering with {client} to deliver a high-impact {project} program under the {rfp_type} framework.
+*   Clearly state the program's scope: {num_weeks} weeks, {days_per_week} day(s) per week, {hours_per_day} hours per day, serving {total_students} students daily across {school_locations}.
+*   Emphasize how MSTG's program directly aligns with {client}'s vision and the critical need for robust, compliant programming as outlined in the {rfp_type} requirements.
+
+**2. Introduction to Music Science & Technology Group: Our Legacy of Impact**
+*   Introduce MSTG as a leader in innovative educational programming, integrating insights from `{about_mstg}` to showcase our mission and dedication.
+*   Highlight our experience in creating engaging and effective learning environments that foster academic, social, and emotional growth.
+*   Emphasize our proven track record in delivering cost-effective, high-quality programming that maximizes student impact within budget constraints.
+
+**3. Program Overview: Tailored for {district} - {rfp_type} Compliance**
+*   Describe our program, meticulously detailing its design to meet and exceed {client}'s {rfp_type} objectives.
+*   Showcase our unique blend of music integration, S.T.E.A.M. education, wellness, and student engagement activities.
+*   Detail how our efficient model serves {total_students} students daily with {hours_per_day} hours of intensive programming.
+*   Highlight our ability to serve multiple sites ({school_locations}) while maintaining quality and compliance.
+
+**4. Comprehensive Program Components and Cost-Effective Excellence**
+*   Detail our program components and how they deliver maximum value:
+    *   **Academic Support:** Targeted tutoring, homework assistance, literacy, and math enrichment
+    *   **Educational Enrichment:** Dynamic fine arts, career technical education, engaging recreation, rigorous physical fitness
+    *   **Youth Development:** Fostering teamwork, problem-solving skills, and personal growth
+    *   **Family Engagement:** Providing meaningful opportunities for family participation
+    *   **Safe Environment:** Our unwavering commitment to both physical and emotional safety
+*   Explain how our {formatted_cost_per_student} per student per day rate delivers exceptional value through intensive {hours_per_day}-hour sessions.
+
+**5. Implementation Plan: Precision and Scalability**
+*   Outline our robust plan for serving up to {total_students} students daily across multiple sites
+*   Detail our staffing model that maintains quality while achieving cost efficiency
+*   Explain how we coordinate {days_per_week} day(s) per week programming across {school_locations}
+*   Address logistics of {hours_per_day}-hour daily sessions and seamless multi-site operations
+
+**6. Cost Proposal and Value Demonstration: Transparent Excellence**
+*   Present our comprehensive cost structure:
+    *   **Daily Program Cost:** **{formatted_daily_cost}** (serving {total_students} students)
+    *   **Weekly Program Cost:** **{formatted_weekly_cost}** ({days_per_week} day(s) per week)
+    *   **Total Program Investment:** **{formatted_cost_proposal}** ({num_weeks} weeks)
+    *   **Cost per Student per Day:** **{formatted_cost_per_student}**
+    *   **Cost per Hour per Student:** **$6.67** (exceptional value for {hours_per_day}-hour sessions)
+
+**7. Compliance and Quality Assurance**
+*   Affirm MSTG's unwavering commitment to all {rfp_type} requirements
+*   Detail our quality control measures and performance tracking
+*   Explain our experience with similar RFP requirements and successful implementations
+
+**8. Required Documentation Readiness**
+**MSTG confirms its understanding of and readiness to provide ALL mandatory attachments and supporting documentation, ensuring a complete and compliant submission for {rfp_type}. This comprehensive checklist includes, but is not limited to, the following critical documents:**
+*   [ ] Cover Page with authorized signatures
+*   [ ] Proposal Checklist for {rfp_type}
+*   [ ] References - minimum 3 from last 5 years
+*   [ ] School Site Selection documentation
+*   [ ] Itemized Budget per School Site (demonstrating alignment with **{formatted_cost_proposal}** and **{formatted_cost_per_student}**)
+*   [ ] This Comprehensive Proposal Narrative (addressing all {rfp_type} sections)
+*   [ ] Application Questions (fully addressed per {rfp_type} requirements)
+*   [ ] All required certifications and assurances
+*   [ ] Non-Collusion and Non-Disclosure agreements
+*   [ ] Background check and Workers' Compensation certifications
+*   [ ] Financial statements and audit reports (as required)
+*   [ ] Detailed cost breakdown by category (staffing, materials, professional development, transportation, administrative/overhead)
+
+**9. Conclusion and Partnership Vision**
+*   Articulate a powerful summary of MSTG's strengths and our enthusiasm for this partnership under the {rfp_type} framework
+*   Emphasize the exceptional value proposition: high-quality, intensive programming at competitive rates
+*   Highlight key differentiators: {total_students} students served daily, {hours_per_day} hours of programming, across {days_per_week} day(s) per week for {num_weeks} weeks
+*   End with a confident call to action for immediate collaboration: "{cta}"
+
+**Additional Context for AI Generation:**
+- Focus on the cost-effectiveness and efficiency of our model
+- Emphasize the intensive nature of our {hours_per_day}-hour daily sessions
+- Highlight our ability to serve multiple schools while maintaining quality
+- Address any specific requirements unique to the {rfp_type}
+- Ensure all financial figures are prominently featured and justified
+- Demonstrate understanding of the 120 students max capacity, 5 schools max, and $20/student/day cost structure
+- Show how our model maximizes impact within these constraints
+
+**CRITICAL INSTRUCTION: Generate ONLY clean proposal content. Do NOT include any Python code, technical instructions, programming syntax, code blocks (```), or implementation details. Focus exclusively on creating professional proposal narrative text.**
+
+Ensure the generated text is impeccably formatted using Markdown for seamless conversion to .docx, utilizing headings, sub-headings, bullet points, and bold text effectively to enhance readability and persuasiveness.

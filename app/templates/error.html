@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error - School Data Explorer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+    <header class="header">
+        <img src="{{ url_for('static', filename='assets/msg_logo.png') }}" alt="Logo" class="header-logo">
+        <span class="header-title">School District Data Explorer - Music Science & Technology Group</span>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h1 style="color: #ff4444; text-align: center;">⚠️ Error</h1>
+            
+            <div style="text-align: center; margin: 2em 0;">
+                <p style="font-size: 1.2em; color: #ff6666;">
+                    {{ error or "An unexpected error occurred." }}
+                </p>
+            </div>
+            
+            <div class="button-container">
+                <button type="button" class="back-btn" onclick="history.back()">Go Back</button>
+                <a href="/" class="submit-btn" style="text-decoration: none; display: inline-block;">
+                    Return to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .back-btn {
+            padding: 13px 28px;
+            background-color: transparent;
+            color: #FF9116;
+            border: 2px solid #FF9116;
+            border-radius: 6px;
+            font-size: 1.2em;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .back-btn:hover {
+            background-color: #FF9116;
+            color: white;
+        }
+    </style>
+
+</body>
+</html>

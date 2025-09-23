@@ -34,70 +34,38 @@ Analyze the provided RFQ document and generate a response that clearly outlines:
     *   Any rights reserved by the District (e.g., to reject proposals, award contracts).
 
 **Output Format:**
-Present the extracted information in a structured Markdown format, using clear headings and bullet points for readability. Ensure that all key details are captured accurately. The output should be suitable for direct use in a Python program to populate a Word document, meaning the Markdown should be easily parsable into document sections.
+Present the extracted information in a structured Markdown format, using clear headings and bullet points for readability. Ensure that all key details are captured accurately and focus solely on generating clean proposal content.
 
-**Example of desired output structure:**
+**Generate clean proposal content that addresses:**
 
-```markdown
-# [Issuing Organization] - [RFQ Title] ([Cycle/Period])
+# Request for Qualifications Response
 
-**Submission Deadline:** [Date and Time]
-**Submission Method:** [Method]
-**Contact Information:**
-*   Email: [Email Address]
-*   Phone: [Phone Number]
-*   Address: [Address]
+## Executive Summary
+Provide a compelling overview of your organization's qualifications and commitment to the program.
 
----
+## Organizational Overview
+Detail your organization's background, mission, and relevant experience.
 
-## Key Requirements for Applicants
+## Key Requirements Compliance
+Address all eligibility criteria and requirements specified in the RFQ.
 
-### Eligibility Criteria
-*   ...
-*   ...
+## Scope of Services
+Outline the services you will provide and how they meet the district's needs.
 
-### Scope of Services
-*   ...
-*   ...
+## Program Implementation Plan
+Describe your approach to program delivery, scheduling, and operations.
 
-### Program Schedule
-*   ...
+## Staffing and Supervision
+Detail your staffing model, qualifications, and supervision structure.
 
-### Staffing and Supervision
-*   ...
+## Budget and Cost Structure
+Present your cost-effective approach while meeting all budgetary requirements.
 
-### Budgetary Requirements
-*   ...
+## Quality Assurance and Compliance
+Explain your commitment to meeting all legal, federal, state, and district requirements.
 
-### Compliance Requirements
-*   ...
+## Evaluation and Success Metrics
+Describe how you will measure and ensure program success.
 
----
-
-## Proposal Submission Format and Contents
-
-### Required Documents Checklist
-*   [ ] Signed Cover Page (Appendix A)
-*   [ ] Proposal Checklist (Appendix B)
-*   ...
-
-### Formatting Instructions
-*   File Type: PDF
-*   Page Limit: ...
-*   Font: ...
-
-### Proposal Narrative Sections
-*   **Organizational Overview:** ...
-*   **Program Design:** ...
-
----
-
-## Evaluation Criteria
-
-*   ...
-
----
-
-## District's Rights
-
-*   ...
+## Conclusion
+Summarize your value proposition and readiness to begin partnership.

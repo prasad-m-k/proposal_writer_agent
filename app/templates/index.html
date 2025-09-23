@@ -6,80 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Roboto', sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; }
-        .header { padding: 15px 30px; display: flex; align-items: center; }
-        .header-title { font-size: 1.5em; font-weight: 700; background: linear-gradient(90deg, #FF5F5F, #FF9116); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .header-logo { height: 90px; margin-right: 15px; }
-        .container { padding: 2em; }
-        h2 { color: #ffffff; font-weight: 500; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .card { background-color: #1e1e1e; border-radius: 8px; padding: 1.5em; margin-top: 1.5em; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
-        label { font-weight: 500; color: #bbbbbb; font-size: 1.1em; display: block; margin-bottom: 8px; }
-        select, .config-input { width: 100%; padding: 12px; margin-top: 10px; background-color: #333; color: #e0e0e0; border: 1px solid #555; border-radius: 6px; font-size: 1em; box-sizing: border-box; }
-        .button-container { display: flex; justify-content: center; margin-top: 2em; position: relative; }
-        .submit-btn { padding: 15px 30px; background: linear-gradient(90deg, #FF5F5F, #FF9116); color: white; border: none; border-radius: 6px; font-size: 1.2em; font-weight: 500; cursor: pointer; transition: opacity 0.3s ease; }
-        .submit-btn:hover { opacity: 0.9; }
-        .submit-btn:disabled { cursor: not-allowed; opacity: 0.5; }
-        .loader { border: 5px solid #333; border-top: 5px solid #FF5F5F; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; position: absolute; top: 50%; left: 50%; margin-top: -25px; margin-left: -25px; display: none; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        /* Checkbox styles */
-        #school-checkbox-container {
-            max-height: 200px;
-            overflow-y: auto;
-            background-color: #2a2a2a;
-            border: 1px solid #555;
-            border-radius: 6px;
-            padding: 15px;
-            margin-top: 10px;
-        }
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .checkbox-item input[type="checkbox"] {
-            margin-right: 10px;
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-        .checkbox-item label {
-            margin-bottom: 0;
-            font-weight: 400;
-            cursor: pointer;
-            flex: 1;
-        }
-
-        /* Table styles */
-        .school-details-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .school-details-table th, .school-details-table td {
-            border: 1px solid #444;
-            padding: 10px;
-            text-align: left;
-        }
-        .school-details-table th {
-            background-color: #333;
-            color: #fff;
-        }
-        .school-details-table tbody tr:nth-child(odd) {
-            background-color: #2a2a2a;
-        }
-        .school-details-table tbody tr:nth-child(even) {
-            background-color: #1e1e1e;
-        }
-        .school-details-table tfoot {
-            font-weight: bold;
-            background-color: #333;
-        }
-        .school-details-table tfoot td {
-            color: #fff;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body>
 
@@ -100,8 +27,19 @@
                         {% endfor %}
                     </select>
                 </div>
+                
                 <div style="margin-top: 1em;">
-                    <label>School Names (Select one or more):</label>
+                    <label for="rfp-type">RFP Type:</label>
+                    <select id="rfp-type" name="rfp_type">
+                        <option value="Extended Learning Opportunities Program">Extended Learning Opportunities Program</option>
+                        <option value="Request for Qualifications">Request for Qualifications</option>
+                        <option value="Summer School Core Program Providers">Summer School Core Program Providers</option>
+                        <option value="After School Core Program Providers">After School Core Program Providers</option>
+                    </select>
+                </div>
+                
+                <div style="margin-top: 1em;">
+                    <label>School Names (Select one or more, maximum 10 schools):</label>
                     <div class="checkbox-item" style="border-bottom: 1px solid #555; padding-bottom: 10px; margin-bottom: 10px;">
                         <input type="checkbox" id="select-all-schools">
                         <label for="select-all-schools" style="font-weight: 500; color: #fff;">Select All Schools</label>
@@ -114,30 +52,100 @@
 
             <div class="card">
                 <h2>2. Configure Program</h2>
-                <div style="display: flex; gap: 20px;">
-                    <div style="flex-grow: 1;">
-                        <label for="weeks-input">Number of Weeks:</label>
-                        <input type="number" id="weeks-input" name="num_weeks" class="config-input" value="30">
-                    </div>
-                    <div style="flex-grow: 1;">
+                
+                <div class="constraints-info">
+                    <h4>Example Program Guidelines (All fields are editable):</h4>
+                    <ul>
+                        <li>Maximum 200 students per day (default: 120)</li>
+                        <li>1-12 hours per day per session (default: 3)</li>
+                        <li>$1-$100 per student per day (default: $20)</li>
+                        <li>1 or 2 days per week available</li>
+                        <li>Maximum 10 schools can be served (default: 5)</li>
+                        <li>Available for 1-52 weeks (default: 24)</li>
+                    </ul>
+                </div>
+
+                <div class="input-row">
+                    <div class="input-col">
                         <label for="days-input">Days per Week:</label>
-                        <input type="number" id="days-input" name="days_per_week" class="config-input" value="2">
+                        <select id="days-input" name="days_per_week" class="config-input">
+                            <option value="1">1 Day</option>
+                            <option value="2" selected>2 Days</option>
+                            <option value="3">3 Day</option>
+                            <option value="4">4 Days</option>
+                            <option value="5">5 Day</option>
+                        </select>
+                    </div>
+                    <div class="input-col">
+                        <label for="weeks-input">Number of Weeks:</label>
+                        <input type="number" id="weeks-input" name="num_weeks" class="config-input" 
+                               value="24" min="1" max="52" step="1">
+                        <div class="input-hint">Enter between 1-52 weeks</div>
                     </div>
                 </div>
-                <div style="margin-top: 1em;">
-                    <label for="total-students-input">Number of Students to Serve (Editable):</label>
-                    <input type="number" id="total-students-input" name="total_students_display" class="config-input" value="0">
+
+                <div class="input-row">
+                    <div class="input-col">
+                        <label for="total-students-input">Students per Day:</label>
+                        <input type="number" id="total-students-input" name="total_students_display" 
+                               class="config-input" value="120" min="1" max="200" step="1">
+                        <div class="input-hint">Enter between 1-200 students</div>
+                    </div>
+                    <div class="input-col">
+                        <label for="hours-per-day-input">Hours per Day:</label>
+                        <input type="number" id="hours-per-day-input" name="hours_per_day" 
+                               class="config-input" value="3" min="1" max="12" step="0.5">
+                        <div class="input-hint">Enter between 1-12 hours</div>
+                    </div>
                 </div>
-                 <div style="margin-top: 1em;">
-                    <label for="cost-per-student-input-editable">Cost per Student for Program (Editable):</label>
-                    <input type="number" id="cost-per-student-input-editable" name="cost_per_student_display" class="config-input" value="2500.00" step="0.01">
+
+                <div class="input-row">
+                    <div class="input-col">
+                        <label for="cost-per-student-input-editable">Cost per Student per Day:</label>
+                        <input type="number" id="cost-per-student-input-editable" name="cost_per_student_display" 
+                               class="config-input" value="20.00" min="1.00" max="100.00" step="0.01">
+                        <div class="input-hint">Enter between $1.00-$100.00</div>
+                    </div>
+                    <div class="input-col">
+                        <label for="cost-per-hour-input">Cost per Hour per Student:</label>
+                        <input type="text" id="cost-per-hour-input" name="cost_per_hour" 
+                               class="config-input" value="$6.67" readonly>
+                        <div class="input-hint">Calculated automatically</div>
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <div class="input-col">
+                        <label for="max-schools-input">Maximum Schools to Serve:</label>
+                        <input type="number" id="max-schools-input" name="max_schools" 
+                               class="config-input" value="5" min="1" max="10" step="1">
+                        <div class="input-hint">Enter between 1-10 schools</div>
+                    </div>
+                    <div class="input-col">
+                        <label for="program-capacity-input">Total Program Capacity:</label>
+                        <input type="text" id="program-capacity-input" name="program_capacity" 
+                               class="config-input" readonly>
+                        <div class="input-hint">Calculated: students × schools</div>
+                    </div>
                 </div>
             </div>
 
             <div class="card">
                 <h2>3. Cost Summary</h2>
-                <label for="cost-proposal-input">Total Estimated Program Cost:</label>
-                <input type="text" id="cost-proposal-input" name="cost_proposal" class="config-input" readonly>
+                <div class="input-row">
+                    <div class="input-col">
+                        <label for="daily-cost-input">Daily Program Cost:</label>
+                        <input type="text" id="daily-cost-input" name="daily_cost" class="config-input" readonly>
+                    </div>
+                    <div class="input-col">
+                        <label for="weekly-cost-input">Weekly Program Cost:</label>
+                        <input type="text" id="weekly-cost-input" name="weekly_cost" class="config-input" readonly>
+                    </div>
+                </div>
+                <div style="margin-top: 1em;">
+                    <label for="cost-proposal-input">Total Estimated Program Cost:</label>
+                    <input type="text" id="cost-proposal-input" name="cost_proposal" class="config-input" readonly>
+                </div>
             </div>
 
             <div class="card" id="school-funding-card" style="display: none;">
@@ -168,194 +176,20 @@
                 <div class="loader" id="loader"></div>
             </div>
 
-            <!-- Hidden inputs to pass calculated values to the backend. These values will reflect the final editable states. -->
+            <!-- Hidden inputs to pass calculated values to the backend -->
             <input type="hidden" name="total_students_for_ai" id="total-students-for-ai-hidden">
             <input type="hidden" name="cost_per_student_for_ai" id="cost-per-student-for-ai-hidden">
+            <input type="hidden" name="hours_per_day_for_ai" id="hours-per-day-for-ai-hidden">
+            <input type="hidden" name="daily_cost_for_ai" id="daily-cost-for-ai-hidden">
+            <input type="hidden" name="weekly_cost_for_ai" id="weekly-cost-for-ai-hidden">
         </form>
     </div>
 
-<script>
-    const allData = JSON.parse('{{ all_data|safe }}');
-    const districtSelect = document.getElementById('district');
-    const schoolCheckboxContainer = document.getElementById('school-checkbox-container');
-    const selectAllSchoolsCheckbox = document.getElementById('select-all-schools');
-    const weeksInput = document.getElementById('weeks-input');
-    const daysInput = document.getElementById('days-input');
-    const totalStudentsInput = document.getElementById('total-students-input'); // Editable input for total students
-    const costPerStudentInputEditable = document.getElementById('cost-per-student-input-editable'); // New editable input for cost per student
-    const costProposalInput = document.getElementById('cost-proposal-input'); // Readonly total program cost
-    const proposalForm = document.getElementById('proposal-form');
-    const generateBtn = document.getElementById('generate-btn');
-    const loader = document.getElementById('loader');
-    const schoolFundingCard = document.getElementById('school-funding-card');
-    const schoolFundingBody = document.getElementById('school-funding-body');
-    const totalActualEnrollmentFooter = document.getElementById('total-actual-enrollment-footer'); // Footer for actual enrollment
-    const totalStudentsForAiHidden = document.getElementById('total-students-for-ai-hidden');
-    const costPerStudentForAiHidden = document.getElementById('cost-per-student-for-ai-hidden');
-
-    const PER_STUDENT_FUNDING = 2500; // Per-student funding for table calculation
-    const DEFAULT_STUDENTS_PER_SCHOOL = 40; // Default students if nothing selected
-    const DEFAULT_COST_PER_STUDENT_PROGRAM = 2500.00; // Default for editable cost per student
-
-
-    function formatCurrency(value) {
-        if (isNaN(value) || value === null) {
-            return "$0.00";
-        }
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
-    }
-
-    function updateSchools() {
-        const selectedDistrict = districtSelect.value;
-        const schoolsInDistrict = allData.filter( row => row['District Name'] === selectedDistrict);
-
-        schoolCheckboxContainer.innerHTML = ""; // Clear existing checkboxes
-        selectAllSchoolsCheckbox.checked = false; // Reset "Select All" checkbox state
-
-        if (schoolsInDistrict.length === 0) {
-            schoolFundingCard.style.display = 'none'; // Hide if no schools
-        }
-
-        schoolsInDistrict.forEach((school, index) => {
-            const schoolName = school['School Name'];
-            const checkboxId = `school-${index}`;
-
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'checkbox-item';
-
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.name = 'schoolname';
-            checkbox.value = schoolName;
-            checkbox.id = checkboxId;
-            checkbox.dataset.schoolData = JSON.stringify(school);
-            checkbox.addEventListener('change', updateAllCostsAndDetails);
-
-            const label = document.createElement('label');
-            label.htmlFor = checkboxId;
-            label.textContent = schoolName;
-
-            itemDiv.appendChild(checkbox);
-            itemDiv.appendChild(label);
-            schoolCheckboxContainer.appendChild(itemDiv);
-        });
-
-        // After populating, trigger update for costs and details
-        updateAllCostsAndDetails(); 
-    }
-
-    function calculateFunding(schoolData) {
-        const enrollment = parseInt(schoolData['Total Enrollment'], 10) || 0;
-        const frpmPercent = parseFloat(schoolData['FRPM Percent (%)']) / 100 || 0;
-        return (enrollment * frpmPercent * PER_STUDENT_FUNDING);
-    }
-
-    function updateAllCostsAndDetails() {
-        const numSchoolsSelected = document.querySelectorAll('input[name="schoolname"]:checked').length;
-
-        let totalActualEnrollment = 0; // From data.csv for table footer
-        
-        schoolFundingBody.innerHTML = ''; // Clear existing table data
-
-        if (numSchoolsSelected > 0) {
-            schoolFundingCard.style.display = 'block'; // Show the card if schools are selected
-            document.querySelectorAll('input[name="schoolname"]:checked').forEach(checkbox => {
-                const schoolData = JSON.parse(checkbox.dataset.schoolData);
-                const enrollment = parseInt(schoolData['Total Enrollment'], 10) || 0;
-                const schoolFunding = calculateFunding(schoolData);
-
-                totalActualEnrollment += enrollment;
-
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${schoolData['School Name']}</td>
-                    <td>${enrollment.toLocaleString()}</td>
-                    <td>${(parseFloat(schoolData['FRPM Percent (%)'])).toFixed(2)}%</td>
-                    <td>${formatCurrency(schoolFunding)}</td>
-                `;
-                schoolFundingBody.appendChild(row);
-            });
-        } else {
-            schoolFundingCard.style.display = 'none'; // Hide the card if no schools are selected
-        }
-
-        // Update Total Actual Enrollment in table footer (read-only)
-        totalActualEnrollmentFooter.textContent = totalActualEnrollment.toLocaleString();
-
-        // Handle editable 'Number of Students to Serve' (totalStudentsInput)
-        // If no schools selected, or if value is zero and schools were selected, default to 40*numSchools
-        if (numSchoolsSelected === 0) {
-            totalStudentsInput.value = '0';
-        } else if (parseInt(totalStudentsInput.value, 10) === 0) { // If it's 0, apply default based on selected schools
-            totalStudentsInput.value = (numSchoolsSelected * DEFAULT_STUDENTS_PER_SCHOOL).toString(); 
-        }
-
-        // Handle editable 'Cost per Student for Program' (costPerStudentInputEditable)
-        if (parseFloat(costPerStudentInputEditable.value) === 0 || costPerStudentInputEditable.value === '') {
-            costPerStudentInputEditable.value = DEFAULT_COST_PER_STUDENT_PROGRAM.toFixed(2);
-        }
-
-        const studentsToServe = parseInt(totalStudentsInput.value, 10) || 0;
-        const costPerStudentProgram = parseFloat(costPerStudentInputEditable.value) || 0;
-
-        // Calculate Total Estimated Program Cost based on editable students and editable cost per student
-        const totalProgramCost = studentsToServe * costPerStudentProgram;
-        costProposalInput.value = formatCurrency(totalProgramCost);
-
-        // Update hidden inputs for backend submission
-        totalStudentsForAiHidden.value = studentsToServe;
-        costPerStudentForAiHidden.value = costPerStudentProgram.toFixed(2);
-    }
-
-    // Event listener for "Select All Schools" checkbox
-    selectAllSchoolsCheckbox.addEventListener('change', function() {
-        const isChecked = this.checked;
-        const schoolCheckboxes = schoolCheckboxContainer.querySelectorAll('input[name="schoolname"]');
-        schoolCheckboxes.forEach(checkbox => {
-            checkbox.checked = isChecked;
-        });
-        updateAllCostsAndDetails(); // Update everything after toggling all schools
-    });
-
-    // Event listeners for manual input changes that affect costs
-    totalStudentsInput.addEventListener('input', updateAllCostsAndDetails);
-    costPerStudentInputEditable.addEventListener('input', updateAllCostsAndDetails);
+    <!-- Data script for JavaScript -->
+    <script id="data-script" type="application/json">{{ all_data|safe }}</script>
     
-    // Weeks and Days per Week are for AI context, not direct cost calculation in this model
-    weeksInput.addEventListener('input', updateAllCostsAndDetails); 
-    daysInput.addEventListener('input', updateAllCostsAndDetails);
-
-
-    proposalForm.addEventListener('submit', function(event) {
-        // Ensure hidden inputs are updated right before submit with the *current* state
-        updateAllCostsAndDetails();
-
-        const selectedCheckboxes = document.querySelectorAll('input[name="schoolname"]:checked');
-        if (selectedCheckboxes.length === 0) {
-            alert("Please select at least one school.");
-            event.preventDefault(); // Stop the form from submitting
-            return;
-        }
-        
-        if (parseInt(totalStudentsInput.value, 10) <= 0) {
-            alert("Please enter a valid number of students to serve (greater than 0).");
-            event.preventDefault();
-            return;
-        }
-
-        if (parseFloat(costPerStudentInputEditable.value) <= 0) {
-            alert("Please enter a valid cost per student (greater than 0).");
-            event.preventDefault();
-            return;
-        }
-
-        generateBtn.style.display = 'none';
-        loader.style.display = 'block';
-    });
-
-    // Initial Load
-    document.addEventListener('DOMContentLoaded', updateSchools);
-</script>
+    <!-- Main JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 </body>
 </html>

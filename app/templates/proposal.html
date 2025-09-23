@@ -11,10 +11,10 @@
         .header { padding: 15px 30px; display: flex; align-items: center; }
         .header-title { font-size: 1.5em; font-weight: 700; background: linear-gradient(90deg, #FF5F5F, #FF9116); -webkit-background-clip: text; background-clip: text; color: transparent; }
         .header-logo { height: 90px; margin-right: 15px; }
-        .container { padding: 2em; max-width: 800px; margin: auto; }
+        .container { padding: 2em; max-width: 900px; margin: auto; }
         .card { background-color: #1e1e1e; border-radius: 8px; padding: 2em; margin-top: 1.5em; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
         h1, h2, h3 { color: #ffffff; font-weight: 500; }
-        h1 { font-size: 2em; text-align: center; color: #f0f0f0; }
+        h1 { font-size: 2em; text-align: center; color: #f0f0f0; margin-bottom: 1em; }
         h2 { border-bottom: 1px solid #444; padding-bottom: 10px; margin-top: 1.5em; color: #e0e0e0;}
         p, li { line-height: 1.6; color: #d0d0d0; }
         strong { color: #ffffff; font-weight: 700; }
@@ -23,9 +23,8 @@
         .download-btn { display: inline-block; text-decoration: none; padding: 15px 30px; background: linear-gradient(90deg, #FF5F5F, #FF9116); color: white; border: none; border-radius: 6px; font-size: 1.2em; font-weight: 500; cursor: pointer; transition: opacity 0.3s ease; text-align: center; }
         .download-btn:hover { opacity: 0.9; }
 
-        /* ADDED: Styles for the new back button */
         .back-btn {
-            padding: 13px 28px; /* Slightly smaller padding to account for border */
+            padding: 13px 28px;
             background-color: transparent;
             color: #FF9116;
             border: 2px solid #FF9116;
@@ -33,7 +32,7 @@
             font-size: 1.2em;
             font-weight: 500;
             cursor: pointer;
-            margin-right: 20px; /* Adds space between the buttons */
+            margin-right: 20px;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
         .back-btn:hover {
@@ -42,6 +41,52 @@
         }
 
         .ai-content { white-space: pre-wrap; }
+        
+        /* Program summary styles */
+        .program-summary {
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .program-summary h3 {
+            color: #FF9116;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .summary-item {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #FF5F5F;
+        }
+        .summary-item .label {
+            font-weight: 500;
+            color: #ccc;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .summary-item .value {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #fff;
+        }
+        .rfp-type-badge {
+            display: inline-block;
+            background: linear-gradient(90deg, #FF5F5F, #FF9116);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -53,22 +98,63 @@
 
     <div class="container">
         <div class="card">
-            <h1>After-School Program Proposal</h1>
+            <h1>{{ data.rfp_type }} Proposal</h1>
             
+            <div class="rfp-type-badge">{{ data.rfp_type }}</div>
             <h2>Proposal for: {{ data.district }}</h2>
+
+            <div class="program-summary">
+                <h3>Program Summary</h3>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="label">District</div>
+                        <div class="value">{{ data.district }}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">School Sites</div>
+                        <div class="value">{{ data.school_name }}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">Program Duration</div>
+                        <div class="value">{{ data.num_weeks }} weeks</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">Schedule</div>
+                        <div class="value">{{ data.days_per_week }} day(s)/week, {{ data.hours_per_day }} hours/day</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">Students Served</div>
+                        <div class="value">{{ data.total_students }} students/day</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">Cost per Student</div>
+                        <div class="value">${{ data.cost_per_student }}/day</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">Daily Cost</div>
+                        <div class="value">${{ data.daily_cost }}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">Weekly Cost</div>
+                        <div class="value">${{ data.weekly_cost }}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">Total Program Cost</div>
+                        <div class="value">{{ data.cost_proposal }}</div>
+                    </div>
+                </div>
+            </div>
 
             <div class="ai-content">
                 {{ data.proposal_text | safe }}
             </div>
             
             <div class="button-container">
-                <!-- ADDED: The new "Back" button -->
                 <button type="button" class="back-btn" onclick="history.back()">Back</button>
-
                 {% if data.filename %}
-                    <a href="{{ url_for('download_file', filename=data.filename) }}" class="download-btn">
-                        Download Proposal.docx
-                    </a>
+                <a href="{{ url_for('main.download_file', filename=data.filename) }}" class="download-btn">
+                    Download Proposal
+                </a>
                 {% endif %}
             </div>
         </div>
