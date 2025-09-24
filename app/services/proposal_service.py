@@ -275,29 +275,49 @@ class ProposalService:
                 except OSError as e:
                     print(f"Error deleting file {filepath}: {e}")
     
+    def generate_proposal_text_only(self, **kwargs):
+        """Generate only the proposal text without creating a document"""
+        try:
+            # Load appropriate files based on RFP type
+            rfp_type = kwargs.get('rfp_type', 'Extended Learning Opportunities Program')
+            prompt_template, _ = self.load_rfp_files(rfp_type)
+
+            # Prepare variables
+            prompt_variables = self.prepare_prompt_variables(**kwargs)
+
+            # Generate proposal text
+            proposal_text = self.generate_proposal_text(prompt_template, prompt_variables)
+
+            return proposal_text
+
+        except Exception as e:
+            error_text = f"An error occurred while generating the proposal text: {e}"
+            print(error_text)
+            return error_text
+
     def generate_proposal(self, **kwargs):
         """Main method to generate a complete proposal"""
         try:
             # Load appropriate files based on RFP type
             rfp_type = kwargs.get('rfp_type', 'Extended Learning Opportunities Program')
             prompt_template, _ = self.load_rfp_files(rfp_type)
-            
+
             # Prepare variables
             prompt_variables = self.prepare_prompt_variables(**kwargs)
-            
+
             # Generate proposal text
             proposal_text = self.generate_proposal_text(prompt_template, prompt_variables)
-            
+
             # Create document
             district = kwargs.get('district', 'N/A')
             filename = self.create_document(proposal_text, district, rfp_type)
-            
+
             # Manage file rotation
             if filename:
                 self.manage_file_rotation(district)
-            
+
             return proposal_text, filename
-            
+
         except Exception as e:
             error_text = f"An error occurred while generating the proposal: {e}"
             print(error_text)

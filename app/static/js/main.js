@@ -11,7 +11,7 @@ class SchoolDataExplorer {
     initializeElements() {
         // Form elements
         this.districtSelect = document.getElementById('district');
-        this.rfpTypeSelect = document.getElementById('rfp-type');
+        this.rfpTypeRadios = document.querySelectorAll('input[name="rfp_type"]');
         this.schoolCheckboxContainer = document.getElementById('school-checkbox-container');
         this.selectAllSchoolsCheckbox = document.getElementById('select-all-schools');
         
@@ -63,7 +63,9 @@ class SchoolDataExplorer {
     setupEventListeners() {
         // District and RFP type changes
         this.districtSelect.addEventListener('change', () => this.updateSchools());
-        this.rfpTypeSelect.addEventListener('change', () => this.updateConstraints());
+        this.rfpTypeRadios.forEach(radio => {
+            radio.addEventListener('change', () => this.updateConstraints());
+        });
 
         // School selection
         this.selectAllSchoolsCheckbox.addEventListener('change', () => this.handleSelectAllSchools());
@@ -116,7 +118,7 @@ class SchoolDataExplorer {
     }
 
     updateConstraints() {
-        const rfpType = this.rfpTypeSelect.value;
+        const rfpType = document.querySelector('input[name="rfp_type"]:checked')?.value;
         
         // Update constraints display based on current values
         this.updateConstraintDisplay();
@@ -464,7 +466,139 @@ class SchoolDataExplorer {
     }
 }
 
+// Tab Management
+class TabManager {
+    constructor() {
+        this.setupTabs();
+        this.loadProposalHistory();
+    }
+
+    setupTabs() {
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.getAttribute('data-tab');
+
+                // Remove active class from all tabs and contents
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                // Add active class to clicked tab and corresponding content
+                button.classList.add('active');
+                document.getElementById(targetTab).classList.add('active');
+
+                // Load history when switching to history tab
+                if (targetTab === 'history') {
+                    this.loadProposalHistory();
+                }
+            });
+        });
+    }
+
+    async loadProposalHistory() {
+        const historyContainer = document.getElementById('history-container');
+        const historyCount = document.getElementById('history-count');
+
+        try {
+            // Show loading state
+            historyContainer.innerHTML = `
+                <div class="loading-history">
+                    <div class="loader"></div>
+                    <p>Loading proposal history...</p>
+                </div>
+            `;
+
+            const response = await fetch('/api/proposal-history');
+            if (!response.ok) {
+                throw new Error('Failed to fetch history');
+            }
+
+            const data = await response.json();
+            const proposals = data.proposals || [];
+
+            // Update count
+            historyCount.textContent = `${proposals.length} proposal(s) found`;
+
+            if (proposals.length === 0) {
+                historyContainer.innerHTML = `
+                    <div class="no-history">
+                        <span class="no-history-icon">📄</span>
+                        <h3>No proposals found</h3>
+                        <p>Create your first proposal using the "Create New Proposal" tab.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Build history list
+            const historyHTML = proposals.map(proposal => {
+                const date = new Date(proposal.created_date * 1000);
+                const fileSize = this.formatFileSize(proposal.file_size);
+                const formattedDate = date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                return `
+                    <div class="history-item">
+                        <div class="history-info">
+                            <div class="history-title">
+                                ${proposal.district} - ${proposal.rfp_type}
+                            </div>
+                            <div class="history-meta">
+                                <span>📅 ${formattedDate}</span>
+                                <span>📁 ${fileSize}</span>
+                            </div>
+                        </div>
+                        <div class="history-actions">
+                            <a href="${proposal.download_url}"
+                               class="download-history-btn"
+                               download="${proposal.filename}">
+                                📥 Download
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            historyContainer.innerHTML = `<div class="history-list">${historyHTML}</div>`;
+
+        } catch (error) {
+            console.error('Error loading proposal history:', error);
+            historyContainer.innerHTML = `
+                <div class="no-history">
+                    <span class="no-history-icon">⚠️</span>
+                    <h3>Error loading history</h3>
+                    <p>Please try refreshing the page or contact support if the problem persists.</p>
+                </div>
+            `;
+            historyCount.textContent = 'Error loading';
+        }
+    }
+
+    formatFileSize(bytes) {
+        if (bytes === 0) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+}
+
+// Global function for refresh button
+function loadProposalHistory() {
+    if (window.tabManager) {
+        window.tabManager.loadProposalHistory();
+    }
+}
+
 // Initialize the application when the DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     new SchoolDataExplorer();
+    window.tabManager = new TabManager();
 });

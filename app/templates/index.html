@@ -16,7 +16,21 @@
     </header>
 
     <div class="container">
-        <form id="proposal-form" action="/proposal" method="POST">
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <div class="tab-navigation">
+                <button type="button" class="tab-btn active" data-tab="create-proposal">
+                    📝 Create New Proposal
+                </button>
+                <button type="button" class="tab-btn" data-tab="history">
+                    📋 Proposal History
+                </button>
+            </div>
+        </div>
+
+        <!-- Create Proposal Tab Content -->
+        <div id="create-proposal" class="tab-content active">
+            <form id="proposal-form" action="/proposal" method="POST">
             <div class="card">
                 <h2>1. Select District & Schools</h2>
                 <div>
@@ -29,13 +43,25 @@
                 </div>
                 
                 <div style="margin-top: 1em;">
-                    <label for="rfp-type">RFP Type:</label>
-                    <select id="rfp-type" name="rfp_type">
-                        <option value="Extended Learning Opportunities Program">Extended Learning Opportunities Program</option>
-                        <option value="Request for Qualifications">Request for Qualifications</option>
-                        <option value="Summer School Core Program Providers">Summer School Core Program Providers</option>
-                        <option value="After School Core Program Providers">After School Core Program Providers</option>
-                    </select>
+                    <label>RFP Type:</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="rfp-type-elop" name="rfp_type" value="Extended Learning Opportunities Program" checked>
+                            <label for="rfp-type-elop">Extended Learning Opportunities Program</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="rfp-type-rfq" name="rfp_type" value="Request for Qualifications">
+                            <label for="rfp-type-rfq">Request for Qualifications</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="rfp-type-summer" name="rfp_type" value="Summer School Core Program Providers">
+                            <label for="rfp-type-summer">Summer School Core Program Providers</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="rfp-type-after" name="rfp_type" value="After School Core Program Providers">
+                            <label for="rfp-type-after">After School Core Program Providers</label>
+                        </div>
+                    </div>
                 </div>
                 
                 <div style="margin-top: 1em;">
@@ -182,7 +208,32 @@
             <input type="hidden" name="hours_per_day_for_ai" id="hours-per-day-for-ai-hidden">
             <input type="hidden" name="daily_cost_for_ai" id="daily-cost-for-ai-hidden">
             <input type="hidden" name="weekly_cost_for_ai" id="weekly-cost-for-ai-hidden">
-        </form>
+            </form>
+        </div>
+
+        <!-- History Tab Content -->
+        <div id="history" class="tab-content">
+            <div class="card">
+                <h2>📋 Proposal History</h2>
+                <p class="history-description">View and download your previously generated proposals.</p>
+
+                <div class="history-controls">
+                    <button type="button" class="refresh-btn" onclick="loadProposalHistory()">
+                        🔄 Refresh
+                    </button>
+                    <div class="history-stats">
+                        <span id="history-count">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="history-container" id="history-container">
+                    <div class="loading-history">
+                        <div class="loader"></div>
+                        <p>Loading proposal history...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Data script for JavaScript -->

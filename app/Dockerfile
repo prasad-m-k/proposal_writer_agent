@@ -16,6 +16,10 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .
 COPY input_data /app/input_data
+COPY static /app/static
+COPY config /app/config
+COPY routes /app/routes
+
 
 
 EXPOSE 5000

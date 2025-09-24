@@ -58,9 +58,9 @@ def generate_proposal():
         if not form_data['selected_schools']:
             return render_template('error.html', error="At least one school must be selected"), 400
         
-        # Generate proposal
-        proposal_text, filename = proposal_service.generate_proposal(**form_data)
-        
+        # Generate proposal text only (user will edit and then generate document)
+        proposal_text = proposal_service.generate_proposal_text_only(**form_data)
+
         # Prepare data for template
         proposal_data = {
             'district': form_data['district'],
@@ -68,7 +68,7 @@ def generate_proposal():
             'cost_proposal': form_data['cost_proposal'],
             'school_name': ", ".join(form_data['selected_schools']),
             'proposal_text': proposal_text,
-            'filename': filename,
+            'filename': None,  # No document created yet
             'num_weeks': form_data['num_weeks'],
             'days_per_week': form_data['days_per_week'],
             'hours_per_day': form_data['hours_per_day'],
@@ -84,6 +84,40 @@ def generate_proposal():
         print(f"Error in generate_proposal route: {e}")
         return render_template('error.html', error=f"Failed to generate proposal: {str(e)}"), 500
 
+@main_bp.route('/generate-document', methods=['POST'])
+def generate_document():
+    """Generate document from edited proposal text"""
+    try:
+        # Extract form data
+        proposal_text = request.form.get('proposal_text')
+        district = request.form.get('district')
+        rfp_type = request.form.get('rfp_type')
+
+        if not proposal_text:
+            return jsonify({'error': 'Proposal text is required'}), 400
+
+        if not district:
+            return jsonify({'error': 'District is required'}), 400
+
+        if not rfp_type:
+            return jsonify({'error': 'RFP type is required'}), 400
+
+        # Generate filename and create document directly
+        filename = proposal_service.create_document(proposal_text, district, rfp_type)
+
+        if filename:
+            return jsonify({
+                'success': True,
+                'filename': filename,
+                'message': 'Document generated successfully'
+            })
+        else:
+            return jsonify({'error': 'Failed to create document'}), 500
+
+    except Exception as e:
+        print(f"Error in generate_document route: {e}")
+        return jsonify({'error': f'Failed to generate document: {str(e)}'}), 500
+
 @main_bp.route('/download/<path:filename>')
 def download_file(filename):
     """Download generated proposal file"""
@@ -91,16 +125,96 @@ def download_file(filename):
         safe_filename = secure_filename(filename)
         download_dir = proposal_service.config['DOWNLOAD_FOLDER']
         file_path = os.path.join(download_dir, safe_filename)
-        
+
         # Security check
         if not os.path.normpath(file_path).startswith(download_dir) or not os.path.isfile(file_path):
             abort(404)
 
         return send_from_directory(download_dir, safe_filename, as_attachment=True)
-        
+
     except Exception as e:
         print(f"Error in download_file route: {e}")
         abort(404)
+
+@main_bp.route('/api/proposal-history')
+def get_proposal_history():
+    """API endpoint to get proposal history"""
+    try:
+        download_dir = proposal_service.config['DOWNLOAD_FOLDER']
+        proposals = []
+
+        if os.path.exists(download_dir):
+            # Get all .docx files
+            for filename in os.listdir(download_dir):
+                if filename.endswith('.docx'):
+                    file_path = os.path.join(download_dir, filename)
+
+                    # Get file stats
+                    stat = os.stat(file_path)
+
+                    # Parse filename to extract info
+                    # Format: Proposal_DistrictName_RFPType_Timestamp.docx
+                    try:
+                        parts = filename.replace('.docx', '').split('_')
+                        if len(parts) >= 4:
+                            # Handle district name formatting
+                            district_part = parts[1]
+                            if 'Unified' in district_part:
+                                # Handle cases like "NatomasUnifiedSchoolDistrict"
+                                district = district_part.replace('UnifiedSchoolDistrict', ' Unified School District')
+                                # Add space before "Unified" if not already there
+                                if 'Unified' in district and ' Unified' not in district:
+                                    district = district.replace('Unified', ' Unified')
+                            else:
+                                district = district_part.replace('SchoolDistrict', ' School District')
+
+                            # Clean up district name by adding spaces before capital letters
+                            import re
+                            district = re.sub(r'([a-z])([A-Z])', r'\1 \2', district)
+
+                            # Handle RFP type formatting
+                            rfp_parts = parts[2:-1]
+                            rfp_type = ' '.join(rfp_parts)
+
+                            # Clean up common formatting issues
+                            rfp_type = rfp_type.replace('CoreProgram', 'Core Program')
+                            rfp_type = rfp_type.replace('SchoolCore', 'School Core')
+                            rfp_type = rfp_type.replace('SummerSchool', 'Summer School')
+                            rfp_type = rfp_type.replace('AfterSchool', 'After School')
+                            rfp_type = rfp_type.replace('ProgramProviders', ' Program Providers')
+                            rfp_type = rfp_type.replace('Providers', ' Providers')
+
+                            timestamp = int(parts[-1])
+                        else:
+                            district = "Unknown District"
+                            rfp_type = "Unknown Type"
+                            timestamp = int(stat.st_mtime)
+                    except:
+                        district = "Unknown District"
+                        rfp_type = "Unknown Type"
+                        timestamp = int(stat.st_mtime)
+
+                    # Format the proposal entry
+                    proposals.append({
+                        'filename': filename,
+                        'district': district,
+                        'rfp_type': rfp_type,
+                        'created_date': timestamp,
+                        'file_size': stat.st_size,
+                        'download_url': f'/download/{filename}'
+                    })
+
+        # Sort by creation date (newest first)
+        proposals.sort(key=lambda x: x['created_date'], reverse=True)
+
+        return jsonify({
+            'proposals': proposals,
+            'total_count': len(proposals)
+        })
+
+    except Exception as e:
+        print(f"Error in get_proposal_history route: {e}")
+        return jsonify({'error': 'Failed to fetch proposal history'}), 500
 
 @main_bp.route('/api/schools/<district>')
 def get_schools_by_district(district):
