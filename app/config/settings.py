@@ -72,15 +72,15 @@ RFP_TYPE_FILES = {
         "requirements": "natomas_school_district_rfp_requirements.txt"
     },
     "Request for Qualifications": {
-        "prompt": "natomas_school_district_prompt1.txt",
-        "requirements": "natomas_school_district_rfp1.txt"
+        "yaml": "natomas_school_district_rfp1.yaml",
+        "jinja": "natomas_school_district_jinja1.md"
     },
     "Summer School Core Program Providers": {
-        "prompt": "natomas_school_district_prompt2.txt",
-        "requirements": "natomas_school_district_rfp2.txt"
+        "yaml": "natomas_school_district_rfp2.yaml",
+        "jinja": "natomas_school_district_jinja2.md"
     },
     "After School Core Program Providers": {
-        "prompt": "natomas_school_district_prompt3.txt",
-        "requirements": "natomas_school_district_rfp3.txt"
+        "yaml": "natomas_school_district_rfp3.yaml",
+        "jinja": "natomas_school_district_jinja3.md"
     }
 }

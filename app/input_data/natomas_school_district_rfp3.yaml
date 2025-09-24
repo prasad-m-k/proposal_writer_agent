@@ -1,0 +1,104 @@
+---
+vars:
+  submission:
+    company_name: ""
+    rep_name: ""
+    title: ""
+    email: ""
+    phone: ""
+    address: ""
+    signature_name: ""        # for signature lines
+    signature_date: ""        # e.g., "2025-09-26"
+
+  program_details:
+    program_type: "After School Extended Learning Core Program"
+    target_audience: "TK–6 students"
+    program_duration: "All school days when school is in session"
+    daily_hours: "Minimum 3 hours/day after school dismissal until ~6:00 PM"
+    cycles: "2026–27 & 2027–28 school years"
+
+  budget:
+    categories:
+      staffing: 0
+      instructional_materials: 0
+      supplies: 0
+      supervision: 0
+      professional_development: 0
+      transportation: 0
+      admin_overhead: 0
+      subcontracted_services: 0
+
+  staffing_ratios:
+    tk_k_ratio: "1:10"
+    tk_k_max_per_site: 40
+    grades_1_6_ratio: "1:20"
+    coordinator_required: true
+
+  references:
+    - organization: ""
+      contact_name: ""
+      phone: ""
+      email: ""
+      dates_of_service: ""
+      description: ""
+    - organization: ""
+      contact_name: ""
+      phone: ""
+      email: ""
+      dates_of_service: ""
+      description: ""
+    - organization: ""
+      contact_name: ""
+      phone: ""
+      email: ""
+      dates_of_service: ""
+      description: ""
+
+  narrative:
+    need_for_program: ""           # TBD sections for AI to fill
+    program_design: ""
+    hq_programming_elements: ""
+    organizational_focus: ""
+    professional_development: ""
+    evaluation_outcomes: ""
+    sustainability_innovation: ""
+
+  application_questions:
+    q1_current_after_school_programs: ""
+    q2_experience_tk_6: ""
+    q3_academic_support_approach: ""
+    q4_enrichment_activities: ""
+    q5_youth_development_sel: ""
+    q6_family_engagement_plan: ""
+    q7_staffing_model: ""
+    q8_staff_qualifications: ""
+    q9_coordinator_role: ""
+    q10_safety_procedures: ""
+    q11_attendance_tracking: ""
+    q12_assessment_evaluation: ""
+    q13_3_hour_schedule: ""
+    q14_transportation_plan: ""
+    q15_special_needs_support: ""
+    q16_budget_justification: ""
+    q17_community_partnerships: ""
+    q18_continuous_improvement: ""
+    q19_sustainability_plan: ""
+    q20_innovation_practices: ""
+
+  assurances:
+    meet_all_requirements: true
+    background_clearances: true
+    insurance_coverage: true
+    reporting_compliance: true
+
+  legal:
+    nda_disclosee_name: ""
+    workers_comp_company_name: ""
+    workers_comp_rep_name: ""
+
+  timeline:
+    questions_due: "September 12, 2025 (4:00 PM PT)"
+    qa_posted: "September 19, 2025 (4:00 PM PT)"
+    proposal_due: "September 26, 2025 (4:00 PM PT)"
+    review_period: "Late September – Mid October 2025"
+    selection_period: "Late October 2025"

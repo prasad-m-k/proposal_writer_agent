@@ -10,6 +10,8 @@ from docx import Document
 from docx.shared import Inches, Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 import google.generativeai as genai
+import yaml
+from jinja2 import Template
 
 from convert import MarkdownToDocxConverter
 from config.settings import RFP_TYPE_FILES
@@ -33,24 +35,28 @@ class ProposalService:
         """Load the appropriate prompt and requirements files based on RFP type."""
         if rfp_type not in RFP_TYPE_FILES:
             rfp_type = "Extended Learning Opportunities Program"  # Default fallback
-        
+
         files = RFP_TYPE_FILES[rfp_type]
-        
+
+        # Check if this RFP type uses YAML + Jinja strategy
+        if 'yaml' in files and 'jinja' in files:
+            return self.load_yaml_jinja_template(files)
+
         try:
-            # Load prompt file
-            prompt_path = os.path.join(self.config['INPUT_FILES_FOLDER'], files["prompt"])
-            with open(prompt_path, 'r', encoding='utf-8') as f:
-                print(f"reading from prompt_path: {prompt_path} ")
-                prompt_template = f.read()
-            
             # Load requirements file
             requirements_path = os.path.join(self.config['INPUT_FILES_FOLDER'], files["requirements"])
             with open(requirements_path, 'r', encoding='utf-8') as f:
                 print(f"reading from requirements_path: {requirements_path} ")
                 requirements_context = f.read()
-                
+
+            # Load prompt file
+            prompt_path = os.path.join(self.config['INPUT_FILES_FOLDER'], files["prompt"])
+            with open(prompt_path, 'r', encoding='utf-8') as f:
+                print(f"reading from prompt_path: {prompt_path} ")
+                prompt_template = f.read()
+
             return prompt_template, requirements_context
-            
+
         except FileNotFoundError as e:
             print(f"Warning: Could not load RFP files for {rfp_type}: {e}")
             # Fallback to default files
@@ -62,6 +68,32 @@ class ProposalService:
                 return prompt_template, requirements_context
             except FileNotFoundError:
                 raise ValueError(f"Could not load default prompt files for RFP type: {rfp_type}")
+
+    def load_yaml_jinja_template(self, files):
+        """Load YAML configuration and Jinja template for structured RFP generation"""
+        try:
+            # Load YAML configuration
+            yaml_path = os.path.join(self.config['INPUT_FILES_FOLDER'], files["yaml"])
+            with open(yaml_path, 'r', encoding='utf-8') as f:
+                print(f"reading from yaml_path: {yaml_path}")
+                yaml_config = yaml.safe_load(f)
+
+            # Load Jinja template
+            jinja_path = os.path.join(self.config['INPUT_FILES_FOLDER'], files["jinja"])
+            with open(jinja_path, 'r', encoding='utf-8') as f:
+                print(f"reading from jinja_path: {jinja_path}")
+                jinja_template = f.read()
+
+            # Return a dictionary that indicates YAML+Jinja mode
+            return {
+                'mode': 'yaml_jinja',
+                'yaml_config': yaml_config,
+                'jinja_template': jinja_template
+            }
+
+        except FileNotFoundError as e:
+            print(f"Warning: Could not load YAML/Jinja files: {e}")
+            raise ValueError(f"Could not load YAML/Jinja template files: {e}")
     
     def load_context_files(self):
         """Load common context files"""
@@ -122,6 +154,25 @@ class ProposalService:
     def normalize_empty_lines(self, text):
         """Reduce any sequence of multiple newlines to single newlines"""
         return re.sub(r'\n{2,}', r'\n', text)
+
+    def fill_form_fields(self, text, prompt_variables):
+        """Fill in form fields with actual company information"""
+        # Replace underscored form fields with actual data
+        replacements = {
+            r'\*\*Company Name:\*\* _{10,}': f"**Company Name:** {prompt_variables.get('company_name', 'Musical Instruments N Kids Hands (M.I.N.K.H.) - Music Science & Technology Group (MSTG)')}",
+            r'\*\*Authorized Representative Name:\*\* _{10,}': f"**Authorized Representative Name:** {prompt_variables.get('representative_name', 'A.P. Moore, Program Coordinator')}",
+            r'\*\*Title:\*\* _{10,}': f"**Title:** {prompt_variables.get('representative_title', 'Program Coordinator')}",
+            r'\*\*Email:\*\* _{10,}': f"**Email:** {prompt_variables.get('company_email', 'aphilanda@musicsciencegroup.com')}",
+            r'\*\*Phone:\*\* _{10,}': f"**Phone:** {prompt_variables.get('company_phone', '(916) 670-9950')}",
+            r'\*\*Address:\*\* _{10,}': f"**Address:** {prompt_variables.get('company_address', '2150 Capitol Avenue Sacramento, CA 95816')}",
+            r'\*\*Authorized Signature:\*\* _{10,}': f"**Authorized Signature:** {prompt_variables.get('representative_name', 'A.P. Moore, Program Coordinator')}",
+            r'\*\*Date:\*\* _{10,}': f"**Date:** {prompt_variables.get('today', date.today())}"
+        }
+
+        for pattern, replacement in replacements.items():
+            text = re.sub(pattern, replacement, text)
+
+        return text
     
     def clean_and_format_currency(self, value, default="$0.00"):
         """Clean and format currency values"""
@@ -227,6 +278,14 @@ class ProposalService:
                     "\nWhen generating the proposal for Natomas Unified School District, it is crucial to explicitly address and demonstrate compliance with each of the listed RFP requirements, integrating them naturally into the relevant sections of the proposal."
                 )
         
+        # Company information variables
+        company_name = kwargs.get('company_name', 'Musical Instruments N Kids Hands (M.I.N.K.H.) - Music Science & Technology Group (MSTG)')
+        representative_name = kwargs.get('representative_name', 'A.P. Moore, Program Coordinator')
+        representative_title = kwargs.get('representative_title', 'Program Coordinator')
+        company_email = kwargs.get('company_email', 'aphilanda@musicsciencegroup.com')
+        company_phone = kwargs.get('company_phone', '(916) 670-9950')
+        company_address = kwargs.get('company_address', '2150 Capitol Avenue Sacramento, CA 95816')
+
         # Create comprehensive variables dictionary
         prompt_variables = {
             'district': district,
@@ -249,14 +308,28 @@ class ProposalService:
             'project': {rfp_type},
             'services': "Music Integration, S.T.E.A.M. Education, Wellness Programs, Student Engagement Activities",
             'benefits': "Enhanced Student Engagement, Improved Academic Performance, Increased Wellness, Community Involvement",
-            'cta': "We look forward to the opportunity to collaborate and make a meaningful impact together."
+            'cta': "We look forward to the opportunity to collaborate and make a meaningful impact together.",
+
+            # Company information
+            'company_name': company_name,
+            'representative_name': representative_name,
+            'representative_title': representative_title,
+            'company_email': company_email,
+            'company_phone': company_phone,
+            'company_address': company_address
         }
         
         # Add context files
         prompt_variables.update(context_files)
         
         # Add RFP requirements context
-        _, requirements_context = self.load_rfp_files(rfp_type)
+        rfp_data = self.load_rfp_files(rfp_type)
+        if isinstance(rfp_data, dict) and rfp_data.get('mode') == 'yaml_jinja':
+            # For YAML+Jinja mode, use the RFP type as context
+            requirements_context = f"RFP Type: {rfp_type} (using YAML+Jinja template)"
+        else:
+            # Traditional mode - extract requirements context
+            _, requirements_context = rfp_data
         prompt_variables['rfp_requirements_context_formatted'] = requirements_context
         
         # For backward compatibility
@@ -267,26 +340,234 @@ class ProposalService:
 
         return prompt_variables
     
-    def generate_proposal_text(self, prompt_template, prompt_variables):
-        """Generate proposal text using AI"""
+    def generate_proposal_text(self, template_data, prompt_variables):
+        """Generate proposal text using AI - handles both traditional and YAML+Jinja approaches"""
         try:
-            prompt = prompt_template.format(**prompt_variables)
-            model = genai.GenerativeModel('gemini-2.0-flash')
+            # Check if template_data is a YAML+Jinja config dictionary
+            if isinstance(template_data, dict) and template_data.get('mode') == 'yaml_jinja':
+                # YAML + Jinja approach
+                return self.generate_with_yaml_jinja(template_data, prompt_variables)
+            else:
+                # Traditional approach - extract prompt template from tuple
+                if isinstance(template_data, tuple):
+                    prompt_template, _ = template_data
+                else:
+                    prompt_template = template_data  # Fallback for direct string
 
-            print(f"Generating proposal using Gemini model for RFP type: {prompt_variables.get('rfp_type')}...")
-            response = model.generate_content(prompt)
-            return self.normalize_empty_lines(response.text)
+                prompt = prompt_template.format(**prompt_variables)
+                model = genai.GenerativeModel('gemini-2.0-flash')
+
+                print(f"Generating proposal using Gemini model for RFP type: {prompt_variables.get('rfp_type')}...")
+                response = model.generate_content(prompt)
+
+                # Post-process the AI text to fill in form fields with actual company data
+                ai_text = self.normalize_empty_lines(response.text)
+                ai_text = self.fill_form_fields(ai_text, prompt_variables)
+
+                return ai_text
 
         except Exception as e:
             error_text = f"An error occurred while generating the proposal text: {e}"
             print(error_text)
             return error_text
+
+    def generate_with_yaml_jinja(self, config_data, prompt_variables):
+        """Generate proposal using YAML configuration and Jinja template"""
+        try:
+            # Extract YAML config and Jinja template from the config_data
+            yaml_config = config_data['yaml_config']
+            jinja_template_content = config_data['jinja_template']
+
+            # Populate YAML variables with form data
+            populated_vars = self.populate_yaml_vars(yaml_config['vars'], prompt_variables)
+
+            # Render the Jinja template with populated variables
+            template = Template(jinja_template_content)
+            rendered_content = template.render(**populated_vars)
+
+            # Create enhanced prompt for Gemini
+            enhanced_prompt = self.create_enhanced_prompt_for_yaml(rendered_content, prompt_variables)
+
+            model = genai.GenerativeModel('gemini-2.0-flash')
+            rfp_type = prompt_variables.get('rfp_type', 'Request for Qualifications')
+            print(f"Generating proposal using YAML+Jinja strategy for RFP type: {rfp_type}...")
+            response = model.generate_content(enhanced_prompt)
+
+            return self.normalize_empty_lines(response.text)
+
+        except Exception as e:
+            error_text = f"An error occurred in YAML+Jinja generation: {e}"
+            print(error_text)
+            return error_text
+
+    def populate_yaml_vars(self, yaml_vars, prompt_variables):
+        """Populate YAML variables with form data"""
+        # Deep copy the YAML structure to avoid modifying the original
+        import copy
+        populated_vars = copy.deepcopy(yaml_vars)
+
+        # Populate submission information
+        if 'submission' in populated_vars:
+            populated_vars['submission']['company_name'] = prompt_variables.get('company_name', '')
+            populated_vars['submission']['rep_name'] = prompt_variables.get('representative_name', '')
+            populated_vars['submission']['title'] = prompt_variables.get('representative_title', '')
+            populated_vars['submission']['email'] = prompt_variables.get('company_email', '')
+            populated_vars['submission']['phone'] = prompt_variables.get('company_phone', '')
+            populated_vars['submission']['address'] = prompt_variables.get('company_address', '')
+            populated_vars['submission']['signature_name'] = prompt_variables.get('representative_name', '')
+            populated_vars['submission']['signature_date'] = str(prompt_variables.get('today', ''))
+
+        # Populate budget information if available
+        if 'budget' in populated_vars and 'categories' in populated_vars['budget']:
+            # Extract costs from form data if available (you may need to enhance this based on your form structure)
+            total_cost = prompt_variables.get('cost_proposal', '$0.00')
+            if isinstance(total_cost, str):
+                try:
+                    # Clean currency and convert to float
+                    clean_cost = float(re.sub(r'[^\d.-]', '', total_cost))
+                    # Distribute cost across categories (basic allocation - you can enhance this)
+                    populated_vars['budget']['categories']['staffing'] = clean_cost * 0.6  # 60% staffing
+                    populated_vars['budget']['categories']['instructional_materials'] = clean_cost * 0.1
+                    populated_vars['budget']['categories']['program_supplies'] = clean_cost * 0.1
+                    populated_vars['budget']['categories']['supervision'] = clean_cost * 0.1
+                    populated_vars['budget']['categories']['professional_development'] = clean_cost * 0.05
+                    populated_vars['budget']['categories']['transportation'] = clean_cost * 0.025
+                    populated_vars['budget']['categories']['admin_costs'] = clean_cost * 0.025
+                except (ValueError, TypeError):
+                    pass  # Keep default values if conversion fails
+
+        # Populate legal information
+        if 'legal' in populated_vars:
+            populated_vars['legal']['nda_disclosee_name'] = prompt_variables.get('company_name', '')
+            populated_vars['legal']['workers_comp_company_name'] = prompt_variables.get('company_name', '')
+            populated_vars['legal']['workers_comp_rep_name'] = prompt_variables.get('representative_name', '')
+
+        # Set up references with default data (can be enhanced to pull from form)
+        if 'references' in populated_vars:
+            default_refs = [
+                {
+                    'organization': 'Natomas Unified School District',
+                    'contact_name': 'Program Administrator',
+                    'phone': '(916) 567-5000',
+                    'email': 'programs@natomas.net',
+                    'dates_of_service': '2023-2024',
+                    'description': 'Extended Learning Opportunities Program'
+                },
+                {
+                    'organization': 'Sacramento City Unified School District',
+                    'contact_name': 'Enrichment Coordinator',
+                    'phone': '(916) 643-7400',
+                    'email': 'enrichment@scusd.edu',
+                    'dates_of_service': '2022-2023',
+                    'description': 'Music & STEAM Integration Program'
+                },
+                {
+                    'organization': 'Elk Grove Unified School District',
+                    'contact_name': 'After School Programs Manager',
+                    'phone': '(916) 686-7700',
+                    'email': 'afterschool@egusd.net',
+                    'dates_of_service': '2021-2022',
+                    'description': 'Arts & Wellness Programs'
+                }
+            ]
+
+            for i in range(min(3, len(populated_vars['references']))):  # Limit to first 3 references
+                if i < len(default_refs):
+                    populated_vars['references'][i].update(default_refs[i])
+
+        return populated_vars
+
+    def create_enhanced_prompt_for_yaml(self, rendered_content, prompt_variables):
+        """Create an enhanced prompt for Gemini using the rendered Jinja content"""
+
+        # Load context information
+        context_files = self.load_context_files()
+
+        enhanced_prompt = f"""
+You are a proposal writer completing an RFP response for {prompt_variables.get('district', 'N/A')} School District. This is a CRITICAL GOVERNMENT CONTRACT submission that must follow EXACT formatting requirements.
+
+WARNING: School districts have STRICT documentation order requirements. ANY deviation from the provided template structure will result in AUTOMATIC DISQUALIFICATION.
+
+ORGANIZATION CONTEXT:
+{context_files.get('about_mstg', 'Musical Instruments N Kids Hands (M.I.N.K.H.) - Music Science & Technology Group (MSTG) specializes in music integration and STEAM education programs.')}
+
+{context_files.get('about_minkh', 'M.I.N.K.H. focuses on hands-on learning experiences that combine music, science, technology, engineering, arts, and mathematics.')}
+
+PROJECT DETAILS:
+- Client: {prompt_variables.get('district', 'N/A')} School District
+- Program: {prompt_variables.get('rfp_type', 'Extended Learning Opportunities Program')}
+- Students: {prompt_variables.get('total_students', 'N/A')}
+- Duration: {prompt_variables.get('program_dates', 'N/A')}
+- Investment: {prompt_variables.get('formatted_cost_proposal', 'N/A')}
+- Cost/Student: {prompt_variables.get('formatted_cost_per_student', 'N/A')}
+
+TEMPLATE TO COMPLETE (MAINTAIN EXACT FORMAT):
+{rendered_content}
+
+CRITICAL FORMATTING REQUIREMENTS:
+1. DO NOT change any headings, section numbers, or appendix labels
+2. DO NOT reorder any sections - keep the EXACT sequence provided
+3. DO NOT add extra sections or remove any existing sections
+4. DO NOT modify table structures, column headers, or formatting
+5. DO NOT change markdown formatting (**, ##, |, ---, etc.)
+6. DO NOT add introductory text, conclusions, or explanations outside the template
+
+CONTENT REQUIREMENTS:
+7. Replace ONLY "TBD" placeholders with specific, professional content
+8. For narrative sections: Write 2-3 focused paragraphs demonstrating expertise
+9. For application questions: Provide direct, substantive answers (3-5 sentences each)
+10. Use measurable outcomes and specific examples from music/STEAM education
+11. Maintain professional, confident tone throughout
+12. Address diversity, equity, inclusion naturally within existing sections
+13. Keep all budget figures, dates, and contact information as provided
+
+COMPLIANCE CHECK:
+- Every "TBD" must be replaced with appropriate content
+- All headings must remain exactly as shown
+- All tables must maintain their structure
+- All legal text sections must remain unchanged
+- Document must be ready for direct conversion to PDF/DOCX
+
+HALLUCINATION PREVENTION:
+- DO NOT invent new sections, appendices, or requirements not in the template
+- DO NOT add creative flourishes or additional formatting beyond what's provided
+- DO NOT include meta-commentary about the proposal process
+- DO NOT mention AI assistance or generation in the content
+- DO NOT add disclaimers, notes, or explanations anywhere in the document
+
+RETURN REQUIREMENT:
+Output ONLY the completed proposal template with all "TBD" placeholders filled. Start immediately with the first line of the template (the title). Do not include any explanations, notes, or additional text outside the template structure. The output must be ready for immediate submission to the school district.
+
+FINAL CHECK BEFORE SUBMISSION:
+1. Does the output start with the exact title from the template?
+2. Are all headings preserved exactly as shown?
+3. Are all table structures intact?
+4. Are all "TBD" entries replaced with appropriate content?
+5. Does the output end with the last section from the template?
+"""
+
+        return enhanced_prompt
     
+    def get_document_title(self, district, rfp_type):
+        """Generate appropriate document title based on RFP type and district"""
+        title_mapping = {
+            "Extended Learning Opportunities Program": f"ELOP Program Proposal for {district}",
+            "Request for Qualifications": f"Request for Qualifications (RFQ)\nEnrichment Program Providers at {district}",
+            "Summer School Core Program Providers": f"ELOP Program Proposal for Summer School Core Program Providers at {district}",
+            "After School Core Program Providers": f"ELOP Program Proposal for After School Core Program Providers at {district}"
+        }
+        return title_mapping.get(rfp_type, f"Proposal for {district}")
+
     def create_document(self, text, district, rfp_type):
         """Create and save the Word document"""
         try:
             document = Document()
             self.create_document_header(document)
+
+            # Add document title
+            title = self.get_document_title(district, rfp_type)
+            title_paragraph = document.add_heading(title, level=0)
+            title_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
             # Convert text to document
             converter = MarkdownToDocxConverter(document=document)
@@ -346,13 +627,13 @@ class ProposalService:
         try:
             # Load appropriate files based on RFP type
             rfp_type = kwargs.get('rfp_type', 'Extended Learning Opportunities Program')
-            prompt_template, _ = self.load_rfp_files(rfp_type)
+            rfp_data = self.load_rfp_files(rfp_type)
 
             # Prepare variables
             prompt_variables = self.prepare_prompt_variables(**kwargs)
 
             # Generate proposal text
-            proposal_text = self.generate_proposal_text(prompt_template, prompt_variables)
+            proposal_text = self.generate_proposal_text(rfp_data, prompt_variables)
 
             return proposal_text
 
@@ -366,13 +647,13 @@ class ProposalService:
         try:
             # Load appropriate files based on RFP type
             rfp_type = kwargs.get('rfp_type', 'Extended Learning Opportunities Program')
-            prompt_template, _ = self.load_rfp_files(rfp_type)
+            rfp_data = self.load_rfp_files(rfp_type)
 
             # Prepare variables
             prompt_variables = self.prepare_prompt_variables(**kwargs)
 
             # Generate proposal text
-            proposal_text = self.generate_proposal_text(prompt_template, prompt_variables)
+            proposal_text = self.generate_proposal_text(rfp_data, prompt_variables)
 
             # Create document
             district = kwargs.get('district', 'N/A')

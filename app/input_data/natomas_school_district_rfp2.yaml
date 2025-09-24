@@ -1,0 +1,95 @@
+
+---
+vars:
+  submission:
+    company_name: ""
+    rep_name: ""
+    title: ""
+    email: ""
+    phone: ""
+    address: ""
+    signature_name: ""        # for signature lines
+    signature_date: ""        # e.g., "2025-09-26"
+
+  narrative:
+    need_for_program: ""
+    program_design: ""
+    hq_elements: ""
+    org_focus: ""
+    professional_development: ""
+    success_sustainability: ""
+    innovation: ""
+
+  budget:
+    option: "Option 1"   # Option 1 or Option 2
+    cap_per_student: 1000
+    students_per_site: 200
+    tk_k_max: 40
+    categories:
+      staffing: 0
+      instructional_materials: 0
+      supplies: 0
+      supervision: 0
+      professional_development: 0
+      transportation: 0
+      admin_overhead: 0
+      subcontracted_services: 0
+    intervention_plan: ""
+
+  references:
+    - organization: ""
+      contact_name: ""
+      phone: ""
+      email: ""
+      dates_of_service: ""
+      description: ""
+    - organization: ""
+      contact_name: ""
+      phone: ""
+      email: ""
+      dates_of_service: ""
+      description: ""
+    - organization: ""
+      contact_name: ""
+      phone: ""
+      email: ""
+      dates_of_service: ""
+      description: ""
+
+  application_questions:
+    q1_current_provider: ""
+    q2_prior_experience: ""
+    q3_other_districts: ""
+    q4_terminated_contracts: ""
+    q5_capacity_sites: ""
+    q6_capacity_students: ""
+    q7_litigation_status: ""
+    q8_community_engagement: ""
+    q9_school_partnerships: ""
+    q10_safe_environment: ""
+    q11_active_learning: ""
+    q12_skill_building: ""
+    q13_youth_voice: ""
+    q14_equity_access: ""
+    q15_quality_staff: ""
+    q16_vision_alignment: ""
+    q17_collaborations: ""
+    q18_cqi_plan: ""
+    q19_program_management: ""
+    q20_staffing_absences_pd: ""
+
+  legal:
+    assurances_initials: "JD"
+    nda_disclosee_name: "Musical Instruments N Kids Hands"
+    workers_comp_company: "Musical Instruments N Kids Hands"
+    workers_comp_rep: "A.P. Moore"
+
+  schedule:
+    publish: "2025-08-25"
+    questions_due: "2025-09-12 16:00 PT"
+    qa_posted: "2025-09-19 16:00 PT"
+    proposal_due: "2025-09-26 16:00 PT"
+    review: "2025-09-29 to 2025-10-17"
+    selection: "Week of 2025-10-20"
+    board_approval_1: "2025-11-19"
+    board_approval_2: "2026-01-14"

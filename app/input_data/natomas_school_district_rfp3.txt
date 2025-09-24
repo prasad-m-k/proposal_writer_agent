@@ -1,91 +1,67 @@
-This Request for Proposal (RFP) outlines the requirements for After School Core Program Providers for the Natomas Unified School District (NUSD) for Cycle B, spanning the 2026-27 and 2027-28 school years. The RFP is seeking qualified community partners to provide structured, engaging, and developmentally appropriate after-school programs for K-8th grade students through the After School Education and Safety (ASES) and Expanded Learning Opportunities Program (ELO-P).
+# RFP Requirements Context — After School Core Program Providers (Cycle B: 2026–27 & 2027–28)
 
-**Program Services:**
-Selected providers will offer a range of services, including:
-*   **Academic Support:** Tutoring, homework help, literacy, and math enrichment.
-*   **Enrichment Activities:** STEAM, physical education, visual and performing arts, leadership, and social-emotional learning.
-*   **Youth Development:** Activities promoting teamwork, problem-solving, and personal growth.
-*   **Family Engagement:** Opportunities to involve families and strengthen community connections.
-*   **Program Staffing & Supervision:** Ensuring a safe, inclusive, and engaging environment with qualified personnel.
+## Purpose
+Reference summary of all *must-have* requirements for Natomas USD After School Core Program Providers under the Expanded Learning Opportunities Program (ELO-P).
 
-**Provider Eligibility & Requirements:**
-Applicants must demonstrate:
-*   Experience operating high-quality after-school or expanded learning programs for TK-8th grade students.
-*   Capacity to provide services for 180 school days, from dismissal until 6:00 PM.
-*   Compliance with all applicable district, state, and federal regulations.
-*   Qualified staff with appropriate background checks.
-*   Ability to coordinate effectively with school administration and community partners.
+## Program Scope & Model
+- **Audience:** TK–6 students
+- **Program length:** All school days when school is in session.
+- **Daily duration:** Minimum 3 hours/day after school dismissal until ~6:00 PM.
+- **Goals:** Provide safe, engaging, high-quality academic support, enrichment, youth development, SEL, and family engagement.
+- **Staffing ratios:**  
+  - TK/K ratio **1:10** (capacity up to 40 TK/K students per site).  
+  - Grades 1–6 ratio **1:20**.  
+- **Required on-site coordinator** at each site.
 
-**Budget and Funding:**
-*   Budgets must not exceed $2,500 per student.
-*   A detailed, itemized budget for each school site is required, broken down by category.
-*   Failure to submit a proper itemized budget may lead to disqualification.
+## Required Service Components
+1. **Academic Support** – tutoring, literacy, math, skill-building.  
+2. **Enrichment** – STEAM, arts, leadership, wellness, physical activity.  
+3. **Youth Development & SEL** – teamwork, problem-solving, resilience.  
+4. **Family & Community Engagement** – workshops, showcases, community partnerships.  
+5. **Staffing & Supervision** – qualified, trained, culturally responsive; DOJ/TB cleared.  
+6. **Operations** – attendance tracking, safety procedures, student progress reporting.
 
-**Capacity Requirement for Transitional Kindergarten and Kindergarten Students:**
-*   Vendors must be able to serve up to forty (40) students per site in TK and Kindergarten, maintaining a 1:10 ratio.
+## Submission Logistics & Schedule
+- **Questions due:** Sept 12, 2025 (by 4:00 PM, PT)  
+- **District Q&A posted:** Sept 19, 2025 (by 4:00 PM, PT)  
+- **Proposal due:** Sept 26, 2025 (by 4:00 PM, PT) via Secure Bids only  
+- Late submissions not accepted.
 
-**Program Alignment:**
-*   Programs must align with NUSD's Vision, Strategic Plan, and applicable laws.
-*   Providers may serve multiple NUSD sites.
-*   Special consideration will be given to programs offering Spanish dual-immersion at Heredia-Arriaga School.
-*   Coordination with NUSD contracted third-party enrichment providers is expected.
+## Required Submission Package
+1. **Cover Page (Appendix A)**  
+2. **Proposal Checklist (Appendix B)**  
+3. **References (Appendix C)** – ≥ 3 from last 5 years  
+4. **Budget Sheet (Appendix D & Attachment)** – itemized categories  
+5. **Proposal Narrative (Attachment)** – must address:  
+   - Need for Program  
+   - Program Design  
+   - High-Quality Programming Elements  
+   - Organizational Focus  
+   - Professional Development  
+   - Evaluation & Outcomes  
+   - Sustainability & Innovation  
+6. **Application Questionnaire (Attachment)** – 20 required questions  
+7. **Assurances to Meet Requirements (Appendix E)**  
+8. **Non-Collusion Affidavit (Appendix F)**  
+9. **Non-Disclosure Agreement (Appendix G)**  
+10. **Workers’ Compensation Certification (Appendix H)**  
+11. **Fingerprinting/Background Certification**
 
-**ASES and ELO-P Programs:**
-*   ASES is funded under Proposition 49 and focuses on literacy support, academic enrichment, and safe alternatives for grades K-9.
-*   ELO-P funds after-school enrichment for TK-6 students, with a focus on English learners, socioeconomically disadvantaged, or foster youth, requiring approximately 3-4 hours of daily instruction.
+## Budgeting
+- Based on **200 students per site** (min).  
+- **Per-student cap:** ≤ $1,000.  
+- Categories: staffing, instructional materials, program supplies, supervision, PD, transportation, admin costs.
 
-**RFP Submission Details:**
-*   **Deadline for Questions:** Friday, September 12, 2025, at 4:00 PM (Pacific). Questions must be submitted via email to bidsubmission@natomasunified.org.
-*   **Responses to Questions:** Will be posted by Friday, September 19, 2025, at 4:00 PM (Pacific) on the NUSD website.
-*   **Deadline for RFP Submission:** Friday, September 26, 2025, at 4:00 PM (Pacific).
-*   **Submission Method:** Electronically through the Secure Bids platform. Proposals submitted after the deadline will be rejected.
+## Evaluation & Scoring
+- **Completeness** – 30 pts  
+- **Need for Program** – 10 pts  
+- **Program Design** – 30 pts  
+- **High-Quality Elements** – 20 pts  
+- **Organizational Focus** – 10 pts  
+- **Professional Development** – 10 pts  
+- **Sustainability & Innovation** – 20 pts  
+- **Budget** – 20 pts  
+- **Other (Innovation)** – 10 pts  
 
-**Proposal Format:**
-*   All proposals must be submitted electronically in PDF format.
-*   The proposal must comprehensively address all requirements and follow the order of sections presented in the RFP, including all appendices and attachments.
-*   Failure to follow the specified format or include all required documents may result in reduced evaluation points or disqualification.
-
-**Required Documents for RFP Submission:**
-*   Signed Cover Page (Appendix A)
-*   Proposal Checklist (Appendix B)
-*   References (Appendix C)
-*   School Site Selection Sheet (Appendix D)
-*   Itemized Budget Sheet per School Site (Attachment)
-*   Proposal Narrative (Attachment) covering: Need for Program, Program Design, Elements of High-Quality Programming, Organizational Focus, Professional Development, Project Evaluation, Success and Sustainability, and Other Points.
-*   Application Questionnaire (Attachment)
-*   Assurances to Meet Requirements (Appendix E)
-*   Non-Collusion Affidavit (Appendix F)
-*   Non-Disclosure Agreement (Appendix G)
-*   Fingerprinting/Criminal Background Investigation Certification (Appendix H)
-*   Workers' Compensation Certification (Appendix I)
-
-**RFP Assessment Criteria:**
-Proposals will be evaluated on the following criteria, totaling 180 points:
-1.  Completeness of Proposal (30 points)
-2.  Need for Program (10 points)
-3.  Program Design (30 points)
-4.  Elements of High-Quality Programming (20 points)
-5.  Organizational Focus (10 points)
-6.  Professional Development (10 points)
-7.  Project Evaluation (20 points)
-8.  Success and Sustainability (20 points)
-9.  Budget (20 points)
-10. Other Points (10 points)
-
-**General Terms & Conditions:**
-*   Providers will act as independent contractors.
-*   All legally required licenses and qualifications must be maintained.
-*   The District owns all work products created under the agreement.
-*   Specific insurance requirements are outlined (Commercial General Liability, Sexual Abuse-Molestation, Business Automobile Liability, Professional Liability, Workers' Compensation, Cyber Liability).
-*   Providers must comply with various mandates, including anti-discrimination, safety, security, and student data privacy.
-*   Fingerprinting and DOJ clearance are required for personnel in contact with students.
-*   The agreement is contingent upon Board approval.
-
-**Provider Designation:**
-*   Selected Core After School Program Providers are prohibited from simultaneously contracting as Enrichment Service Providers.
-
-**Tobacco-Free District:**
-*   Natomas Unified School District is a tobacco-free district.
-
-**Protest Procedures:**
-*   Formal written protests must be submitted to the Director of Purchasing & Warehouse within five (5) business days of notification of the selected awardee.
+## General Terms
+- Independent contractor status; insurance (CGL $2M/$4M, Auto $2M, Workers’ Comp, Cyber $1M, Prof $1M, SAM $2M/$4M); indemnification; student data privacy; no solicitation; record retention 3 yrs; board approval contingency.

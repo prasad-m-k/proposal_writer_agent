@@ -1,0 +1,78 @@
+---
+vars:
+  submission:
+    company_name: ""
+    rep_name: ""
+    title: ""
+    email: ""
+    phone: ""
+    address: ""
+    signature_name: ""        # for signature lines
+    signature_date: ""        # e.g., "2025-09-26"
+
+  narrative:
+    org_overview: ""          # paragraphs
+    program_design: ""        # paragraphs (hours, frequency, rotating blocks, alignment to LEAP)
+    hq_elements: ""           # safe, supportive, hands-on, link to instructional day
+    staffing_training: ""     # model, ratios, training, supervision, absence coverage
+    evaluation_outcomes: ""   # KPIs, data collection, continuous improvement
+    sustainability_innovation: ""  # partnerships, unique practices
+
+  budget:
+    per_student_per_day_usd: 20
+    min_students_per_site: 20
+    categories:
+      staffing: 0
+      instructional_materials: 0
+      program_supplies: 0
+      supervision: 0
+      professional_development: 0
+      transportation: 0
+      admin_costs: 0
+
+  references:
+    - organization: ""
+      contact_name: ""
+      phone: ""
+      email: ""
+      dates_of_service: ""
+      description: ""
+    - organization: ""
+      contact_name: ""
+      phone: ""
+      email: ""
+      dates_of_service: ""
+      description: ""
+    - organization: ""
+      contact_name: ""
+      phone: ""
+      email: ""
+      dates_of_service: ""
+      description: ""
+
+  application_questions:
+    q1_current_provider: ""
+    q2_prior_nusd_provider: ""
+    q3_other_districts: ""
+    q4_terminated_or_investigations: ""
+    q5_capacity_sites_and_rationale: ""
+    q6_capacity_summer_intersession: ""
+    q7_litigation_status: ""
+    q8_natomas_community_experience: ""
+    q9_school_partnership_experience: ""
+    q10_safe_supportive_environment: ""
+    q11_active_engaged_learning: ""
+    q12_skill_building: ""
+    q13_youth_voice_leadership: ""
+    q14_diversity_access_equity_disabilities: ""
+    q15_quality_staff: ""
+    q16_vision_mission_alignment_to_theory_of_action: ""
+    q17_collaborative_partnerships: ""
+    q18_program_management_plan: ""
+    q19_staff_supervision_pd_absences_concerns: ""
+
+  legal:
+    nda_disclosee_name: ""
+    workers_comp_company_name: ""
+    workers_comp_rep_name: ""
+
