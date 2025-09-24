@@ -128,8 +128,8 @@
                 <div class="input-row">
                     <div class="input-col">
                         <label for="cost-per-student-input-editable">Cost per Student per Day:</label>
-                        <input type="number" id="cost-per-student-input-editable" name="cost_per_student_display" 
-                               class="config-input" value="20.00" min="1.00" max="100.00" step="0.01">
+                        <input type="text" id="cost-per-student-input-editable" name="cost_per_student_display" 
+                               class="config-input" value="$20.00" min="$1.00" max="$100.00" step="0.01">
                         <div class="input-hint">Enter between $1.00-$100.00</div>
                     </div>
                     <div class="input-col">
@@ -168,9 +168,15 @@
                         <input type="text" id="weekly-cost-input" name="weekly_cost" class="config-input" readonly>
                     </div>
                 </div>
-                <div style="margin-top: 1em;">
-                    <label for="cost-proposal-input">Total Estimated Program Cost:</label>
-                    <input type="text" id="cost-proposal-input" name="cost_proposal" class="config-input" readonly>
+                <div class="input-row">
+                    <div class="input-col">
+                        <label for="cost-per-school-input">Cost Per School:</label>
+                        <input type="text" id="cost-per-school-input" name="cost_per_school" class="config-input" value="$0.00" readonly>
+                    </div>
+                    <div class="input-col">
+                        <label for="cost-proposal-input">Total Estimated Program Cost:</label>
+                        <input type="text" id="cost-proposal-input" name="cost_proposal" class="config-input" readonly>
+                    </div>
                 </div>
             </div>
 
@@ -208,6 +214,9 @@
             <input type="hidden" name="hours_per_day_for_ai" id="hours-per-day-for-ai-hidden">
             <input type="hidden" name="daily_cost_for_ai" id="daily-cost-for-ai-hidden">
             <input type="hidden" name="weekly_cost_for_ai" id="weekly-cost-for-ai-hidden">
+            <input type="hidden" name="cost_per_school_for_ai" id="cost-per-school-for-ai-hidden">
+            <input type="hidden" name="selected_schools_list" id="selected-schools-list-hidden">
+            <input type="hidden" name="program_start_date" id="program-start-date-hidden">
             </form>
         </div>
 

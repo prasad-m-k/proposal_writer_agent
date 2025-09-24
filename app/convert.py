@@ -26,7 +26,7 @@ class MarkdownToDocxConverter:
         """
         Main conversion method. Adds markdown text to the document object.
         Note: This method no longer saves the file.
-        
+
         Args:
             markdown_text (str): The string containing Markdown text.
         """
@@ -78,6 +78,7 @@ class MarkdownToDocxConverter:
 
     def _add_list_item(self, line):
         """Adds a list item, handling indentation and type (bullet/number)."""
+
         indent_level = len(line) - len(line.lstrip())
         indent_spaces = indent_level // 2
         style = 'List Bullet'
@@ -85,7 +86,10 @@ class MarkdownToDocxConverter:
             style = 'List Number'
         if indent_spaces > 0:
             style = f"{style} {indent_spaces + 1}"
-        text = re.sub(r'^\s*(\*|-|\+)\s*|\s*\d+\.\s*', '', line).strip()
+        # Fixed regex: only match numbered lists at the beginning, not currency decimals
+        text = re.sub(r'^\s*(\*|-|\+)\s*|^\s*\d+\.\s+', '', line).strip()
+
+
         self.doc.add_paragraph(text, style=style)
 
     def _add_formatted_paragraph(self, line):

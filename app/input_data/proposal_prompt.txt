@@ -102,7 +102,21 @@ Generate an exceptionally detailed, persuasive, and perfectly structured proposa
 *   [ ] Detailed Cost Breakdown by Category (staffing, materials, professional development, transportation, administrative/overhead - as required)
 
 
-**10. Conclusion and Call to Action: Forging a Brighter Future Together**
+**10. Program Details and Fee Structure**
+*   **Schedule:** {days_per_week} day(s) per week
+*   **Duration:** {hours_per_day} hours per session
+*   **Program Dates:** {program_dates} ({num_weeks}-week program)
+*   **Total Enrollment:** {total_students} students
+*   **Service Locations:** {school_locations}
+
+**Fee Structure:**
+*   **Total Program Cost:** {formatted_cost_proposal}
+*   **Cost Per School Site:** {formatted_cost_per_school}
+*   **Cost Per Student for Full Program:** {formatted_cost_per_student}
+*   **Daily Program Cost:** {formatted_daily_cost}
+*   **Weekly Program Cost:** {formatted_weekly_cost}
+
+**11. Conclusion and Call to Action: Forging a Brighter Future Together**
 *   Articulate a powerful summary of MSTG's strengths and reiterate our profound enthusiasm for forging an impactful partnership with {client}.
 *   End with a clear, confident call to action, inviting immediate discussion to finalize this collaboration and begin making a meaningful, measurable difference in students' lives.
 

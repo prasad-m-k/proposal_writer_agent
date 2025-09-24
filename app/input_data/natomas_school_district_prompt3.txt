@@ -146,6 +146,21 @@ The output should be a structured text that can be directly mapped to sections o
 
 ---
 
+**Program Details and Fee Structure:**
+
+**Schedule:** {days_per_week} day(s) per week
+**Duration:** {hours_per_day} hours per session
+**Program Dates:** {program_dates} ({num_weeks}-week program)
+**Total Enrollment:** {total_students} students
+**Service Locations:** {school_locations}
+
+**Fee Structure:**
+- **Total Program Cost:** {formatted_cost_proposal}
+- **Cost Per School Site:** {formatted_cost_per_school}
+- **Cost Per Student for Full Program:** {formatted_cost_per_student}
+- **Daily Program Cost:** {formatted_daily_cost}
+- **Weekly Program Cost:** {formatted_weekly_cost}
+
 **Conclusion:**
 
 This comprehensive proposal template ensures all RFP requirements are addressed systematically. The structured approach demonstrates our organization's attention to detail and commitment to meeting all specified criteria while showcasing our unique value proposition for the Natomas Unified School District after-school programming needs.

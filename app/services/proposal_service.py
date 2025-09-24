@@ -126,11 +126,22 @@ class ProposalService:
     def clean_and_format_currency(self, value, default="$0.00"):
         """Clean and format currency values"""
         try:
-            clean_value = re.sub(r'[^\d.]', '', str(value))
+            # Handle empty or None values
+            if not value or str(value).strip() == '':
+                return default
+
+            clean_value = re.sub(r'[^\d.-]', '', str(value))  # Allow negative sign
+
+            if not clean_value or clean_value == '.':
+                return default
+
             numeric_value = float(clean_value)
-            return f"${numeric_value:,.2f}"
-        except (ValueError, TypeError):
-            print(f"Warning: Invalid currency value received: {value}. Defaulting to {default}.")
+
+            # Use locale-independent formatting
+            formatted_result = "${:,.2f}".format(numeric_value)
+            return formatted_result
+        except (ValueError, TypeError) as e:
+            print(f"Warning: Invalid currency value received: {value}. Error: {e}. Defaulting to {default}.")
             return default
     
     def prepare_prompt_variables(self, **kwargs):
@@ -140,13 +151,66 @@ class ProposalService:
         
         # Clean and format financial values
         formatted_cost_proposal = self.clean_and_format_currency(kwargs.get('cost_proposal'))
-        formatted_cost_per_student = self.clean_and_format_currency(kwargs.get('cost_per_student'))
+
+        # Calculate actual cost per student based on fixed program structure
+        # Program: 439 students, 7 weeks, $75,000 total cost
+        ##program_total_cost = 75000.00
+        ##total_students = 439
+        ##actual_cost_per_student = program_total_cost / total_students if total_students > 0 else 0
+
+        # Use calculated value or form value, prefer calculated
+        cost_per_student_value = kwargs.get('cost_per_student')
+        if cost_per_student_value and float(str(cost_per_student_value).replace('$', '').replace(',', '')) > 0:
+            formatted_cost_per_student = self.clean_and_format_currency(cost_per_student_value)
+        else:
+            formatted_cost_per_student = self.clean_and_format_currency("0")
+
         formatted_daily_cost = self.clean_and_format_currency(kwargs.get('daily_cost'))
         formatted_weekly_cost = self.clean_and_format_currency(kwargs.get('weekly_cost'))
+
+        # Debug output
+        print(f"DEBUG: cost_per_student from form: {kwargs.get('cost_per_student')}")
+        print(f"DEBUG: formatted_cost_per_student: {formatted_cost_per_student}")
+        print(f"DEBUG: daily_cost from form: {kwargs.get('daily_cost')}")
+        print(f"DEBUG: weekly_cost from form: {kwargs.get('weekly_cost')}")
+        print(f"DEBUG: cost_per_school from form: {kwargs.get('cost_per_school')}")
+        print(f"DEBUG: cost_proposal from form: {kwargs.get('cost_proposal')}")
         
         # Prepare school locations
         selected_schools = kwargs.get('selected_schools', [])
         school_locations = ", ".join(selected_schools) if selected_schools else "Selected school sites"
+
+        # Parse selected schools list if available
+        selected_schools_list = kwargs.get('selected_schools_list')
+        if selected_schools_list:
+            try:
+                import json
+                parsed_schools = json.loads(selected_schools_list)
+                school_locations = ", ".join(parsed_schools) if parsed_schools else school_locations
+            except (json.JSONDecodeError, TypeError):
+                # Fallback to the original list
+                pass
+
+        # Format cost per school
+        formatted_cost_per_school = self.clean_and_format_currency(kwargs.get('cost_per_school'))
+
+        # Format program start date
+        program_start_date = kwargs.get('program_start_date')
+        if program_start_date:
+            try:
+                from datetime import datetime
+                date_obj = datetime.strptime(program_start_date, '%Y-%m-%d')
+                formatted_start_date = date_obj.strftime('%B %d, %Y')  # e.g., "October 07, 2024"
+
+                # Calculate end date (assuming 7 weeks)
+                from datetime import timedelta
+                end_date_obj = date_obj + timedelta(weeks=7)
+                formatted_end_date = end_date_obj.strftime('%B %d, %Y')
+                program_dates = f"{formatted_start_date} - {formatted_end_date}"
+            except (ValueError, TypeError):
+                program_dates = "January 13, 2025 - March 07, 2025"
+        else:
+            program_dates = "January 13, 2025 - March 07, 2025"
         
         # Format RFP instructions
         district = kwargs.get('district', 'N/A')
@@ -177,6 +241,8 @@ class ProposalService:
             'formatted_weekly_cost': formatted_weekly_cost,
             'total_students': kwargs.get('total_students', 'N/A'),
             'formatted_cost_per_student': formatted_cost_per_student,
+            'formatted_cost_per_school': formatted_cost_per_school,
+            'program_dates': program_dates,
             'year': date.today().year,
             'rfp_instruction_formatted': rfp_instruction_formatted,
             'client': f"{district} School District",
@@ -198,7 +264,7 @@ class ProposalService:
             'natomas_rfp_requirements_context_formatted': requirements_context,
             'natomas_rfp_instruction_formatted': rfp_instruction_formatted
         })
-        
+
         return prompt_variables
     
     def generate_proposal_text(self, prompt_template, prompt_variables):
@@ -206,11 +272,11 @@ class ProposalService:
         try:
             prompt = prompt_template.format(**prompt_variables)
             model = genai.GenerativeModel('gemini-2.0-flash')
-            
+
             print(f"Generating proposal using Gemini model for RFP type: {prompt_variables.get('rfp_type')}...")
             response = model.generate_content(prompt)
             return self.normalize_empty_lines(response.text)
-            
+
         except Exception as e:
             error_text = f"An error occurred while generating the proposal text: {e}"
             print(error_text)
@@ -221,7 +287,7 @@ class ProposalService:
         try:
             document = Document()
             self.create_document_header(document)
-            
+
             # Convert text to document
             converter = MarkdownToDocxConverter(document=document)
             text = text.replace('** ', '**').replace(' **', '**')
@@ -235,12 +301,12 @@ class ProposalService:
             
             output_path = os.path.join(self.config['DOWNLOAD_FOLDER'], filename)
             document.save(output_path)
-            
+
             # Format the document
             word_formatter.format_word_document(output_path, output_path)
-            
+
             print(f"Successfully created '{filename}' in '{self.config['DOWNLOAD_FOLDER']}' with custom header.")
-            
+
             return filename
             
         except Exception as e:

@@ -28,6 +28,7 @@ class SchoolDataExplorer {
         // Cost summary elements
         this.dailyCostInput = document.getElementById('daily-cost-input');
         this.weeklyCostInput = document.getElementById('weekly-cost-input');
+        this.costPerSchoolInput = document.getElementById('cost-per-school-input');
         this.costProposalInput = document.getElementById('cost-proposal-input');
         
         // Form and UI elements
@@ -46,7 +47,10 @@ class SchoolDataExplorer {
             costPerStudent: document.getElementById('cost-per-student-for-ai-hidden'),
             hoursPerDay: document.getElementById('hours-per-day-for-ai-hidden'),
             dailyCost: document.getElementById('daily-cost-for-ai-hidden'),
-            weeklyCost: document.getElementById('weekly-cost-for-ai-hidden')
+            weeklyCost: document.getElementById('weekly-cost-for-ai-hidden'),
+            costPerSchool: document.getElementById('cost-per-school-for-ai-hidden'),
+            selectedSchoolsList: document.getElementById('selected-schools-list-hidden'),
+            programStartDate: document.getElementById('program-start-date-hidden')
         };
 
         // Constants for validation
@@ -76,6 +80,7 @@ class SchoolDataExplorer {
         this.daysInput.addEventListener('change', () => this.updateAllCostsAndDetails());
         this.hoursPerDayInput.addEventListener('input', () => this.handleHoursChange());
         this.costPerStudentInputEditable.addEventListener('input', () => this.handleCostPerStudentChange());
+        this.costPerStudentInputEditable.addEventListener('blur', () => this.formatCostPerStudentInput());
         this.maxSchoolsInput.addEventListener('input', () => this.handleMaxSchoolsChange());
 
         // Form submission
@@ -104,25 +109,35 @@ class SchoolDataExplorer {
     }
 
     validateInput(input) {
-        const value = parseFloat(input.value);
-        const min = parseFloat(input.min) || 0;
-        const max = parseFloat(input.max) || Infinity;
-        
+        // Check if this is the cost per student input (currency field)
+        const isCurrencyField = input.id === 'cost-per-student-input-editable';
+
+        let value, min, max;
+        if (isCurrencyField) {
+            value = this.parseCurrency(input.value);
+            min = this.parseCurrency(input.min) || 0;
+            max = this.parseCurrency(input.max) || Infinity;
+        } else {
+            value = parseFloat(input.value);
+            min = parseFloat(input.min) || 0;
+            max = parseFloat(input.max) || Infinity;
+        }
+
         if (isNaN(value) || value < min || value > max) {
-            this.showValidationMessage(input, `Please enter a value between ${min} and ${max}`);
+            const minDisplay = isCurrencyField ? this.formatCurrency(min) : min;
+            const maxDisplay = isCurrencyField && max !== Infinity ? this.formatCurrency(max) : max;
+            this.showValidationMessage(input, `Please enter a value between ${minDisplay} and ${maxDisplay}`);
             return false;
         }
-        
+
         this.clearValidationMessage(input);
         return true;
     }
 
     updateConstraints() {
-        const rfpType = document.querySelector('input[name="rfp_type"]:checked')?.value;
-        
         // Update constraints display based on current values
         this.updateConstraintDisplay();
-        
+
         // Update school selection constraints
         this.enforceMaxSchools();
     }
@@ -130,11 +145,11 @@ class SchoolDataExplorer {
     updateConstraintDisplay() {
         const maxStudents = parseInt(this.totalStudentsInput.max) || this.CONSTANTS.MAX_STUDENTS_DEFAULT;
         const maxHours = parseInt(this.hoursPerDayInput.max) || this.CONSTANTS.MAX_HOURS_DEFAULT;
-        const maxCostPerStudent = parseFloat(this.costPerStudentInputEditable.max) || this.CONSTANTS.MAX_COST_PER_STUDENT_DEFAULT;
+        const maxCostPerStudent = this.parseCurrency(this.costPerStudentInputEditable.max) || this.CONSTANTS.MAX_COST_PER_STUDENT_DEFAULT;
         const maxWeeks = parseInt(this.weeksInput.max) || this.CONSTANTS.MAX_WEEKS_DEFAULT;
         const maxSchools = parseInt(this.maxSchoolsInput.max) || this.CONSTANTS.MAX_SCHOOLS_DEFAULT;
         
-        const currentCostPerStudent = parseFloat(this.costPerStudentInputEditable.value) || 20;
+        const currentCostPerStudent = this.parseCurrency(this.costPerStudentInputEditable.value) || 20;
         const currentHours = parseFloat(this.hoursPerDayInput.value) || 3;
         const costPerHour = currentCostPerStudent / currentHours;
 
@@ -155,7 +170,25 @@ class SchoolDataExplorer {
         if (isNaN(value) || value === null) {
             return "$0.00";
         }
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(value);
+    }
+
+    parseCurrency(value) {
+        if (typeof value === 'number') {
+            return value;
+        }
+        if (typeof value === 'string') {
+            // Remove all non-numeric characters except decimal point and negative sign
+            const cleaned = value.replace(/[^0-9.-]/g, '');
+            const parsed = parseFloat(cleaned);
+            return isNaN(parsed) ? 0 : parsed;
+        }
+        return 0;
     }
 
     updateSchools() {
@@ -289,12 +322,12 @@ class SchoolDataExplorer {
     }
 
     handleCostPerStudentChange() {
-        const value = parseFloat(this.costPerStudentInputEditable.value);
-        const max = parseFloat(this.costPerStudentInputEditable.max) || this.CONSTANTS.MAX_COST_PER_STUDENT_DEFAULT;
+        const value = this.parseCurrency(this.costPerStudentInputEditable.value);
+        const max = this.parseCurrency(this.costPerStudentInputEditable.max) || this.CONSTANTS.MAX_COST_PER_STUDENT_DEFAULT;
         
         if (value > max) {
-            this.costPerStudentInputEditable.value = max;
-            this.showValidationMessage(this.costPerStudentInputEditable, `Maximum ${max} per student allowed`);
+            this.costPerStudentInputEditable.value = this.formatCurrency(max);
+            this.showValidationMessage(this.costPerStudentInputEditable, `Maximum ${this.formatCurrency(max)} per student allowed`);
         } else {
             this.clearValidationMessage(this.costPerStudentInputEditable);
         }
@@ -321,10 +354,19 @@ class SchoolDataExplorer {
     }
 
     updateCostPerHour() {
-        const costPerStudent = parseFloat(this.costPerStudentInputEditable.value) || 0;
+        const costPerStudent = this.parseCurrency(this.costPerStudentInputEditable.value) || 0;
         const hoursPerDay = parseFloat(this.hoursPerDayInput.value) || 1;
         const costPerHour = costPerStudent / hoursPerDay;
         this.costPerHourInput.value = this.formatCurrency(costPerHour);
+    }
+
+    formatCostPerStudentInput() {
+        const value = this.parseCurrency(this.costPerStudentInputEditable.value);
+        if (value > 0) {
+            this.costPerStudentInputEditable.value = this.formatCurrency(value);
+            // Trigger calculation update after formatting
+            this.updateAllCostsAndDetails();
+        }
     }
 
     updateProgramCapacity() {
@@ -365,7 +407,7 @@ class SchoolDataExplorer {
         const daysPerWeek = parseInt(this.daysInput.value, 10) || 1;
         const weeks = parseInt(this.weeksInput.value, 10) || 1;
         const hoursPerDay = parseFloat(this.hoursPerDayInput.value) || 3;
-        const costPerStudentPerDay = parseFloat(this.costPerStudentInputEditable.value) || 20;
+        const costPerStudentPerDay = this.parseCurrency(this.costPerStudentInputEditable.value) || 20;
 
         let totalActualEnrollment = 0;
         
@@ -399,11 +441,33 @@ class SchoolDataExplorer {
         const dailyCost = studentsPerDay * costPerStudentPerDay;
         const weeklyCost = dailyCost * daysPerWeek;
         const totalProgramCost = weeklyCost * weeks;
+        const costPerSchool = numSchoolsSelected > 0 ? totalProgramCost / numSchoolsSelected : 0;
+
+        // Debug logging for troubleshooting
+        console.log('🔢 Cost Calculation Update:', {
+            'Schools Selected': numSchoolsSelected,
+            'Students/Day': studentsPerDay,
+            'Cost/Student/Day': `$${costPerStudentPerDay}`,
+            'Days/Week': daysPerWeek,
+            'Weeks': weeks,
+            'Daily Cost': `$${dailyCost}`,
+            'Weekly Cost': `$${weeklyCost}`,
+            'Total Program Cost': `$${totalProgramCost}`,
+            '💰 Cost Per School': `$${costPerSchool}`
+        });
 
         // Update cost displays
         this.dailyCostInput.value = this.formatCurrency(dailyCost);
         this.weeklyCostInput.value = this.formatCurrency(weeklyCost);
+        this.costPerSchoolInput.value = this.formatCurrency(costPerSchool);
         this.costProposalInput.value = this.formatCurrency(totalProgramCost);
+
+        // Calculate program start date (first Monday of next month)
+        const programStartDate = this.calculateProgramStartDate();
+
+        // Get selected schools list
+        const selectedSchools = Array.from(document.querySelectorAll('input[name="schoolname"]:checked'))
+            .map(checkbox => JSON.parse(checkbox.dataset.schoolData)['School Name']);
 
         // Update program capacity
         this.updateProgramCapacity();
@@ -414,6 +478,9 @@ class SchoolDataExplorer {
         this.hiddenInputs.hoursPerDay.value = hoursPerDay;
         this.hiddenInputs.dailyCost.value = dailyCost.toFixed(2);
         this.hiddenInputs.weeklyCost.value = weeklyCost.toFixed(2);
+        this.hiddenInputs.costPerSchool.value = costPerSchool.toFixed(2);
+        this.hiddenInputs.selectedSchoolsList.value = JSON.stringify(selectedSchools);
+        this.hiddenInputs.programStartDate.value = programStartDate;
     }
 
     handleFormSubmission(event) {
@@ -463,6 +530,29 @@ class SchoolDataExplorer {
         }
 
         return true;
+    }
+
+    calculateProgramStartDate() {
+        const now = new Date();
+        const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+        // Find the first Monday of next month
+        const firstMonday = new Date(nextMonth);
+        while (firstMonday.getDay() !== 1) { // 1 = Monday
+            firstMonday.setDate(firstMonday.getDate() + 1);
+        }
+
+        // Format as YYYY-MM-DD
+        return firstMonday.toISOString().split('T')[0];
+    }
+
+    formatProgramDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
     }
 }
 
@@ -561,6 +651,10 @@ class TabManager {
                                download="${proposal.filename}">
                                 📥 Download
                             </a>
+                            <button onclick="deleteProposal('${proposal.filename}')"
+                                    class="delete-history-btn">
+                                🗑️ Delete
+                            </button>
                         </div>
                     </div>
                 `;
@@ -595,6 +689,107 @@ function loadProposalHistory() {
     if (window.tabManager) {
         window.tabManager.loadProposalHistory();
     }
+}
+
+// Global function for deleting proposals
+function deleteProposal(filename) {
+    showConfirmationDialog(filename);
+}
+
+// Custom styled confirmation dialog
+function showConfirmationDialog(filename) {
+    // Create dialog overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+
+    // Create dialog content
+    const dialog = document.createElement('div');
+    dialog.className = 'modal-dialog';
+
+    dialog.innerHTML = `
+        <div class="modal-header">
+            <h3>🗑️ Confirm Delete</h3>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete this proposal?</p>
+            <div class="filename-display">${filename}</div>
+            <p class="warning-text">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="modal-btn modal-btn-cancel" onclick="closeConfirmationDialog()">
+                Cancel
+            </button>
+            <button type="button" class="modal-btn modal-btn-delete" onclick="confirmDelete('${filename}')">
+                Delete
+            </button>
+        </div>
+    `;
+
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
+
+    // Store reference for cleanup
+    window.currentModal = overlay;
+
+    // Focus on cancel button for accessibility
+    setTimeout(() => {
+        dialog.querySelector('.modal-btn-cancel').focus();
+    }, 100);
+}
+
+function closeConfirmationDialog() {
+    if (window.currentModal) {
+        document.body.removeChild(window.currentModal);
+        window.currentModal = null;
+    }
+}
+
+async function confirmDelete(filename) {
+    try {
+        const response = await fetch('/api/proposal-delete', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ filename: filename })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete proposal');
+        }
+
+        await response.json();
+
+        // Close the dialog
+        closeConfirmationDialog();
+
+        // Show success message briefly
+        showNotification('Proposal deleted successfully', 'success');
+
+        // Reload the history
+        if (window.tabManager) {
+            window.tabManager.loadProposalHistory();
+        }
+
+    } catch (error) {
+        console.error('Error deleting proposal:', error);
+        showNotification('Failed to delete proposal. Please try again.', 'error');
+    }
+}
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+
+    document.body.appendChild(notification);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 3000);
 }
 
 // Initialize the application when the DOM is loaded

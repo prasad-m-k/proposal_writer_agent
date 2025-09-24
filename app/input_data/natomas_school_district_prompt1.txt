@@ -67,5 +67,19 @@ Explain your commitment to meeting all legal, federal, state, and district requi
 ## Evaluation and Success Metrics
 Describe how you will measure and ensure program success.
 
+## Program Details and Fee Structure
+**Schedule:** {days_per_week} day(s) per week
+**Duration:** {hours_per_day} hours per session
+**Program Dates:** {program_dates} ({num_weeks}-week program)
+**Total Enrollment:** {total_students} students
+**Service Locations:** {school_locations}
+
+**Fee Structure:**
+- **Total Program Cost:** {formatted_cost_proposal}
+- **Cost Per School Site:** {formatted_cost_per_school}
+- **Cost Per Student for Full Program:** {formatted_cost_per_student}
+- **Daily Program Cost:** {formatted_daily_cost}
+- **Weekly Program Cost:** {formatted_weekly_cost}
+
 ## Conclusion
 Summarize your value proposition and readiness to begin partnership.

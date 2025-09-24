@@ -116,6 +116,20 @@ Generate an exceptionally detailed, persuasive, and perfectly structured proposa
 - Demonstrate understanding of the 120 students max capacity, 5 schools max, and $20/student/day cost structure
 - Show how our model maximizes impact within these constraints
 
+**Program Details and Fee Structure:**
+*   **Schedule:** {days_per_week} day(s) per week
+*   **Duration:** {hours_per_day} hours per session
+*   **Program Dates:** {program_dates} ({num_weeks}-week program)
+*   **Total Enrollment:** {total_students} students
+*   **Service Locations:** {school_locations}
+
+**Fee Structure:**
+*   **Total Program Cost:** {formatted_cost_proposal}
+*   **Cost Per School Site:** {formatted_cost_per_school}
+*   **Cost Per Student for Full Program:** {formatted_cost_per_student}
+*   **Daily Program Cost:** {formatted_daily_cost}
+*   **Weekly Program Cost:** {formatted_weekly_cost}
+
 **CRITICAL INSTRUCTION: Generate ONLY clean proposal content. Do NOT include any Python code, technical instructions, programming syntax, code blocks (```), or implementation details. Focus exclusively on creating professional proposal narrative text.**
 
 Ensure the generated text is impeccably formatted using Markdown for seamless conversion to .docx, utilizing headings, sub-headings, bullet points, and bold text effectively to enhance readability and persuasiveness.

@@ -48,7 +48,10 @@ def generate_proposal():
             'cost_per_student': request.form.get('cost_per_student_display'),
             'hours_per_day': request.form.get('hours_per_day', '3'),
             'daily_cost': request.form.get('daily_cost_for_ai'),
-            'weekly_cost': request.form.get('weekly_cost_for_ai')
+            'weekly_cost': request.form.get('weekly_cost_for_ai'),
+            'cost_per_school': request.form.get('cost_per_school_for_ai'),
+            'selected_schools_list': request.form.get('selected_schools_list'),
+            'program_start_date': request.form.get('program_start_date')
         }
         
         # Validate required fields
@@ -226,6 +229,40 @@ def get_schools_by_district(district):
     except Exception as e:
         print(f"Error in get_schools_by_district route: {e}")
         return jsonify({'error': 'Failed to fetch schools'}), 500
+
+@main_bp.route('/api/proposal-delete', methods=['DELETE'])
+def delete_proposal():
+    """API endpoint to delete a proposal file"""
+    try:
+        data = request.get_json()
+        filename = data.get('filename')
+
+        if not filename:
+            return jsonify({'error': 'Filename is required'}), 400
+
+        # Security check - ensure filename doesn't contain path traversal
+        if '..' in filename or '/' in filename or '\\' in filename:
+            return jsonify({'error': 'Invalid filename'}), 400
+
+        # Ensure filename has .docx extension
+        if not filename.endswith('.docx'):
+            return jsonify({'error': 'Invalid file type'}), 400
+
+        download_dir = proposal_service.config['DOWNLOAD_FOLDER']
+        file_path = os.path.join(download_dir, filename)
+
+        # Check if file exists
+        if not os.path.exists(file_path):
+            return jsonify({'error': 'File not found'}), 404
+
+        # Delete the file
+        os.remove(file_path)
+
+        return jsonify({'message': 'Proposal deleted successfully'}), 200
+
+    except Exception as e:
+        print(f"Error deleting proposal: {str(e)}")
+        return jsonify({'error': 'Failed to delete proposal'}), 500
 
 @main_bp.route('/api/validate-form', methods=['POST'])
 def validate_form():
