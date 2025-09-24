@@ -156,7 +156,7 @@ class ProposalService:
         return re.sub(r'\n{2,}', r'\n', text)
 
     def fill_form_fields(self, text, prompt_variables):
-        """Fill in form fields with actual company information"""
+        """Fill in form fields with actual company information and add signature lines"""
         # Replace underscored form fields with actual data
         replacements = {
             r'\*\*Company Name:\*\* _{10,}': f"**Company Name:** {prompt_variables.get('company_name', 'Musical Instruments N Kids Hands (M.I.N.K.H.) - Music Science & Technology Group (MSTG)')}",
@@ -170,6 +170,32 @@ class ProposalService:
         }
 
         for pattern, replacement in replacements.items():
+            text = re.sub(pattern, replacement, text)
+
+        # Add signature lines for form fields that might have been filled by AI
+        signature_patterns = {
+            # Pattern: "I, Name, Title" -> "I, Name _________________________, Title _______________________"
+            r'I, ([^,]+), ([^\n]+)\n\(Name\)\s+\(Title\)': r'I, \1 _________________________, \2 _______________________  \n(Name)                                   (Title)',
+
+            # Pattern: "Of Company Name hereby certify:" -> "Of Company Name ________________________________ hereby certify:"
+            r'Of ([^\n]+) hereby certify:\n\(Company Name\)': r'Of \1 ______________________________________ hereby certify:  \n(Company Name)',
+
+            # Pattern: "**Signature:** Name" -> "**Signature:** ____________________________"
+            r'\*\*Signature:\*\* ([^\n]+)': r'**Signature:** ____________________________',
+
+            # Pattern: "**Authorized Signature:** Name" -> "**Authorized Signature (Disclosee):** ____________________________"
+            r'\*\*Authorized Signature \(Disclosee\):\*\* ([^\n]+)': r'**Authorized Signature (Disclosee):** ____________________________',
+
+            # Pattern: "**Date:** date" -> "**Date:** _____________"
+            r'\*\*Date:\*\* [0-9]{4}-[0-9]{2}-[0-9]{2}': r'**Date:** _____________',
+            r'\*\*Date:\*\* [^\n]+\d{4}': r'**Date:** _____________',
+
+            # Pattern: "**Initial Here:** letters" -> "**Initial Here:** ____"
+            r'\*\*Initial Here:\*\* ([A-Z]+)': r'**Initial Here:** ____',
+        }
+
+        # Apply signature line patterns
+        for pattern, replacement in signature_patterns.items():
             text = re.sub(pattern, replacement, text)
 
         return text
