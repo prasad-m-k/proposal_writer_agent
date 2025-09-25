@@ -12,6 +12,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 import google.generativeai as genai
 import yaml
 from jinja2 import Template
+from docx2pdf import convert
 
 from convert import MarkdownToDocxConverter
 from config.settings import RFP_TYPE_FILES
@@ -116,12 +117,12 @@ class ProposalService:
     
     def create_document_header(self, document):
         """Add a pre-defined header to the document"""
-        LOGO_PATH = 'static/assets/msg_logo.png'
+        LOGO_PATH = 'static/assets/mstg_large_logo.png'
         ADDRESS_LINES = [
             ("Musical Instruments N Kids Hands", True, 8),
             ("Music Science & Technology Group", True, 8),
-            ("2150 Capitol Avenue Sacramento, CA 95816", False, 8),
-            ("Ph. (916) 670-9950", False, 8)
+            ("2324 L St, STE 309, Sacramento, CA 95816", False, 8),
+            ("Ph. (216) 903-3756", False, 8)
         ]
 
         section = document.sections[0]
@@ -163,7 +164,7 @@ class ProposalService:
             r'\*\*Authorized Representative Name:\*\* _{10,}': f"**Authorized Representative Name:** {prompt_variables.get('representative_name', 'A.P. Moore, Program Coordinator')}",
             r'\*\*Title:\*\* _{10,}': f"**Title:** {prompt_variables.get('representative_title', 'Program Coordinator')}",
             r'\*\*Email:\*\* _{10,}': f"**Email:** {prompt_variables.get('company_email', 'aphilanda@musicsciencegroup.com')}",
-            r'\*\*Phone:\*\* _{10,}': f"**Phone:** {prompt_variables.get('company_phone', '(916) 670-9950')}",
+            r'\*\*Phone:\*\* _{10,}': f"**Phone:** {prompt_variables.get('company_phone', '(216) 903-3756')}",
             r'\*\*Address:\*\* _{10,}': f"**Address:** {prompt_variables.get('company_address', '2150 Capitol Avenue Sacramento, CA 95816')}",
             r'\*\*Authorized Signature:\*\* _{10,}': f"**Authorized Signature:** {prompt_variables.get('representative_name', 'A.P. Moore, Program Coordinator')}",
             r'\*\*Date:\*\* _{10,}': f"**Date:** {prompt_variables.get('today', date.today())}"
@@ -309,7 +310,7 @@ class ProposalService:
         representative_name = kwargs.get('representative_name', 'A.P. Moore, Program Coordinator')
         representative_title = kwargs.get('representative_title', 'Program Coordinator')
         company_email = kwargs.get('company_email', 'aphilanda@musicsciencegroup.com')
-        company_phone = kwargs.get('company_phone', '(916) 670-9950')
+        company_phone = kwargs.get('company_phone', '(216) 903-3756')
         company_address = kwargs.get('company_address', '2150 Capitol Avenue Sacramento, CA 95816')
 
         # Create comprehensive variables dictionary
@@ -612,6 +613,17 @@ FINAL CHECK BEFORE SUBMISSION:
             # Format the document
             word_formatter.format_word_document(output_path, output_path)
 
+            # Generate PDF from the DOCX
+            pdf_filename = filename.replace('.docx', '.pdf')
+            pdf_output_path = os.path.join(self.config['DOWNLOAD_FOLDER'], pdf_filename)
+
+            try:
+                convert(output_path, pdf_output_path)
+                print(f"Successfully created PDF '{pdf_filename}' from DOCX")
+            except Exception as pdf_error:
+                print(f"Warning: Failed to create PDF: {pdf_error}")
+                # Continue even if PDF creation fails
+
             print(f"Successfully created '{filename}' in '{self.config['DOWNLOAD_FOLDER']}' with custom header.")
 
             return filename
@@ -695,6 +707,7 @@ FINAL CHECK BEFORE SUBMISSION:
             error_text = f"An error occurred while generating the proposal: {e}"
             print(error_text)
             return error_text, None
+
 
 
 class DataService:

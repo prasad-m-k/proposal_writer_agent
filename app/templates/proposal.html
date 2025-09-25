@@ -287,7 +287,7 @@
 <body>
 
     <header class="header">
-        <img src="{{ url_for('static', filename='assets/msg_logo.png') }}" alt="Logo" class="header-logo" onclick="window.location.href='/'">
+        <img src="{{ url_for('static', filename='assets/mstg_large_logo.png') }}" alt="Logo" class="header-logo" onclick="window.location.href='/'">
         <span class="header-title">AI Proposal Generated - Music Science & Technology Group</span>
     </header>
 
@@ -323,7 +323,7 @@
                     </div>
                     <div class="summary-item">
                         <div class="label">Cost per Student</div>
-                        <div class="value">${{ data.cost_per_student }}/day</div>
+                        <div class="value">{{ data.cost_per_student }}/day</div>
                     </div>
                     <div class="summary-item">
                         <div class="label">Daily Cost</div>
@@ -339,23 +339,31 @@
                     </div>
                 </div>
             </div>
-            <div class="button-container">
-                <h3> AI Generated Proposal can be edited before saving (optional) </h3>
-                <button type="button" class="back-btn" onclick="goBackToForm()">Home</button>
-                <button type="button" class="generate-doc-btn" id="generate-doc-btn" onclick="generateDocument()">
-                    Generate Doc
-                </button>
-                <div class="loader" id="doc-loader"></div>
-                <a href="#" class="download-btn" id="download-btn" style="display: none;">
-                    Download Proposal
-                </a>
+            <div class="program-summary">
+                <h3>AI Generated Proposal</h3>
+                <div class="button-container">
+                    <button type="button" class="back-btn" onclick="goBackToForm()">Home</button>
+                    <button type="button" class="generate-doc-btn" id="generate-doc-btn" onclick="generateDocument()">
+                        Generate Doc
+                    </button>
+                    <div class="loader" id="doc-loader"></div>
+                    <div class="download-buttons" id="download-buttons" style="display: none;">
+                        <a href="#" class="download-btn" id="download-docx-btn">
+                            Download DOCX
+                        </a>
+                        <a href="#" class="download-btn" id="download-pdf-btn" style="background: linear-gradient(90deg, #4CAF50, #45A049); margin-left: 10px;">
+                            Download PDF
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <div class="proposal-editor-section">
                 <p class="editor-instructions">
+                    <h3> Below markdown text can be edited before saving (optional) </h3> 
                     <strong>Step 1:</strong> Review the AI-generated proposal content below.<br>
                     <strong>Step 2:</strong> Edit any sections you'd like to customize.<br>
-                    <strong>Step 3:</strong> Click "Generate Doc" to create your downloadable Word document.
+                    <strong>Step 3:</strong> Click "Generate Doc" to create both Word and PDF formats.
                 </p>
 
                 <div class="editor-container">
@@ -424,7 +432,9 @@
             const proposalText = document.getElementById('proposal-editor').value;
             const generateBtn = document.getElementById('generate-doc-btn');
             const loader = document.getElementById('doc-loader');
-            const downloadBtn = document.getElementById('download-btn');
+            const downloadButtons = document.getElementById('download-buttons');
+            const downloadDocxBtn = document.getElementById('download-docx-btn');
+            const downloadPdfBtn = document.getElementById('download-pdf-btn');
 
             if (!proposalText.trim()) {
                 showDialog('⚠️ Empty Content', 'Please enter proposal content before generating the document.', 'warning');
@@ -434,6 +444,7 @@
             // Show loading state
             generateBtn.style.display = 'none';
             loader.style.display = 'block';
+            downloadButtons.style.display = 'none';
 
             try {
                 // Prepare the data to send
@@ -451,13 +462,20 @@
                 if (response.ok) {
                     const result = await response.json();
 
-                    // Hide loading, show download button
+                    // Hide loading, show download buttons
                     loader.style.display = 'none';
-                    downloadBtn.href = `/download/${result.filename}`;
-                    downloadBtn.style.display = 'inline-block';
+                    downloadDocxBtn.href = `/download/${result.filename}`;
+                    downloadPdfBtn.href = `/download/${result.pdf_filename}`;
+                    downloadButtons.style.display = 'block';
 
-                    // Optional: Show success message
-                    showDialog('✅ Success', 'Document generated successfully! You can now download it.', 'success');
+                    // Hide the proposal editor section after successful generation
+                    const proposalEditorSection = document.querySelector('.proposal-editor-section');
+                    if (proposalEditorSection) {
+                        proposalEditorSection.style.display = 'none';
+                    }
+
+                    // Show success message
+                    showDialog('✅ Success', 'Document and PDF generated successfully! You can now download both formats.', 'success');
                 } else {
                     throw new Error('Failed to generate document');
                 }
@@ -470,6 +488,7 @@
                 generateBtn.style.display = 'inline-block';
             }
         }
+
 
         // Auto-resize textarea and character counting
         document.addEventListener('DOMContentLoaded', function() {

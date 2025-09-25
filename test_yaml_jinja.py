@@ -34,7 +34,7 @@ def test_yaml_jinja_integration():
         test_vars['submission']['rep_name'] = 'A.P. Moore, Program Coordinator'
         test_vars['submission']['title'] = 'Program Coordinator'
         test_vars['submission']['email'] = 'aphilanda@musicsciencegroup.com'
-        test_vars['submission']['phone'] = '(916) 670-9950'
+        test_vars['submission']['phone'] = '(216) 903-3756'
         test_vars['submission']['address'] = '2150 Capitol Avenue Sacramento, CA 95816'
         test_vars['submission']['signature_name'] = 'A.P. Moore, Program Coordinator'
         test_vars['submission']['signature_date'] = '2025-09-24'

@@ -109,10 +109,13 @@ def generate_document():
         filename = proposal_service.create_document(proposal_text, district, rfp_type)
 
         if filename:
+            # Generate PDF filename
+            pdf_filename = filename.replace('.docx', '.pdf')
             return jsonify({
                 'success': True,
                 'filename': filename,
-                'message': 'Document generated successfully'
+                'pdf_filename': pdf_filename,
+                'message': 'Document and PDF generated successfully'
             })
         else:
             return jsonify({'error': 'Failed to create document'}), 500
@@ -120,6 +123,7 @@ def generate_document():
     except Exception as e:
         print(f"Error in generate_document route: {e}")
         return jsonify({'error': f'Failed to generate document: {str(e)}'}), 500
+
 
 @main_bp.route('/download/<path:filename>')
 def download_file(filename):
@@ -147,18 +151,19 @@ def get_proposal_history():
         proposals = []
 
         if os.path.exists(download_dir):
-            # Get all .docx files
+            # Get all .docx and .pdf files
             for filename in os.listdir(download_dir):
-                if filename.endswith('.docx'):
+                if filename.endswith(('.docx', '.pdf')):
                     file_path = os.path.join(download_dir, filename)
 
                     # Get file stats
                     stat = os.stat(file_path)
 
                     # Parse filename to extract info
-                    # Format: Proposal_DistrictName_RFPType_Timestamp.docx
+                    # Format: Proposal_DistrictName_RFPType_Timestamp.docx/.pdf
                     try:
-                        parts = filename.replace('.docx', '').split('_')
+                        base_filename = filename.replace('.docx', '').replace('.pdf', '')
+                        parts = base_filename.split('_')
                         if len(parts) >= 4:
                             # Handle district name formatting
                             district_part = parts[1]
@@ -244,8 +249,8 @@ def delete_proposal():
         if '..' in filename or '/' in filename or '\\' in filename:
             return jsonify({'error': 'Invalid filename'}), 400
 
-        # Ensure filename has .docx extension
-        if not filename.endswith('.docx'):
+        # Ensure filename has valid extension
+        if not filename.endswith(('.docx', '.pdf')):
             return jsonify({'error': 'Invalid file type'}), 400
 
         download_dir = proposal_service.config['DOWNLOAD_FOLDER']

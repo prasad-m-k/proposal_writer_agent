@@ -634,10 +634,18 @@ class TabManager {
                     minute: '2-digit'
                 });
 
+                // Determine file type and styling
+                const isPDF = proposal.filename.endsWith('.pdf');
+                const fileTypeIcon = isPDF ? '📄' : '📝';
+                const fileTypeText = isPDF ? 'PDF' : 'DOCX';
+                const fileTypeClass = isPDF ? 'file-type-pdf' : 'file-type-docx';
+                const downloadButtonClass = isPDF ? 'download-history-btn-pdf' : 'download-history-btn-docx';
+
                 return `
                     <div class="history-item">
                         <div class="history-info">
                             <div class="history-title">
+                                <span class="file-type-badge ${fileTypeClass}">${fileTypeIcon} ${fileTypeText}</span>
                                 ${proposal.district} - ${proposal.rfp_type}
                             </div>
                             <div class="history-meta">
@@ -647,9 +655,9 @@ class TabManager {
                         </div>
                         <div class="history-actions">
                             <a href="${proposal.download_url}"
-                               class="download-history-btn"
+                               class="download-history-btn ${downloadButtonClass}"
                                download="${proposal.filename}">
-                                📥 Download
+                                📥 Download ${fileTypeText}
                             </a>
                             <button onclick="deleteProposal('${proposal.filename}')"
                                     class="delete-history-btn">
