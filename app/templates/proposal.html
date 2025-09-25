@@ -282,6 +282,18 @@
         .dialog-btn:hover {
             opacity: 0.9;
         }
+
+        /* Disabled button state */
+        .generate-doc-btn:disabled {
+            opacity: 0.5 !important;
+            cursor: not-allowed !important;
+            background: linear-gradient(90deg, #666, #555) !important;
+            pointer-events: none;
+        }
+
+        .generate-doc-btn:disabled:hover {
+            opacity: 0.5 !important;
+        }
     </style>
 </head>
 <body>
@@ -481,11 +493,18 @@
                 }
             } catch (error) {
                 console.error('Error generating document:', error);
-                alert('Error generating document. Please try again.');
+                alert('Error generating document. The Generate Doc button has been disabled due to the error.');
 
-                // Reset UI state
+                // Reset UI state and disable button on error
                 loader.style.display = 'none';
                 generateBtn.style.display = 'inline-block';
+                generateBtn.disabled = true;
+                generateBtn.textContent = 'Generate Doc (Disabled due to error)';
+                generateBtn.style.opacity = '0.5';
+                generateBtn.style.cursor = 'not-allowed';
+
+                // Show error message with option to refresh
+                showDialog('❌ Error', 'Document generation failed. Please refresh the page to try again, or check your API configuration.', 'error');
             }
         }
 

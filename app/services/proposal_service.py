@@ -97,13 +97,14 @@ class ProposalService:
             error_message = str(e).lower()
             print(f"Gemini API error: {e}")
 
-            # Check if it's a rate limit or quota error and we can try fallback
-            is_rate_limit_error = any(keyword in error_message for keyword in [
-                'rate limit', 'quota', 'resource exhausted', 'too many requests', 'limit exceeded'
+            # Check if it's an error that should trigger fallback (rate limits, invalid keys, etc.)
+            should_try_fallback = any(keyword in error_message for keyword in [
+                'rate limit', 'quota', 'resource exhausted', 'too many requests', 'limit exceeded',
+                'api key not valid', 'api_key_invalid', 'invalid api key', 'authentication failed'
             ])
 
-            if is_rate_limit_error and hasattr(self, 'api_manager') and self.api_manager:
-                print("Detected rate limit error. Attempting to switch to alternate API key...")
+            if should_try_fallback and hasattr(self, 'api_manager') and self.api_manager:
+                print("Detected API error that may be resolved with alternate key. Attempting to switch...")
 
                 if self.api_manager.switch_to_alternate_key():
                     try:
