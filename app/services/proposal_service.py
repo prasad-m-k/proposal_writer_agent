@@ -5,7 +5,7 @@ import os
 import re
 import time
 import pandas as pd
-from datetime import date
+from datetime import date, datetime, timedelta
 from docx import Document
 from docx.shared import Inches, Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -19,6 +19,49 @@ from config.settings import RFP_TYPE_FILES
 import word_formatter
 
 
+class GeminiAPIManager:
+    """Manages Gemini API keys with smart switching and cooldown logic"""
+
+    def __init__(self, primary_key, alternate_key):
+        self.primary_key = primary_key
+        self.alternate_key = alternate_key
+        self.current_key = primary_key
+        self.is_using_alternate = False
+        self.last_switch_time = None
+        self.switch_cooldown_hours = 1
+
+    def can_switch_keys(self):
+        """Check if we can switch keys (not switched in last hour)"""
+        if self.last_switch_time is None:
+            return True
+
+        time_since_switch = datetime.now() - self.last_switch_time
+        return time_since_switch >= timedelta(hours=self.switch_cooldown_hours)
+
+    def switch_to_alternate_key(self):
+        """Switch to alternate API key if cooldown period has passed"""
+        if not self.can_switch_keys():
+            print(f"Cannot switch keys - last switch was less than {self.switch_cooldown_hours} hour(s) ago")
+            return False
+
+        if not self.is_using_alternate:
+            self.current_key = self.alternate_key
+            self.is_using_alternate = True
+            self.last_switch_time = datetime.now()
+            genai.configure(api_key=self.current_key)
+            print("Switched to alternate Gemini API key")
+            return True
+        else:
+            print("Already using alternate key")
+            return False
+
+    def get_current_key_info(self):
+        """Get info about current key usage"""
+        key_type = "ALTERNATE" if self.is_using_alternate else "PRIMARY"
+        cooldown_status = "Available" if self.can_switch_keys() else f"Cooldown until {self.last_switch_time + timedelta(hours=self.switch_cooldown_hours)}"
+        return f"Using {key_type} key. Switch {cooldown_status}"
+
+
 class ProposalService:
     """Service class for handling proposal generation"""
     
@@ -27,11 +70,67 @@ class ProposalService:
         self._configure_genai()
     
     def _configure_genai(self):
-        """Configure Google Generative AI"""
-        api_key = self.config.get('GEMINI_API_KEY')
-        if api_key:
-            genai.configure(api_key=api_key)
-    
+        """Configure Google Generative AI with fallback API key management"""
+        primary_key = self.config.get('GEMINI_API_KEY')
+        alternate_key = self.config.get('GEMINI_API_KEY_ALTERNATE')
+
+        if primary_key and alternate_key:
+            self.api_manager = GeminiAPIManager(primary_key, alternate_key)
+            genai.configure(api_key=primary_key)
+            print("Gemini API configured with primary key and fallback enabled")
+        else:
+            print("Warning: Both GEMINI_API_KEY and GEMINI_API_KEY_ALTERNATE are required for fallback functionality")
+            if primary_key:
+                genai.configure(api_key=primary_key)
+                self.api_manager = None
+
+    def call_gemini_with_fallback(self, prompt):
+        """Call Gemini API with automatic fallback to alternate key on rate limit errors"""
+        model = genai.GenerativeModel('gemini-2.0-flash')
+
+        try:
+            print(f"Attempting Gemini API call with {'alternate' if hasattr(self, 'api_manager') and self.api_manager.is_using_alternate else 'primary'} key...")
+            response = model.generate_content(prompt)
+            return response.text
+
+        except Exception as e:
+            error_message = str(e).lower()
+            print(f"Gemini API error: {e}")
+
+            # Check if it's a rate limit or quota error and we can try fallback
+            is_rate_limit_error = any(keyword in error_message for keyword in [
+                'rate limit', 'quota', 'resource exhausted', 'too many requests', 'limit exceeded'
+            ])
+
+            if is_rate_limit_error and hasattr(self, 'api_manager') and self.api_manager:
+                print("Detected rate limit error. Attempting to switch to alternate API key...")
+
+                if self.api_manager.switch_to_alternate_key():
+                    try:
+                        print("Retrying with alternate API key...")
+                        model = genai.GenerativeModel('gemini-2.0-flash')
+                        response = model.generate_content(prompt)
+                        return response.text
+
+                    except Exception as fallback_error:
+                        print(f"Alternate API key also failed: {fallback_error}")
+                        raise fallback_error
+
+                else:
+                    print("Could not switch to alternate key (cooldown active or already using alternate)")
+                    raise e
+
+            else:
+                # Re-raise the original exception if it's not a rate limit error or no fallback available
+                raise e
+
+    def get_api_status(self):
+        """Get current API key status information"""
+        if hasattr(self, 'api_manager') and self.api_manager:
+            return self.api_manager.get_current_key_info()
+        else:
+            return "Using single API key (no fallback configured)"
+
     def load_rfp_files(self, rfp_type):
         """Load the appropriate prompt and requirements files based on RFP type."""
         if rfp_type not in RFP_TYPE_FILES:
@@ -382,13 +481,12 @@ class ProposalService:
                     prompt_template = template_data  # Fallback for direct string
 
                 prompt = prompt_template.format(**prompt_variables)
-                model = genai.GenerativeModel('gemini-2.0-flash')
 
                 print(f"Generating proposal using Gemini model for RFP type: {prompt_variables.get('rfp_type')}...")
-                response = model.generate_content(prompt)
+                ai_text_raw = self.call_gemini_with_fallback(prompt)
 
                 # Post-process the AI text to fill in form fields with actual company data
-                ai_text = self.normalize_empty_lines(response.text)
+                ai_text = self.normalize_empty_lines(ai_text_raw)
                 ai_text = self.fill_form_fields(ai_text, prompt_variables)
 
                 return ai_text
@@ -415,12 +513,11 @@ class ProposalService:
             # Create enhanced prompt for Gemini
             enhanced_prompt = self.create_enhanced_prompt_for_yaml(rendered_content, prompt_variables)
 
-            model = genai.GenerativeModel('gemini-2.0-flash')
             rfp_type = prompt_variables.get('rfp_type', 'Request for Qualifications')
             print(f"Generating proposal using YAML+Jinja strategy for RFP type: {rfp_type}...")
-            response = model.generate_content(enhanced_prompt)
+            ai_text_raw = self.call_gemini_with_fallback(enhanced_prompt)
 
-            return self.normalize_empty_lines(response.text)
+            return self.normalize_empty_lines(ai_text_raw)
 
         except Exception as e:
             error_text = f"An error occurred in YAML+Jinja generation: {e}"
