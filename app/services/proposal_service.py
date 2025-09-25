@@ -100,7 +100,7 @@ class ProposalService:
             # Check if it's an error that should trigger fallback (rate limits, invalid keys, etc.)
             should_try_fallback = any(keyword in error_message for keyword in [
                 'rate limit', 'quota', 'resource exhausted', 'too many requests', 'limit exceeded',
-                'api key not valid', 'api_key_invalid', 'invalid api key', 'api key expired' 'authentication failed'
+                'api key not valid', 'api_key_invalid', 'invalid api key', 'api key expired', 'authentication failed'
             ])
 
             if should_try_fallback and hasattr(self, 'api_manager') and self.api_manager:
