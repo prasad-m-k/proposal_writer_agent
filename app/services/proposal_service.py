@@ -12,7 +12,8 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 import google.generativeai as genai
 import yaml
 from jinja2 import Template
-from docx2pdf import convert
+import subprocess
+import platform
 
 from convert import MarkdownToDocxConverter
 from config.settings import RFP_TYPE_FILES
@@ -62,9 +63,68 @@ class GeminiAPIManager:
         return f"Using {key_type} key. Switch {cooldown_status}"
 
 
+def convert_docx_to_pdf(docx_path, pdf_path):
+    """Cross-platform DOCX to PDF conversion"""
+    try:
+        system = platform.system().lower()
+
+        if system == "linux":
+            # Use LibreOffice for Linux
+            cmd = [
+                'libreoffice', '--headless', '--convert-to', 'pdf',
+                '--outdir', os.path.dirname(pdf_path), docx_path
+            ]
+            subprocess.run(cmd, check=True, capture_output=True)
+
+            # LibreOffice generates PDF with same name as DOCX, need to rename
+            docx_name = os.path.splitext(os.path.basename(docx_path))[0]
+            generated_pdf = os.path.join(os.path.dirname(pdf_path), f"{docx_name}.pdf")
+            if os.path.exists(generated_pdf) and generated_pdf != pdf_path:
+                os.rename(generated_pdf, pdf_path)
+
+        elif system == "darwin":  # macOS
+            # Use LibreOffice if available, fallback to docx2pdf
+            try:
+                cmd = [
+                    'libreoffice', '--headless', '--convert-to', 'pdf',
+                    '--outdir', os.path.dirname(pdf_path), docx_path
+                ]
+                subprocess.run(cmd, check=True, capture_output=True)
+
+                docx_name = os.path.splitext(os.path.basename(docx_path))[0]
+                generated_pdf = os.path.join(os.path.dirname(pdf_path), f"{docx_name}.pdf")
+                if os.path.exists(generated_pdf) and generated_pdf != pdf_path:
+                    os.rename(generated_pdf, pdf_path)
+
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                # Fallback to docx2pdf if LibreOffice not available
+                try:
+                    from docx2pdf import convert
+                    convert(docx_path, pdf_path)
+                except ImportError:
+                    raise RuntimeError("Neither LibreOffice nor docx2pdf available on macOS")
+
+        elif system == "windows":
+            # Use docx2pdf on Windows
+            try:
+                from docx2pdf import convert
+                convert(docx_path, pdf_path)
+            except ImportError:
+                raise RuntimeError("docx2pdf not available on Windows")
+        else:
+            raise RuntimeError(f"Unsupported operating system: {system}")
+
+        return True
+
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"PDF conversion failed: {e}")
+    except Exception as e:
+        raise RuntimeError(f"PDF conversion error: {e}")
+
+
 class ProposalService:
     """Service class for handling proposal generation"""
-    
+
     def __init__(self, app_config):
         self.config = app_config
         self._configure_genai()
@@ -716,7 +776,7 @@ FINAL CHECK BEFORE SUBMISSION:
             pdf_output_path = os.path.join(self.config['DOWNLOAD_FOLDER'], pdf_filename)
 
             try:
-                convert(output_path, pdf_output_path)
+                convert_docx_to_pdf(output_path, pdf_output_path)
                 print(f"Successfully created PDF '{pdf_filename}' from DOCX")
             except Exception as pdf_error:
                 print(f"Warning: Failed to create PDF: {pdf_error}")
